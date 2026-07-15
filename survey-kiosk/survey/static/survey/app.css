@@ -1,0 +1,132 @@
+:root {
+  --fg: #1a1a1a;
+  --muted: #666;
+  --accent: #b1040e; /* CMU-ish red, restyle later */
+  --bg: #fafafa;
+  --card: #fff;
+  --border: #e0e0e0;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color: var(--fg);
+  background: var(--bg);
+  line-height: 1.5;
+}
+
+.wrap {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 2rem 1.25rem;
+}
+
+h1 { font-size: 1.6rem; margin: 0 0 1rem; }
+.muted { color: var(--muted); }
+.center { text-align: center; }
+
+.kiosk { text-align: center; padding-top: 4vh; }
+.kiosk h1 { font-size: 2.2rem; }
+.qr { image-rendering: pixelated; margin: 1.5rem auto 0.75rem; display: block; }
+.qr-url {
+  text-align: center;
+  font-size: 0.95rem;
+  color: var(--muted);
+  margin: 0 auto 1rem;
+  max-width: 90%;
+}
+.qr-url-label { display: block; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; }
+.qr-url-value { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; word-break: break-all; }
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.btn {
+  display: inline-block;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+  text-decoration: none;
+}
+.btn.secondary { background: #444; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.choice { display: block; padding: 0.6rem 0; }
+.choice input { margin-right: 0.6rem; }
+
+input[type=text], input[type=email], textarea {
+  width: 100%;
+  padding: 0.65rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.messages { list-style: none; padding: 0; }
+.msg { padding: 0.6rem 0.9rem; border-radius: 8px; margin-bottom: 0.5rem; }
+.msg.error { background: #fde8e8; color: #9b1c1c; }
+.msg.success { background: #e6f4ea; color: #1e6b32; }
+
+.likert { display: flex; gap: 0.5rem; justify-content: space-between; flex-wrap: wrap; }
+.likert label { text-align: center; }
+
+.code-box {
+  font-family: ui-monospace, monospace;
+  font-size: 1.5rem;
+  letter-spacing: 1px;
+  background: #f1f1f1;
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+  padding: 1rem;
+  text-align: center;
+}
+
+/* Image grid */
+.grid-wrap {
+  position: relative;
+  display: block;
+  width: 100%;
+  max-width: 28rem;   /* cap on desktop; fills the column on phones */
+  margin: 0.5rem auto;
+}
+.grid-wrap img { display: block; width: 100%; height: auto; }
+
+/* On phones, break out of the card/page padding so the grid uses the full
+   viewport width (with a small gutter) — otherwise it's cramped and hard to tap. */
+@media (max-width: 600px) {
+  .grid-wrap {
+    width: calc(100vw - 2rem);
+    max-width: calc(100vw - 2rem);
+    margin-left: 50%;
+    transform: translateX(-50%);
+  }
+}
+.grid-overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+}
+.grid-cell {
+  border: 1px solid rgba(0,0,0,0.15);
+  cursor: pointer;
+}
+.grid-cell.selected { background: rgba(177,4,14,0.45); }
+
+.progress { color: var(--muted); font-size: 0.9rem; margin-bottom: 1rem; }
+
+.username-row { display: flex; align-items: center; gap: 0.5rem; margin: 0.5rem 0; }
+.username-row input { flex: 1; }
+.domain-suffix { color: var(--muted); white-space: nowrap; }
+.actions { display: flex; gap: 0.75rem; align-items: center; margin-top: 1.25rem; }
+.consent-text { max-height: 40vh; overflow-y: auto; margin-bottom: 1rem; }

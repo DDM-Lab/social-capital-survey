@@ -1,0 +1,40 @@
+{% extends "survey/base.html" %}
+{% block title %}Before you begin{% endblock %}
+
+{% block content %}
+<section class="card">
+  <h1>Before you begin</h1>
+
+  <div class="consent-text">
+    {{ session.survey.consent_text|linebreaks }}
+  </div>
+
+  {% if errors %}
+    <ul class="messages">
+      {% for e in errors %}<li class="msg error">{{ e }}</li>{% endfor %}
+    </ul>
+  {% endif %}
+
+  <form method="post" action="{% url 'survey:start' session.id %}">
+    {% csrf_token %}
+
+    <fieldset>
+      <legend>Choose a survey length</legend>
+      <label class="choice">
+        <input type="radio" name="length" value="short" required>
+        Short — 5 questions
+      </label>
+      <label class="choice">
+        <input type="radio" name="length" value="long">
+        Long — 15 questions
+      </label>
+    </fieldset>
+
+    <label class="choice">
+      <input type="checkbox" name="consent"> I have read the above and consent to participate.
+    </label>
+
+    <button class="btn" type="submit">Start survey</button>
+  </form>
+</section>
+{% endblock %}

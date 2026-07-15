@@ -1,0 +1,22 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title>{% block title %}Survey{% endblock %}</title>
+  <script src="https://unpkg.com/htmx.org@1.9.12" defer></script>
+  <link rel="stylesheet" href="{% static 'survey/app.css' %}">
+</head>
+<body>
+  <main class="wrap">
+    {% if messages %}
+      <ul class="messages">
+        {% for m in messages %}<li class="msg {{ m.tags }}">{{ m }}</li>{% endfor %}
+      </ul>
+    {% endif %}
+    {% block content %}{% endblock %}
+  </main>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

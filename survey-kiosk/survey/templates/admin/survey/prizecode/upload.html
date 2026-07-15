@@ -1,0 +1,11 @@
+{% extends "admin/base_site.html" %}
+{% block content %}
+<h1>Upload prize codes</h1>
+<p>Paste one redemption code per line. Existing and duplicate codes are skipped.</p>
+<form method="post">
+  {% csrf_token %}
+  <textarea name="codes" rows="15" cols="60" style="font-family:monospace;"></textarea>
+  <p><button type="submit" class="default">Add codes</button>
+     <a href="{% url 'admin:survey_prizecode_changelist' %}">Cancel</a></p>
+</form>
+{% endblock %}

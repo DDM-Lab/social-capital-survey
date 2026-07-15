@@ -1,0 +1,17 @@
+{% extends "survey/base.html" %}
+{% block title %}Your prize{% endblock %}
+{% block content %}
+<section class="card center">
+  {% if claim.status == "verified" %}
+    <h1>🎉 Email confirmed — here's your prize</h1>
+    <p>Your one-time redemption code:</p>
+    <div class="code-box">{{ claim.prize_code.code }}</div>
+    <p class="muted">Keep this code — this page shows the same code if you reopen the link.</p>
+  {% else %}
+    <h1>Email confirmed</h1>
+    <p>Thanks — your email is confirmed. Unfortunately all prizes have been
+       claimed and the pool is currently empty.</p>
+    <p class="muted">No code could be issued for this entry.</p>
+  {% endif %}
+</section>
+{% endblock %}

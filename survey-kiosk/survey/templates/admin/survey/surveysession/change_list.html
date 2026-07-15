@@ -1,0 +1,39 @@
+{% extends "admin/change_list.html" %}
+
+{% block content_title %}
+  <h1>Survey sessions</h1>
+  {% if summary %}
+  <div style="display:flex;gap:1rem;flex-wrap:wrap;margin:1rem 0;">
+    <div style="border:1px solid #ddd;border-radius:8px;padding:0.75rem 1rem;">
+      <strong>Sessions</strong><br>
+      Total: {{ summary.sessions.total }}<br>
+      Completed: {{ summary.sessions.completed }}
+      ({{ summary.sessions.completion_rate }}%)<br>
+      Active: {{ summary.sessions.active }} · Expired: {{ summary.sessions.expired }}
+    </div>
+    <div style="border:1px solid #ddd;border-radius:8px;padding:0.75rem 1rem;">
+      <strong>Prize claims</strong><br>
+      Total: {{ summary.claims.total }}<br>
+      Verified: {{ summary.claims.verified }} · Pending: {{ summary.claims.pending }}<br>
+      Pool-empty: {{ summary.claims.pool_empty }}
+    </div>
+    <div style="border:1px solid #ddd;border-radius:8px;padding:0.75rem 1rem;">
+      <strong>Prize codes</strong><br>
+      Total: {{ summary.codes.total }}<br>
+      Assigned: {{ summary.codes.assigned }} · Free: {{ summary.codes.free }}
+    </div>
+    <div style="border:1px solid #ddd;border-radius:8px;padding:0.75rem 1rem;">
+      <strong>Export CSV</strong>
+      <form method="get" action="{% url 'admin:survey_surveysession_export' %}"
+            style="margin-top:0.5rem;display:flex;flex-wrap:wrap;gap:0.5rem;align-items:end;">
+        <label style="font-size:0.85em;">From<br><input type="date" name="start"></label>
+        <label style="font-size:0.85em;">To<br><input type="date" name="end"></label>
+        <button type="submit" class="button">Download</button>
+      </form>
+      <p style="margin:0.4rem 0 0;color:#666;font-size:0.8em;">
+        Leave dates blank to export all. Filters on session start date.
+      </p>
+    </div>
+  </div>
+  {% endif %}
+{% endblock %}

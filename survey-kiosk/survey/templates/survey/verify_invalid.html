@@ -1,0 +1,18 @@
+{% extends "survey/base.html" %}
+{% block title %}Link not valid{% endblock %}
+{% block content %}
+<section class="card center">
+  {% if expired %}
+    <h1>This link has expired</h1>
+    <p>Your confirmation link is no longer valid. Prize links expire after a set
+       time. If you still need your prize, please contact the survey organizers.</p>
+  {% elif duplicate %}
+    <h1>This email already has a prize</h1>
+    <p>A prize has already been claimed for this email address.</p>
+  {% else %}
+    <h1>This link isn't valid</h1>
+    <p>We couldn't find a prize for this link. Please double-check the link in
+       your email.</p>
+  {% endif %}
+</section>
+{% endblock %}

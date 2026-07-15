@@ -1,0 +1,78 @@
+{% extends "survey/base.html" %}
+{% load static %}
+{% block title %}Question {{ step }}{% endblock %}
+
+{% block content %}
+<section class="card">
+  <p class="progress">Question {{ step }} of {{ total }}</p>
+  <h1>{{ question.text }}</h1>
+
+  {% if error %}<ul class="messages"><li class="msg error">{{ error }}</li></ul>{% endif %}
+
+  <form method="post" action="{% url 'survey:question' session.id step %}" id="qform">
+    {% csrf_token %}
+
+    {% if question.type == "single" %}
+      {% for c in question.choices.all %}
+        <label class="choice">
+          <input type="radio" name="choice" value="{{ c.id }}"
+                 {% if c.id in selected_choice_ids %}checked{% endif %}
+                 {% if question.required %}required{% endif %}>
+          {{ c.text }}
+        </label>
+      {% endfor %}
+
+    {% elif question.type == "multi" %}
+      {% for c in question.choices.all %}
+        <label class="choice">
+          <input type="checkbox" name="choices" value="{{ c.id }}"
+                 {% if c.id in selected_choice_ids %}checked{% endif %}>
+          {{ c.text }}
+        </label>
+      {% endfor %}
+
+    {% elif question.type == "likert" %}
+      <div class="likert">
+        {% for v in question.likert_range %}
+          <label>
+            <input type="radio" name="likert" value="{{ v }}"
+                   {% if answer.likert_value == v %}checked{% endif %}
+                   {% if question.required %}required{% endif %}><br>{{ v }}
+          </label>
+        {% endfor %}
+      </div>
+      <p class="muted">
+        <small>{{ question.likert_min }} = {{ question.likert_min_label|default:"low" }} ·
+        {{ question.likert_max }} = {{ question.likert_max_label|default:"high" }}</small>
+      </p>
+
+    {% elif question.type == "short_text" %}
+      <textarea name="text" rows="3" {% if question.required %}required{% endif %}>{{ answer.text_value }}</textarea>
+
+    {% elif question.type == "image_grid" %}
+      <div class="grid-wrap"
+           data-rows="{{ question.grid_rows }}" data-cols="{{ question.grid_cols }}"
+           data-selected-row="{{ answer.grid_row|default_if_none:'' }}"
+           data-selected-col="{{ answer.grid_col|default_if_none:'' }}">
+        <img src="{{ question.grid_image.url }}" alt="Tap a cell">
+        <div class="grid-overlay"
+             style="grid-template-rows: repeat({{ question.grid_rows }}, 1fr);
+                    grid-template-columns: repeat({{ question.grid_cols }}, 1fr);"></div>
+      </div>
+      <input type="hidden" name="grid_row" id="grid_row" value="{{ answer.grid_row|default_if_none:'' }}">
+      <input type="hidden" name="grid_col" id="grid_col" value="{{ answer.grid_col|default_if_none:'' }}">
+    {% endif %}
+
+    <div class="actions">
+      {% if step > 1 %}
+        <a class="btn secondary" href="{% url 'survey:question' session.id step|add:'-1' %}">Back</a>
+      {% endif %}
+      <button class="btn" type="submit">{% if step == total %}Finish{% else %}Next{% endif %}</button>
+    </div>
+  </form>
+</section>
+{% endblock %}
+
+{% block scripts %}
+  {% if question.type == "image_grid" %}<script src="{% static 'survey/grid.js' %}"></script>{% endif %}
+{% endblock %}

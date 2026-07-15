@@ -1,0 +1,10 @@
+{% extends "survey/base.html" %}
+{% block title %}Check your email{% endblock %}
+{% block content %}
+<section class="card center">
+  <h1>Check your email</h1>
+  <p>We sent a confirmation link to <strong>{{ claim.email }}</strong>.</p>
+  <p>Open it to confirm your address and reveal your prize code. The link
+     expires in {{ claim.verify_expires_at|timeuntil }}.</p>
+</section>
+{% endblock %}

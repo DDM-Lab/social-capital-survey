@@ -1,0 +1,15 @@
+{% extends "survey/base.html" %}
+{% block title %}{{ kiosk.name }}{% endblock %}
+
+{% block content %}
+<section class="kiosk">
+  <h1>Scan to take the survey</h1>
+  <div id="qr"
+       hx-get="{% url 'survey:kiosk_qr' kiosk.id %}"
+       hx-trigger="load, every {{ rotate_seconds }}s"
+       hx-swap="innerHTML">
+    <p class="muted">Loading code…</p>
+  </div>
+  <p class="muted">Point your phone camera at the code. A fresh code appears every {{ rotate_seconds }} seconds.</p>
+</section>
+{% endblock %}

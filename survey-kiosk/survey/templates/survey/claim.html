@@ -1,0 +1,27 @@
+{% extends "survey/base.html" %}
+{% block title %}Claim your prize{% endblock %}
+
+{% block content %}
+<section class="card">
+  <h1>You're done — claim your prize</h1>
+  <p>Enter your username. We'll email a confirmation link to
+     <strong>username@{{ target_domain }}</strong> that reveals your prize code.</p>
+
+  {% if form.non_field_errors %}
+    <ul class="messages">{% for e in form.non_field_errors %}<li class="msg error">{{ e }}</li>{% endfor %}</ul>
+  {% endif %}
+
+  <form method="post" action="{% url 'survey:claim' session.id %}">
+    {% csrf_token %}
+    <label for="id_username">Username</label>
+    <div class="username-row">
+      <input type="text" name="username" id="id_username"
+             value="{{ form.username.value|default:'' }}" autocomplete="off"
+             autocapitalize="off" spellcheck="false" required>
+      <span class="domain-suffix">@{{ target_domain }}</span>
+    </div>
+    {% for e in form.username.errors %}<p class="msg error">{{ e }}</p>{% endfor %}
+    <button class="btn" type="submit">Email my prize link</button>
+  </form>
+</section>
+{% endblock %}

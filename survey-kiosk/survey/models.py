@@ -6,6 +6,8 @@ from django.conf import settings
 from django.db import models
 from django.utils import timezone
 
+from .question_types import QUESTION_TYPES
+
 
 class Kiosk(models.Model):
     """A physical always-on screen that displays the rotating QR code."""
@@ -71,17 +73,9 @@ class Question(models.Model):
         default=False, help_text="Include in the 5-question short survey."
     )
     required = models.BooleanField(default=True)
+    config_json = models.JSONField(default=dict, blank=True)
 
-    # Likert config (used only when type == LIKERT).
-    likert_min = models.PositiveIntegerField(default=1)
-    likert_max = models.PositiveIntegerField(default=5)
-    likert_min_label = models.CharField(max_length=100, blank=True)
-    likert_max_label = models.CharField(max_length=100, blank=True)
-
-    # Image-grid config (used only when type == IMAGE_GRID).
     grid_image = models.ImageField(upload_to="grids/", null=True, blank=True)
-    grid_rows = models.PositiveIntegerField(null=True, blank=True)
-    grid_cols = models.PositiveIntegerField(null=True, blank=True)
 
     class Meta:
         ordering = ["order", "id"]
@@ -91,7 +85,8 @@ class Question(models.Model):
 
     @property
     def likert_range(self):
-        return range(self.likert_min, self.likert_max + 1)
+        config = self.config_json or {}
+        return range(config.get("likert_min", 1), config.get("likert_max", 5) + 1)
 
 
 class Choice(models.Model):
@@ -151,10 +146,7 @@ class Answer(models.Model):
 
     # Used per question type:
     choices = models.ManyToManyField(Choice, blank=True)  # single (1) / multi (N)
-    text_value = models.TextField(blank=True)  # short_text
-    likert_value = models.PositiveIntegerField(null=True, blank=True)  # likert
-    grid_row = models.PositiveIntegerField(null=True, blank=True)  # image_grid
-    grid_col = models.PositiveIntegerField(null=True, blank=True)  # image_grid
+    value_json = models.JSONField(default=dict, blank=True)
 
     class Meta:
         constraints = [
@@ -164,16 +156,7 @@ class Answer(models.Model):
         ]
 
     def display_value(self):
-        q = self.question
-        if q.type == Question.Type.SHORT_TEXT:
-            return self.text_value
-        if q.type == Question.Type.LIKERT:
-            return str(self.likert_value) if self.likert_value is not None else ""
-        if q.type == Question.Type.IMAGE_GRID:
-            if self.grid_row is None:
-                return ""
-            return f"{self.grid_row},{self.grid_col}"
-        return "; ".join(c.text for c in self.choices.all())
+        return QUESTION_TYPES[self.question.type].display_answer(self)
 
     def __str__(self):
         return f"Answer to {self.question_id} in {self.session_id}"

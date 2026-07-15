@@ -31,6 +31,23 @@ def _grid_image(rows, cols, size=600):
     return ContentFile(buf.getvalue(), name="demo_grid.png")
 
 
+def _choice_config(choice_texts):
+    return {"choices": [{"text": text, "order": order} for order, text in enumerate(choice_texts)]}
+
+
+def _likert_config(min_value, max_value, min_label="", max_label=""):
+    return {
+        "likert_min": min_value,
+        "likert_max": max_value,
+        "likert_min_label": min_label,
+        "likert_max_label": max_label,
+    }
+
+
+def _grid_config(grid_image, rows, cols):
+    return {"grid_image": grid_image, "grid_rows": rows, "grid_cols": cols}
+
+
 class Command(BaseCommand):
     help = "Create placeholder survey content for development."
 
@@ -66,20 +83,22 @@ class Command(BaseCommand):
         q1 = add("Placeholder single-choice question 1?", Question.Type.SINGLE, short=True)
         for i, t in enumerate(["Option A", "Option B", "Option C"]):
             Choice.objects.create(question=q1, text=t, order=i)
+        q1.config_json = _choice_config(["Option A", "Option B", "Option C"])
+        q1.save(update_fields=["config_json"])
 
         q2 = add("Placeholder multiple-choice question 2?", Question.Type.MULTI, short=True)
         for i, t in enumerate(["Red", "Green", "Blue", "Yellow"]):
             Choice.objects.create(question=q2, text=t, order=i)
+        q2.config_json = _choice_config(["Red", "Green", "Blue", "Yellow"])
+        q2.save(update_fields=["config_json"])
 
-        add(
+        q3 = add(
             "Placeholder Likert question 3?",
             Question.Type.LIKERT,
             short=True,
-            likert_min=1,
-            likert_max=5,
-            likert_min_label="Strongly disagree",
-            likert_max_label="Strongly agree",
         )
+        q3.config_json = _likert_config(1, 5, "Strongly disagree", "Strongly agree")
+        q3.save(update_fields=["config_json"])
 
         add("Placeholder short-text question 4?", Question.Type.SHORT_TEXT, short=True)
 
@@ -87,10 +106,10 @@ class Command(BaseCommand):
             "Placeholder image-grid question 5 — tap a cell.",
             Question.Type.IMAGE_GRID,
             short=True,
-            grid_rows=4,
-            grid_cols=6,
         )
         q5.grid_image.save("demo_grid.png", _grid_image(4, 6), save=True)
+        q5.config_json = _grid_config("demo_grid.png", 4, 6)
+        q5.save(update_fields=["config_json"])
 
         # Remaining 10 -> long only.
         for n in range(6, 16):
@@ -104,6 +123,10 @@ class Command(BaseCommand):
             if qt in (Question.Type.SINGLE, Question.Type.MULTI):
                 for i, t in enumerate(["Choice 1", "Choice 2", "Choice 3"]):
                     Choice.objects.create(question=q, text=t, order=i)
+                q.config_json = _choice_config(["Choice 1", "Choice 2", "Choice 3"])
+            elif qt == Question.Type.LIKERT:
+                q.config_json = _likert_config(1, 5, "Low", "High")
+            q.save(update_fields=["config_json"])
 
         kiosk, _ = Kiosk.objects.update_or_create(
             name=DEMO_KIOSK, defaults={"survey": survey, "active": True}

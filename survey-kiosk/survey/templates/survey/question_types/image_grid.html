@@ -1,0 +1,11 @@
+<div class="grid-wrap"
+     data-rows="{{ question_config.grid_rows }}" data-cols="{{ question_config.grid_cols }}"
+     data-selected-row="{{ answer_value.row|default_if_none:'' }}"
+     data-selected-col="{{ answer_value.col|default_if_none:'' }}">
+  <img src="{{ question.grid_image.url }}" alt="Tap a cell">
+  <div class="grid-overlay"
+       style="grid-template-rows: repeat({{ question_config.grid_rows }}, 1fr);
+              grid-template-columns: repeat({{ question_config.grid_cols }}, 1fr);"></div>
+</div>
+<input type="hidden" name="grid_row" id="grid_row" value="{{ answer_value.row|default_if_none:'' }}">
+<input type="hidden" name="grid_col" id="grid_col" value="{{ answer_value.col|default_if_none:'' }}">

@@ -7,6 +7,7 @@ from django.utils import timezone
 from .json_translate import import_survey_spec
 from .models import Choice, Kiosk, PrizeClaim, PrizeCode, Question, Survey, SurveySession
 from .question_schema import SurveySchemaError, SurveySpec
+from .question_types import get_answer_runtime_value, get_question_runtime_config
 from .tokens import mint_kiosk_token, verify_kiosk_token
 
 
@@ -240,6 +241,65 @@ class JsonImportTests(TestCase):
 
         with self.assertRaises(SurveySchemaError):
             SurveySpec.from_dict(payload)
+
+
+class CanonicalPayloadTests(TestCase):
+    def test_likert_runtime_prefers_config_json(self):
+        survey = Survey.objects.create(name="Config survey", consent_text="consent")
+        question = Question.objects.create(
+            survey=survey,
+            text="Rate this",
+            type=Question.Type.LIKERT,
+            order=1,
+            config_json={
+                "likert_min": 2,
+                "likert_max": 6,
+                "likert_min_label": "new low",
+                "likert_max_label": "new high",
+            },
+        )
+
+        config = get_question_runtime_config(question)
+
+        self.assertEqual(config["likert_min"], 2)
+        self.assertEqual(config["likert_max"], 6)
+        self.assertEqual(config["likert_min_label"], "new low")
+        self.assertEqual(config["likert_max_label"], "new high")
+
+    def test_short_text_runtime_uses_value_json(self):
+        survey = Survey.objects.create(name="Answer survey", consent_text="consent")
+        question = Question.objects.create(
+            survey=survey,
+            text="Tell us more",
+            type=Question.Type.SHORT_TEXT,
+            order=1,
+        )
+        kiosk = Kiosk.objects.create(name="K", survey=survey)
+        session = SurveySession.objects.create(kiosk=kiosk, survey=survey, length="short")
+        answer = question.answers.create(session=session, value_json={"text": "json text"})
+
+        value = get_answer_runtime_value(question, answer)
+
+        self.assertEqual(value["text"], "json text")
+
+    def test_image_grid_display_uses_value_json(self):
+        survey = Survey.objects.create(name="Grid survey", consent_text="consent")
+        question = Question.objects.create(
+            survey=survey,
+            text="Pick a cell",
+            type=Question.Type.IMAGE_GRID,
+            order=1,
+            config_json={"grid_rows": 4, "grid_cols": 5, "grid_image": "grid.png"},
+        )
+        kiosk = Kiosk.objects.create(name="Grid kiosk", survey=survey)
+        session = SurveySession.objects.create(kiosk=kiosk, survey=survey, length="short")
+        answer = question.answers.create(
+            session=session,
+            value_json={"row": 2, "col": 4},
+        )
+
+        self.assertEqual(get_question_runtime_config(question)["grid_rows"], 4)
+        self.assertEqual(answer.display_value(), "2,4")
 
     def test_invalid_likert_bounds_fail(self):
         payload = {

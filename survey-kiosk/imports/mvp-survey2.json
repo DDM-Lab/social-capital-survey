@@ -1,5 +1,5 @@
 {
-  "name": "upload-test-survey",
+  "name": "test_post_refactor",
   "consent_text": "I consent to participate in this survey.",
   "active": true,
   "questions": [
@@ -44,6 +44,16 @@
       "text": "What is one thing that would improve this space?",
       "included_in_short": false,
       "required": false
+    },
+    {
+      "type": "image_grid",
+      "order": 5,
+      "text": "Tap the spot on the map where you spend the most time.",
+      "included_in_short": false,
+      "required": true,
+      "grid_image": "../images/map.png",
+      "grid_rows": 4,
+      "grid_cols": 6
     }
   ]
 }

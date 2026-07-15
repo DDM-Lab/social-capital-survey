@@ -22,6 +22,7 @@ from .models import (
     Question,
     SurveySession,
 )
+from .question_types import QUESTION_TYPES, get_answer_runtime_value, get_question_runtime_config
 from .tokens import mint_kiosk_token, verify_kiosk_token
 
 
@@ -138,51 +139,8 @@ def start(request, session_id):
 def _save_answer(session, q, request):
     """Validate and persist one answer. Returns an error string or None."""
     answer, _ = Answer.objects.get_or_create(session=session, question=q)
-
-    if q.type == Question.Type.SINGLE:
-        choice_id = request.POST.get("choice")
-        choice = q.choices.filter(pk=choice_id).first() if choice_id else None
-        if choice is None:
-            return "Please select an option." if q.required else None
-        answer.choices.set([choice])
-
-    elif q.type == Question.Type.MULTI:
-        ids = request.POST.getlist("choices")
-        chosen = list(q.choices.filter(pk__in=ids))
-        if not chosen and q.required:
-            return "Please select at least one option."
-        answer.choices.set(chosen)
-
-    elif q.type == Question.Type.LIKERT:
-        raw = request.POST.get("likert")
-        try:
-            value = int(raw)
-        except (TypeError, ValueError):
-            return "Please choose a rating." if q.required else None
-        if value not in q.likert_range:
-            return "Please choose a valid rating."
-        answer.likert_value = value
-        answer.save(update_fields=["likert_value"])
-
-    elif q.type == Question.Type.SHORT_TEXT:
-        text = (request.POST.get("text") or "").strip()
-        if not text and q.required:
-            return "Please enter a response."
-        answer.text_value = text
-        answer.save(update_fields=["text_value"])
-
-    elif q.type == Question.Type.IMAGE_GRID:
-        try:
-            row = int(request.POST.get("grid_row"))
-            col = int(request.POST.get("grid_col"))
-        except (TypeError, ValueError):
-            return "Please tap a cell on the image." if q.required else None
-        if not (0 <= row < (q.grid_rows or 0)) or not (0 <= col < (q.grid_cols or 0)):
-            return "That cell is out of range — please tap a cell on the image."
-        answer.grid_row, answer.grid_col = row, col
-        answer.save(update_fields=["grid_row", "grid_col"])
-
-    return None
+    definition = QUESTION_TYPES[q.type]
+    return definition.save_answer(answer, q, request)
 
 
 def question(request, session_id, step):
@@ -197,6 +155,7 @@ def question(request, session_id, step):
     if step < 1 or step > total:
         return redirect("survey:question", session_id=session.id, step=1)
     q = questions[step - 1]
+    definition = QUESTION_TYPES[q.type]
 
     error = None
     if request.method == "POST":
@@ -216,9 +175,13 @@ def question(request, session_id, step):
         {
             "session": session,
             "question": q,
+            "question_config": get_question_runtime_config(q),
+            "question_template": definition.template_name,
+            "question_script": definition.script_path,
             "step": step,
             "total": total,
             "answer": existing,
+            "answer_value": get_answer_runtime_value(q, existing),
             "error": error,
             "selected_choice_ids": (
                 list(existing.choices.values_list("id", flat=True)) if existing else []

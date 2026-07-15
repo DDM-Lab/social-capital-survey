@@ -1,0 +1,13 @@
+<div class="likert">
+  {% for v in question.likert_range %}
+    <label>
+      <input type="radio" name="likert" value="{{ v }}"
+             {% if answer_value.value == v %}checked{% endif %}
+             {% if question.required %}required{% endif %}><br>{{ v }}
+    </label>
+  {% endfor %}
+</div>
+<p class="muted">
+  <small>{{ question_config.likert_min }} = {{ question_config.likert_min_label|default:"low" }} ·
+  {{ question_config.likert_max }} = {{ question_config.likert_max_label|default:"high" }}</small>
+</p>

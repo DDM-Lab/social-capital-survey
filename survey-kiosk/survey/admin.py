@@ -2,6 +2,7 @@ import csv
 import json
 from datetime import datetime
 
+from django.conf import settings
 from django.contrib import admin, messages
 from django.db.models import Count, Q
 from django.http import HttpResponse
@@ -61,7 +62,7 @@ class SurveyAdmin(admin.ModelAdmin):
                 try:
                     payload = json.loads(upload.read().decode("utf-8"))
                     spec = SurveySpec.from_dict(payload)
-                    result = import_survey_spec(spec)
+                    result = import_survey_spec(spec, source_dir=settings.BASE_DIR / "imports")
                 except UnicodeDecodeError:
                     self.message_user(
                         request,

@@ -1,0 +1,13 @@
+{% extends "admin/base_site.html" %}
+{% block content %}
+<h1>Upload survey JSON</h1>
+<p>Upload a JSON file to create or update a survey and its questions.</p>
+<form method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  <input type="file" name="json_file" accept="application/json,.json" required>
+  <p>
+    <button type="submit" class="default">Import survey</button>
+    <a href="{% url 'admin:survey_survey_changelist' %}">Cancel</a>
+  </p>
+</form>
+{% endblock %}

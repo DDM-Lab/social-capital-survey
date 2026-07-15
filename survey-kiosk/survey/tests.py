@@ -4,7 +4,9 @@ from django.core import mail
 from django.test import TestCase, override_settings
 from django.utils import timezone
 
+from .json_translate import import_survey_spec
 from .models import Choice, Kiosk, PrizeClaim, PrizeCode, Question, Survey, SurveySession
+from .question_schema import SurveySchemaError, SurveySpec
 from .tokens import mint_kiosk_token, verify_kiosk_token
 
 
@@ -172,3 +174,88 @@ class AdminExportTests(TestCase):
         # Admin redirects anonymous users to the login page.
         self.assertEqual(r.status_code, 302)
         self.assertIn("/admin/login/", r["Location"])
+
+
+class JsonImportTests(TestCase):
+    def test_valid_import_creates_expected_rows(self):
+        payload = {
+            "name": "JSON Survey",
+            "consent_text": "Consent text",
+            "active": True,
+            "questions": [
+                {
+                    "type": "single",
+                    "order": 1,
+                    "text": "Pick one",
+                    "included_in_short": True,
+                    "required": True,
+                    "choices": [
+                        {"text": "A", "order": 1},
+                        {"text": "B", "order": 2},
+                    ],
+                },
+                {
+                    "type": "likert",
+                    "order": 2,
+                    "text": "Rate this",
+                    "included_in_short": True,
+                    "required": True,
+                    "likert_min": 1,
+                    "likert_max": 5,
+                    "likert_min_label": "Low",
+                    "likert_max_label": "High",
+                },
+                {
+                    "type": "short_text",
+                    "order": 3,
+                    "text": "Tell us more",
+                    "included_in_short": False,
+                    "required": False,
+                },
+            ],
+        }
+
+        spec = SurveySpec.from_dict(payload)
+        result = import_survey_spec(spec)
+
+        survey = Survey.objects.get(pk=result.survey_id)
+        self.assertEqual(survey.name, "JSON Survey")
+        self.assertEqual(survey.questions.count(), 3)
+        self.assertEqual(result.question_count, 3)
+        self.assertEqual(result.choice_count, 2)
+
+    def test_invalid_question_type_fails(self):
+        payload = {
+            "name": "Bad Survey",
+            "consent_text": "Consent",
+            "active": True,
+            "questions": [
+                {
+                    "type": "matrix",
+                    "order": 1,
+                    "text": "Unsupported",
+                }
+            ],
+        }
+
+        with self.assertRaises(SurveySchemaError):
+            SurveySpec.from_dict(payload)
+
+    def test_invalid_likert_bounds_fail(self):
+        payload = {
+            "name": "Bad Likert",
+            "consent_text": "Consent",
+            "active": True,
+            "questions": [
+                {
+                    "type": "likert",
+                    "order": 1,
+                    "text": "Rate this",
+                    "likert_min": 5,
+                    "likert_max": 1,
+                }
+            ],
+        }
+
+        with self.assertRaises(SurveySchemaError):
+            SurveySpec.from_dict(payload)

@@ -1,4 +1,5 @@
 import csv
+import json
 from datetime import datetime
 
 from django.contrib import admin, messages
@@ -18,6 +19,8 @@ from .models import (
     Survey,
     SurveySession,
 )
+from .json_translate import SurveyTranslationError, import_survey_spec
+from .question_schema import SurveySchemaError, SurveySpec
 
 
 class ChoiceInline(admin.TabularInline):
@@ -36,6 +39,61 @@ class QuestionInline(admin.TabularInline):
 class SurveyAdmin(admin.ModelAdmin):
     list_display = ("name", "active", "question_count")
     inlines = [QuestionInline]
+    change_list_template = "admin/survey/survey/change_list.html"
+
+    def get_urls(self):
+        urls = super().get_urls()
+        custom = [
+            path(
+                "upload/",
+                self.admin_site.admin_view(self.upload_survey_json),
+                name="survey_survey_upload",
+            )
+        ]
+        return custom + urls
+
+    def upload_survey_json(self, request):
+        if request.method == "POST":
+            upload = request.FILES.get("json_file")
+            if upload is None:
+                self.message_user(request, "Please choose a JSON file.", level=messages.ERROR)
+            else:
+                try:
+                    payload = json.loads(upload.read().decode("utf-8"))
+                    spec = SurveySpec.from_dict(payload)
+                    result = import_survey_spec(spec)
+                except UnicodeDecodeError:
+                    self.message_user(
+                        request,
+                        "JSON file must be UTF-8 encoded.",
+                        level=messages.ERROR,
+                    )
+                except json.JSONDecodeError as exc:
+                    self.message_user(
+                        request,
+                        f"Invalid JSON: {exc.msg}",
+                        level=messages.ERROR,
+                    )
+                except (SurveySchemaError, SurveyTranslationError) as exc:
+                    self.message_user(request, str(exc), level=messages.ERROR)
+                else:
+                    self.message_user(
+                        request,
+                        (
+                            f"Imported survey '{spec.name}' (id={result.survey_id}) with "
+                            f"{result.question_count} question(s) and "
+                            f"{result.choice_count} choice(s)."
+                        ),
+                        level=messages.SUCCESS,
+                    )
+                    return redirect("admin:survey_survey_changelist")
+
+        context = {
+            **self.admin_site.each_context(request),
+            "opts": self.model._meta,
+            "title": "Upload survey JSON",
+        }
+        return render(request, "admin/survey/survey/upload.html", context)
 
     @admin.display(description="Questions")
     def question_count(self, obj):

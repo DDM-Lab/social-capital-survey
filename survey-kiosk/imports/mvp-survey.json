@@ -1,0 +1,49 @@
+{
+  "name": "upload-test-survey",
+  "consent_text": "I consent to participate in this survey.",
+  "active": true,
+  "questions": [
+    {
+      "type": "single",
+      "order": 1,
+      "text": "How often do you visit this area?",
+      "included_in_short": true,
+      "required": true,
+      "choices": [
+        { "text": "Daily", "order": 1 },
+        { "text": "Weekly", "order": 2 },
+        { "text": "Monthly", "order": 3 }
+      ]
+    },
+    {
+      "type": "multi",
+      "order": 2,
+      "text": "testy testyseytesysysys",
+      "included_in_short": true,
+      "required": false,
+      "choices": [
+        { "text": "Walk", "order": 1 },
+        { "text": "Exercise", "order": 2 },
+        { "text": "Meet friends", "order": 3 }
+      ]
+    },
+    {
+      "type": "likert",
+      "order": 3,
+      "text": "I feel connected to my local community.",
+      "included_in_short": true,
+      "required": true,
+      "likert_min": 1,
+      "likert_max": 5,
+      "likert_min_label": "Strongly disagree",
+      "likert_max_label": "Strongly agree"
+    },
+    {
+      "type": "short_text",
+      "order": 4,
+      "text": "What is one thing that would improve this space?",
+      "included_in_short": false,
+      "required": false
+    }
+  ]
+}

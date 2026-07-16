@@ -81,6 +81,43 @@ input[type=text], input[type=email], textarea {
 .likert { display: flex; gap: 0.5rem; justify-content: space-between; flex-wrap: wrap; }
 .likert label { text-align: center; }
 
+.matrix-scroll {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.matrix-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 0.75rem;
+}
+
+.matrix-table th,
+.matrix-table td {
+  border: 1px solid var(--border);
+  padding: 0.55rem 0.6rem;
+}
+
+.matrix-table thead th {
+  background: #f6f6f6;
+  text-align: center;
+}
+
+.matrix-table tbody th {
+  text-align: left;
+  font-weight: 600;
+  min-width: 12rem;
+}
+
+.matrix-table td {
+  text-align: center;
+  min-width: 7.5rem;
+}
+
+.matrix-help {
+  margin-top: 0.6rem;
+}
+
 .code-box {
   font-family: ui-monospace, monospace;
   font-size: 1.5rem;
@@ -110,6 +147,14 @@ input[type=text], input[type=email], textarea {
     max-width: calc(100vw - 2rem);
     margin-left: 50%;
     transform: translateX(-50%);
+  }
+
+  .matrix-table tbody th {
+    min-width: 9.5rem;
+  }
+
+  .matrix-table td {
+    min-width: 5.5rem;
   }
 }
 .grid-overlay {

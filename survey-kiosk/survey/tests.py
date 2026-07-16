@@ -213,6 +213,21 @@ class JsonImportTests(TestCase):
                     "included_in_short": False,
                     "required": False,
                 },
+                {
+                    "type": "multi_matrix",
+                    "order": 4,
+                    "text": "Duration planned vs actual",
+                    "included_in_short": False,
+                    "required": True,
+                    "choices": [
+                        {"text": "Less than 30 min", "order": 1},
+                        {"text": "30 min to 1 hour", "order": 2},
+                    ],
+                    "columns": [
+                        {"key": "planned", "label": "Planned", "select_mode": "single"},
+                        {"key": "actual", "label": "Actual", "select_mode": "multi"},
+                    ],
+                },
             ],
         }
 
@@ -221,9 +236,19 @@ class JsonImportTests(TestCase):
 
         survey = Survey.objects.get(pk=result.survey_id)
         self.assertEqual(survey.name, "JSON Survey")
-        self.assertEqual(survey.questions.count(), 3)
-        self.assertEqual(result.question_count, 3)
-        self.assertEqual(result.choice_count, 2)
+        self.assertEqual(survey.questions.count(), 4)
+        self.assertEqual(result.question_count, 4)
+        self.assertEqual(result.choice_count, 4)
+
+        matrix = survey.questions.get(type=Question.Type.MULTI_MATRIX)
+        self.assertEqual(matrix.choices.count(), 2)
+        self.assertEqual(
+            matrix.config_json["columns"],
+            [
+                {"key": "planned", "label": "Planned", "select_mode": "single"},
+                {"key": "actual", "label": "Actual", "select_mode": "multi"},
+            ],
+        )
 
     def test_invalid_question_type_fails(self):
         payload = {
@@ -241,6 +266,203 @@ class JsonImportTests(TestCase):
 
         with self.assertRaises(SurveySchemaError):
             SurveySpec.from_dict(payload)
+
+    def test_invalid_matrix_column_mode_fails(self):
+        payload = {
+            "name": "Bad Matrix Survey",
+            "consent_text": "Consent",
+            "active": True,
+            "questions": [
+                {
+                    "type": "multi_matrix",
+                    "order": 1,
+                    "text": "Duration planned vs actual",
+                    "choices": [
+                        {"text": "Less than 30 min", "order": 1},
+                    ],
+                    "columns": [
+                        {"key": "planned", "label": "Planned", "select_mode": "invalid"},
+                    ],
+                }
+            ],
+        }
+
+        with self.assertRaises(SurveySchemaError):
+            SurveySpec.from_dict(payload)
+
+    def test_invalid_matrix_row_mode_fails(self):
+        payload = {
+            "name": "Bad Matrix Survey",
+            "consent_text": "Consent",
+            "active": True,
+            "questions": [
+                {
+                    "type": "multi_matrix",
+                    "order": 1,
+                    "text": "Duration planned vs actual",
+                    "row_select_mode": "invalid",
+                    "choices": [
+                        {"text": "Less than 30 min", "order": 1},
+                    ],
+                    "columns": [
+                        {"key": "planned", "label": "Planned", "select_mode": "single"},
+                    ],
+                }
+            ],
+        }
+
+        with self.assertRaises(SurveySchemaError):
+            SurveySpec.from_dict(payload)
+
+
+class MultiMatrixTests(TestCase):
+    def setUp(self):
+        self.survey = Survey.objects.create(name="Matrix survey", consent_text="consent")
+        self.question = Question.objects.create(
+            survey=self.survey,
+            text="Duration planned vs actual",
+            type=Question.Type.MULTI_MATRIX,
+            order=1,
+            included_in_short=True,
+            required=True,
+            config_json={
+                "row_select_mode": "multi",
+                "columns": [
+                    {"key": "planned", "label": "Planned", "select_mode": "single"},
+                    {"key": "actual", "label": "Actual", "select_mode": "multi"},
+                ]
+            },
+        )
+        self.opt1 = Choice.objects.create(question=self.question, text="Less than 30 min", order=1)
+        self.opt2 = Choice.objects.create(question=self.question, text="30 min to 1 hour", order=2)
+        self.opt3 = Choice.objects.create(question=self.question, text="1 to 2 hours", order=3)
+        self.kiosk = Kiosk.objects.create(name="Matrix kiosk", survey=self.survey)
+
+    def _new_session(self):
+        return SurveySession.objects.create(
+            kiosk=self.kiosk,
+            survey=self.survey,
+            length=SurveySession.Length.SHORT,
+            consented=True,
+            status=SurveySession.Status.ACTIVE,
+        )
+
+    def test_required_requires_each_column(self):
+        session = self._new_session()
+        response = self.client.post(
+            f"/survey/{session.id}/q/1",
+            {
+                "matrix_planned": str(self.opt1.id),
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Please select at least one option in Actual.")
+
+    def test_single_column_rejects_multiple_values(self):
+        session = self._new_session()
+        response = self.client.post(
+            f"/survey/{session.id}/q/1",
+            {
+                "matrix_planned": [str(self.opt1.id), str(self.opt2.id)],
+                "matrix_actual": [str(self.opt3.id)],
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Please select only one option in Planned.")
+
+    def test_multi_column_accepts_multiple_values(self):
+        session = self._new_session()
+        response = self.client.post(
+            f"/survey/{session.id}/q/1",
+            {
+                "matrix_planned": str(self.opt2.id),
+                "matrix_actual": [str(self.opt1.id), str(self.opt3.id)],
+            },
+        )
+
+        self.assertEqual(response.status_code, 302)
+        answer = self.question.answers.get(session=session)
+        self.assertEqual(
+            answer.value_json,
+            {
+                "columns": {
+                    "planned": [self.opt2.id],
+                    "actual": [self.opt1.id, self.opt3.id],
+                }
+            },
+        )
+
+    def test_display_value_groups_by_column(self):
+        session = self._new_session()
+        answer = self.question.answers.create(
+            session=session,
+            value_json={
+                "columns": {
+                    "planned": [self.opt2.id],
+                    "actual": [self.opt1.id, self.opt2.id],
+                }
+            },
+        )
+
+        self.assertEqual(
+            answer.display_value(),
+            "Planned: 30 min to 1 hour; Actual: Less than 30 min, 30 min to 1 hour",
+        )
+
+    def test_row_single_rejects_same_row_across_columns(self):
+        self.question.config_json = {
+            "row_select_mode": "single",
+            "columns": [
+                {"key": "planned", "label": "Planned", "select_mode": "multi"},
+                {"key": "actual", "label": "Actual", "select_mode": "multi"},
+            ],
+        }
+        self.question.save(update_fields=["config_json"])
+
+        session = self._new_session()
+        response = self.client.post(
+            f"/survey/{session.id}/q/1",
+            {
+                "matrix_planned": [str(self.opt1.id)],
+                "matrix_actual": [str(self.opt1.id)],
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Please select only one column for row Less than 30 min.")
+
+    def test_row_multi_allows_same_row_across_columns(self):
+        self.question.config_json = {
+            "row_select_mode": "multi",
+            "columns": [
+                {"key": "planned", "label": "Planned", "select_mode": "single"},
+                {"key": "actual", "label": "Actual", "select_mode": "single"},
+            ],
+        }
+        self.question.save(update_fields=["config_json"])
+
+        session = self._new_session()
+        response = self.client.post(
+            f"/survey/{session.id}/q/1",
+            {
+                "matrix_planned": str(self.opt2.id),
+                "matrix_actual": str(self.opt2.id),
+            },
+        )
+
+        self.assertEqual(response.status_code, 302)
+        answer = self.question.answers.get(session=session)
+        self.assertEqual(
+            answer.value_json,
+            {
+                "columns": {
+                    "planned": [self.opt2.id],
+                    "actual": [self.opt2.id],
+                }
+            },
+        )
 
 
 class CanonicalPayloadTests(TestCase):

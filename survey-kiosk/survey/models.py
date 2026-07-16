@@ -61,6 +61,7 @@ class Question(models.Model):
     class Type(models.TextChoices):
         SINGLE = "single", "Single choice"
         MULTI = "multi", "Multiple choice"
+        MULTI_MATRIX = "multi_matrix", "Multi-column choice matrix"
         LIKERT = "likert", "Likert scale"
         SHORT_TEXT = "short_text", "Short text"
         IMAGE_GRID = "image_grid", "Image grid (single cell)"

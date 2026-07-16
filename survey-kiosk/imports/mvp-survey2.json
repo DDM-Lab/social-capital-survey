@@ -28,8 +28,26 @@
       ]
     },
     {
-      "type": "likert",
+      "type": "multi_matrix",
       "order": 3,
+      "text": "For each duration, indicate planned and actual participation.",
+      "included_in_short": true,
+      "required": true,
+      "row_select_mode": "single",
+      "choices": [
+        { "text": "Less than 30 min", "order": 1 },
+        { "text": "30 minutes to 1 hour", "order": 2 },
+        { "text": "1 to 2 hours", "order": 3 },
+        { "text": "More than 2 hours", "order": 4 }
+      ],
+      "columns": [
+        { "key": "planned", "label": "Planned", "select_mode": "single" },
+        { "key": "actual", "label": "Actual", "select_mode": "single" }
+      ]
+    },
+    {
+      "type": "likert",
+      "order": 4,
       "text": "I feel connected to my local community.",
       "included_in_short": true,
       "required": true,
@@ -40,14 +58,14 @@
     },
     {
       "type": "short_text",
-      "order": 4,
+      "order": 5,
       "text": "What is one thing that would improve this space?",
       "included_in_short": false,
       "required": false
     },
     {
       "type": "image_grid",
-      "order": 5,
+      "order": 6,
       "text": "Tap the spot on the map where you spend the most time.",
       "included_in_short": false,
       "required": true,

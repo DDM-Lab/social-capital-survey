@@ -91,6 +91,9 @@ phone scans QR → GET /s/<token>
   question), then by type:
   - `single` — one valid choice (or error if required),
   - `multi` — set of valid choices,
+  - `multi_matrix` — per-column selections validated against configured columns
+    and row choices; single vs multi mode enforced per column; required enforces
+    at least one selection in every column,
   - `likert` — integer within `likert_range`,
   - `short_text` — trimmed text,
   - `image_grid` — integer `(row, col)` within `grid_rows × grid_cols`.

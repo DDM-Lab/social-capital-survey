@@ -1,0 +1,42 @@
+<div class="matrix-scroll">
+  <table class="matrix-table">
+    <thead>
+      <tr>
+        <th scope="col">Option</th>
+        {% for column in question_config.columns %}
+          <th scope="col">{{ column.label }}</th>
+        {% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for c in question.choices.all %}
+        {% with choice_id=c.id|stringformat:"s" %}
+          <tr>
+            <th scope="row">{{ c.text }}</th>
+            {% for column in question_config.columns %}
+              {% with selected_key=column.key|add:":"|add:choice_id %}
+                <td>
+                  <input
+                    type="{% if column.select_mode == 'single' %}radio{% else %}checkbox{% endif %}"
+                    name="matrix_{{ column.key }}"
+                    value="{{ c.id }}"
+                    aria-label="{{ column.label }}: {{ c.text }}"
+                    {% if selected_key in answer_value.selected_keys %}checked{% endif %}
+                    {% if question.required and forloop.parentloop.first and column.select_mode == 'single' %}required{% endif %}
+                  >
+                </td>
+              {% endwith %}
+            {% endfor %}
+          </tr>
+        {% endwith %}
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% if question.required %}
+  <p class="muted matrix-help">Select at least one option in each column.</p>
+{% endif %}
+{% if question_config.row_select_mode == 'single' %}
+  <p class="muted matrix-help">Each row can be selected in at most one column.</p>
+{% endif %}

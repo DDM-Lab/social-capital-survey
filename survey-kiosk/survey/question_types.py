@@ -37,6 +37,20 @@ class MultiChoiceQuestion(SurveyQuestion):
 
 
 @dataclass(frozen=True)
+class MatrixColumnSpec:
+    key: str
+    label: str
+    select_mode: str = "single"
+
+
+@dataclass(frozen=True)
+class MultiMatrixQuestion(SurveyQuestion):
+    choices: list[ChoiceSpec] = field(default_factory=list)
+    columns: list[MatrixColumnSpec] = field(default_factory=list)
+    row_select_mode: str = "multi"
+
+
+@dataclass(frozen=True)
 class LikertQuestion(SurveyQuestion):
     likert_min: int = 1
     likert_max: int = 5
@@ -376,6 +390,119 @@ class ImageGridDefinition(QuestionTypeDefinition):
         return f"{row},{col}"
 
 
+class MultiMatrixDefinition(QuestionTypeDefinition):
+    type_name = "multi_matrix"
+    question_class = MultiMatrixQuestion
+    template_name = "survey/question_types/multi_matrix.html"
+
+    def build_question(self, common: dict[str, Any], raw: dict[str, Any]) -> SurveyQuestion:
+        return MultiMatrixQuestion(
+            **common,
+            choices=parse_choices(raw, self.type_name),
+            columns=parse_matrix_columns(raw),
+            row_select_mode=parse_matrix_select_mode(raw, "row_select_mode", default="multi"),
+        )
+
+    def question_config(self, question_spec: SurveyQuestion) -> dict[str, Any]:
+        question_spec = ensure_question_type(question_spec, MultiMatrixQuestion)
+        return {
+            "choices": [
+                {"text": choice.text, "order": choice.order}
+                for choice in sorted(question_spec.choices, key=lambda item: item.order)
+            ],
+            "columns": [
+                {
+                    "key": column.key,
+                    "label": column.label,
+                    "select_mode": column.select_mode,
+                }
+                for column in question_spec.columns
+            ],
+            "row_select_mode": question_spec.row_select_mode,
+        }
+
+    def save_answer(self, answer, question, request) -> str | None:
+        config = self.get_question_config(question)
+        columns = config.get("columns", [])
+        row_select_mode = config.get("row_select_mode", "multi")
+        allowed_choice_ids = set(question.choices.values_list("id", flat=True))
+        labels_by_id = {choice.id: choice.text for choice in question.choices.all()}
+
+        selected_by_column: dict[str, list[int]] = {}
+        selected_choice_ids: set[int] = set()
+
+        for column in columns:
+            key = column.get("key")
+            label = column.get("label") or key
+            select_mode = column.get("select_mode", "single")
+            posted_ids = request.POST.getlist(f"matrix_{key}")
+            if not posted_ids:
+                if question.required:
+                    return f"Please select at least one option in {label}."
+                selected_by_column[key] = []
+                continue
+
+            try:
+                parsed_ids = [int(raw_id) for raw_id in posted_ids]
+            except (TypeError, ValueError):
+                return f"Invalid selection in {label}."
+
+            normalized_ids = list(dict.fromkeys(parsed_ids))
+            if select_mode == "single" and len(normalized_ids) > 1:
+                return f"Please select only one option in {label}."
+
+            invalid_ids = [choice_id for choice_id in normalized_ids if choice_id not in allowed_choice_ids]
+            if invalid_ids:
+                return f"Invalid selection in {label}."
+
+            selected_by_column[key] = normalized_ids
+            selected_choice_ids.update(normalized_ids)
+
+        row_occurrence_count: dict[int, int] = {}
+        for selected_ids in selected_by_column.values():
+            for choice_id in selected_ids:
+                row_occurrence_count[choice_id] = row_occurrence_count.get(choice_id, 0) + 1
+        if row_select_mode == "single":
+            violating_ids = [choice_id for choice_id, count in row_occurrence_count.items() if count > 1]
+            if violating_ids:
+                row_label = labels_by_id.get(violating_ids[0], "a row")
+                return f"Please select only one column for row {row_label}."
+
+        answer.choices.set(question.choices.filter(pk__in=selected_choice_ids))
+        answer.value_json = {"columns": selected_by_column}
+        answer.save(update_fields=["value_json"])
+        return None
+
+    def get_answer_value(self, answer) -> dict[str, Any]:
+        value = answer.value_json or {}
+        columns = value.get("columns") or {}
+        selected_keys: list[str] = []
+        for column_key, choice_ids in columns.items():
+            if not isinstance(column_key, str) or not isinstance(choice_ids, list):
+                continue
+            for choice_id in choice_ids:
+                if isinstance(choice_id, int):
+                    selected_keys.append(f"{column_key}:{choice_id}")
+        return {"columns": columns, "selected_keys": selected_keys}
+
+    def display_answer(self, answer) -> str:
+        config = self.get_question_config(answer.question)
+        value = self.get_answer_value(answer)
+        selected_by_column = value.get("columns", {})
+        labels_by_id = {choice.id: choice.text for choice in answer.question.choices.all()}
+
+        rendered_columns: list[str] = []
+        for column in config.get("columns", []):
+            key = column.get("key")
+            label = column.get("label") or key
+            selected_ids = selected_by_column.get(key, [])
+            selected_labels = [labels_by_id[choice_id] for choice_id in selected_ids if choice_id in labels_by_id]
+            if not selected_labels:
+                continue
+            rendered_columns.append(f"{label}: {', '.join(selected_labels)}")
+        return "; ".join(rendered_columns)
+
+
 def get_question_runtime_config(question) -> dict[str, Any]:
     return QUESTION_TYPES[question.type].get_question_config(question)
 
@@ -404,6 +531,50 @@ def parse_choices(raw: dict[str, Any], qtype: str) -> list[ChoiceSpec]:
     return choices
 
 
+def parse_matrix_columns(raw: dict[str, Any]) -> list[MatrixColumnSpec]:
+    raw_columns = raw.get("columns", [])
+    if not isinstance(raw_columns, list) or not raw_columns:
+        raise SurveySchemaError("Question type 'multi_matrix' requires a non-empty 'columns' list.")
+
+    columns: list[MatrixColumnSpec] = []
+    keys_seen: set[str] = set()
+    for raw_column in raw_columns:
+        if not isinstance(raw_column, dict):
+            raise SurveySchemaError("Each column must be an object.")
+        key = raw_column.get("key")
+        label = raw_column.get("label")
+        select_mode = raw_column.get("select_mode", "single")
+
+        if not isinstance(key, str) or not key.strip():
+            raise SurveySchemaError("Column 'key' must be a non-empty string.")
+        key = key.strip()
+        if not isinstance(label, str) or not label.strip():
+            raise SurveySchemaError("Column 'label' must be a non-empty string.")
+        if not isinstance(select_mode, str) or select_mode not in {"single", "multi"}:
+            raise SurveySchemaError("Column 'select_mode' must be 'single' or 'multi'.")
+        if key in keys_seen:
+            raise SurveySchemaError("Column 'key' values must be unique.")
+
+        keys_seen.add(key)
+        columns.append(
+            MatrixColumnSpec(
+                key=key,
+                label=label.strip(),
+                select_mode=select_mode,
+            )
+        )
+    return columns
+
+
+def parse_matrix_select_mode(raw: dict[str, Any], field_name: str, default: str) -> str:
+    value = raw.get(field_name, default)
+    if not isinstance(value, str) or value not in {"single", "multi"}:
+        raise SurveySchemaError(
+            f"{field_name!r} must be 'single' or 'multi'."
+        )
+    return value
+
+
 def ensure_question_type(question_spec: SurveyQuestion, expected_type: type[SurveyQuestion]):
     if not isinstance(question_spec, expected_type):
         raise SurveySchemaError(
@@ -417,6 +588,7 @@ QUESTION_TYPES: dict[str, QuestionTypeDefinition] = {
     for definition in [
         SingleChoiceDefinition(),
         MultiChoiceDefinition(),
+        MultiMatrixDefinition(),
         LikertDefinition(),
         ShortTextDefinition(),
         ImageGridDefinition(),

@@ -75,6 +75,7 @@ A single template (`question.html`) handles every question type with an
 |------|--------|-----------------|
 | `single` | radio inputs named `choice` | `selected_choice_ids` (from the view) |
 | `multi` | checkboxes named `choices` | `selected_choice_ids` |
+| `multi_matrix` | table with row options and per-column radio/checkbox cells named `matrix_<column_key>` | `answer_value.selected_keys` |
 | `likert` | radios over `question.likert_range`, with endpoint labels | `answer.likert_value` |
 | `short_text` | `<textarea name="text">` | `answer.text_value` |
 | `image_grid` | image + clickable overlay + hidden `grid_row`/`grid_col` | `answer.grid_row/col` data attributes |

@@ -9,6 +9,7 @@ from .question_schema import (
     SurveySpec,
 )
 from .question_types import ImageGridQuestion, MultiChoiceQuestion, QUESTION_TYPES, SingleChoiceQuestion
+from .question_types import MultiMatrixQuestion
 
 
 class SurveyTranslationError(ValueError):
@@ -49,7 +50,7 @@ def import_survey_spec(spec: SurveySpec, source_dir: Path | None = None) -> Tran
             )
             question_count += 1
 
-            if isinstance(q, (SingleChoiceQuestion, MultiChoiceQuestion)):
+            if isinstance(q, (SingleChoiceQuestion, MultiChoiceQuestion, MultiMatrixQuestion)):
                 for choice in sorted(q.choices, key=lambda c: c.order):
                     Choice.objects.create(question=question, text=choice.text, order=choice.order)
                     choice_count += 1

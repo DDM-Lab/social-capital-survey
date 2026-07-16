@@ -72,14 +72,12 @@ Belongs to a Survey (CASCADE — deleting a survey deletes its questions).
 | Field | Type | Notes |
 |-------|------|-------|
 | `text` | char(500) | |
-| `type` | char choice | one of the 5 types below |
+| `type` | char choice | one of the 6 types below |
 | `order` | int | sort order within the survey |
 | `included_in_short` | bool | part of the 5-question short survey |
 | `required` | bool | whether an answer is mandatory |
-| `likert_min` / `likert_max` | int | used only for Likert |
-| `likert_min_label` / `likert_max_label` | char | endpoint labels for Likert |
+| `config_json` | json | per-type question config (choices, likert bounds, matrix columns, etc.) |
 | `grid_image` | image, nullable | used only for image-grid; uploaded to `media/grids/` |
-| `grid_rows` / `grid_cols` | int, nullable | grid dimensions for image-grid |
 
 **Question types** (`Question.Type`, `models.py:59`):
 
@@ -87,15 +85,16 @@ Belongs to a Survey (CASCADE — deleting a survey deletes its questions).
 |-------|-------|------------------|
 | `single` | Single choice | `Answer.choices` (exactly 1) |
 | `multi` | Multiple choice | `Answer.choices` (N) |
-| `likert` | Likert scale | `Answer.likert_value` |
-| `short_text` | Short text | `Answer.text_value` |
-| `image_grid` | Image grid (single cell) | `Answer.grid_row` + `Answer.grid_col` |
+| `multi_matrix` | Multi-column choice matrix | `Answer.value_json.columns` + `Answer.choices` union |
+| `likert` | Likert scale | `Answer.value_json.value` |
+| `short_text` | Short text | `Answer.value_json.text` |
+| `image_grid` | Image grid (single cell) | `Answer.value_json.row` + `Answer.value_json.col` |
 
 `likert_range` property (`models.py:92`) yields `range(min, max+1)` for rendering
 and validation.
 
 ### `Choice` (`models.py:97`)
-A selectable option for single/multi questions. FK→Question (CASCADE), with
+A selectable option for single/multi/multi_matrix questions. FK→Question (CASCADE), with
 `text` and `order`.
 
 ---
@@ -136,8 +135,8 @@ type table above). A **unique constraint** on `(session, question)`
 re-submitting a step updates rather than duplicates.
 
 `display_value()` (`models.py:166`) renders any answer to a string for admin/CSV:
-text as-is, Likert as its number, image-grid as `"row,col"`, and choices joined
-with `; `.
+text as-is, Likert as its number, image-grid as `"row,col"`, matrix answers
+grouped by column labels, and legacy choice lists joined with `; `.
 
 ### `PrizeCode` (`models.py:182`)
 The pool of redemption codes that staff upload.

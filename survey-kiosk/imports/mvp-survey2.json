@@ -1,77 +1,169 @@
 {
-  "name": "test_post_refactor",
-  "consent_text": "I consent to participate in this survey.",
+  "name": "Long Questions Survey",
+  "consent_text": "Thank you for participating in this survey. This survey asks about your visit to this space today. We are interested in: \n Why you came here \n What activities you planned to do and actually did \n Who you interacted with \n How the space supported your activities and social experience. \n How the space supported your activities and social experience \n The survey should take approximately 8–12 minutes to complete. \n Please answer based only on today’s visit.",
   "active": true,
   "questions": [
-    {
-      "type": "single",
-      "order": 1,
-      "text": "How often do you visit this area?",
-      "included_in_short": true,
-      "required": true,
-      "choices": [
-        { "text": "Daily", "order": 1 },
-        { "text": "Weekly", "order": 2 },
-        { "text": "Monthly", "order": 3 }
-      ]
-    },
-    {
-      "type": "multi",
-      "order": 2,
-      "text": "testy testyseytesysysys",
-      "included_in_short": true,
-      "required": false,
-      "choices": [
-        { "text": "Walk", "order": 1 },
-        { "text": "Exercise", "order": 2 },
-        { "text": "Meet friends", "order": 3 }
-      ]
-    },
-    {
+   {
       "type": "multi_matrix",
-      "order": 3,
-      "text": "For each duration, indicate planned and actual participation.",
+      "order": 1,
+      "text": "How long did you plan to stay, and how long did you actually stay in this space today?\n Please check one box in each column.\n In the Planned column, indicate whether you intended to stay that long before arriving. \nIn the Actual column, indicate how long you actually stayed during your visit.",
       "included_in_short": true,
       "required": true,
       "row_select_mode": "single",
       "choices": [
         { "text": "Less than 30 min", "order": 1 },
         { "text": "30 minutes to 1 hour", "order": 2 },
-        { "text": "1 to 2 hours", "order": 3 },
-        { "text": "More than 2 hours", "order": 4 }
+        { "text": "1 to 3 hours", "order": 3 },
+        { "text": "3 to 5 hours", "order": 4 },
+        { "text": "More than 5 hours / most of the day", "order": 5 }
       ],
       "columns": [
         { "key": "planned", "label": "Planned", "select_mode": "single" },
         { "key": "actual", "label": "Actual", "select_mode": "single" }
       ]
     },
-    {
-      "type": "likert",
-      "order": 4,
-      "text": "I feel connected to my local community.",
+     {
+      "type": "single",
+      "order": 2,
+      "text": "What best describes the size of your group when you entered the space? \n Select one.",
       "included_in_short": true,
       "required": true,
-      "likert_min": 1,
-      "likert_max": 5,
-      "likert_min_label": "Strongly disagree",
-      "likert_max_label": "Strongly agree"
+      "choices": [
+        { "text": "I came alone", "order": 1 },
+        { "text": "2 people", "order": 2 },
+        { "text": "3-4 people", "order": 3 },
+        { "text": "5 or more people", "order": 4 }
+      ]
+    },
+    {
+      "type": "multi",
+      "order": 3,
+      "text": "If you came with other people, how well did you know them? \n Select all that apply. \n Aquaintance/Classmate = someone you recognize or know casually \n Non-close friend = someone you spend time with occasionally \n Close friend = someone you regularly go out of your way to spend time with",
+      "included_in_short": true,
+      "required": true,
+      "choices": [
+        { "text": "Acquaintance/Classmate", "order": 1 },
+        { "text": "Non-close friend", "order": 2 },
+        { "text": "Close friend", "order": 3 }
+      ]
+    },
+    {
+      "type": "multi_matrix",
+      "order": 4,
+      "text": "How much did you expect to socialize with each type of group today?",
+      "included_in_short": true,
+      "required": true,
+      "row_select_mode": "single",
+      "choices": [
+        { "text": "Friend", "order": 1 },
+        { "text": "Acquaintance", "order": 2 },
+        { "text": "Stranger", "order": 3 }
+      ],
+      "columns": [
+        { "key": "none", "label": "None", "select_mode": "multi" },
+        { "key": "low", "label": "Low", "select_mode": "multi" },
+        { "key": "moderate", "label": "Moderate", "select_mode": "multi" },
+        { "key": "high", "label": "High", "select_mode": "multi" },
+        { "key": "very_high", "label": "Very High", "select_mode": "multi" }
+      ]
+    },
+    {
+      "type": "multi_matrix",
+      "order": 5,
+      "text": "How much did you expect to socialize with each type of group today?",
+      "included_in_short": true,
+      "required": true,
+      "row_select_mode": "single",
+      "choices": [
+        { "text": "Friend", "order": 1 },
+        { "text": "Acquaintance", "order": 2 },
+        { "text": "Stranger", "order": 3 }
+      ],
+      "columns": [ 
+        { "key": "none", "label": "None", "select_mode": "multi" },
+        { "key": "low", "label": "Low", "select_mode": "multi" },
+        { "key": "moderate", "label": "Moderate", "select_mode": "multi" },
+        { "key": "high", "label": "High", "select_mode": "multi" },
+        { "key": "very_high", "label": "Very High", "select_mode": "multi" }
+      ]
+    },
+    {
+      "type": "multi_matrix",
+      "order": 6,
+      "text": "I would feel comfortable asking someone in this space for help or advice.",
+      "included_in_short": true,
+      "required": true,
+      "row_select_mode": "single",
+      "choices": [
+        { "text": "I would feel comfortable asking someone in this space for help or advice", "order": 1 },
+        { "text": "I trust people I encounter in this space", "order": 2 },
+        { "text": "I feel like I belong in this space", "order": 3 }
+      ],
+      "columns": [ 
+        { "key": "strongly_disagree", "label": "Strongly Disagree", "select_mode": "multi" },
+        { "key": "disagree", "label": "Disagree", "select_mode": "multi" },
+        { "key": "neutral", "label": "Neutral", "select_mode": "multi" },
+        { "key": "agree", "label": "Agree", "select_mode": "multi" },
+        { "key": "strongly_agree", "label": "Strongly Agree", "select_mode": "multi" }
+      ]
+    },
+    {
+      "type": "multi_matrix",
+      "order": 7,
+      "text": "How much did the space conditions affect your experience today?",
+      "included_in_short": true,
+      "required": true,
+      "row_select_mode": "single",
+      "choices": [
+        { "text": "Noise", "order": 1 },
+        { "text": "Lighting", "order": 2 },
+        { "text": "Temperature", "order": 3 },
+        { "text": "Crowding", "order": 4 },
+        { "text": "Privacy", "order": 5 },
+        { "text": "Visibility / exposure", "order": 6 },
+        { "text": "Seating / furniture", "order": 7 },
+        { "text": "Outlets / resources", "order": 8 },
+        { "text": "Social atmosphere", "order": 9 }
+      ],
+      "columns": [ 
+        { "key": "no_effect", "label": "No Effect", "select_mode": "multi" },
+        { "key": "too_low", "label": "Too Low", "select_mode": "multi" },
+        { "key": "slightly_low", "label": "Slightly Low", "select_mode": "multi" },
+        { "key": "just_right", "label": "Just Right", "select_mode": "multi" },
+        { "key": "slightly_high", "label": "Slightly High", "select_mode": "multi" },
+        { "key": "too_high", "label": "Too High", "select_mode": "multi" }
+      ]
+    },
+    {
+      "type": "multi_matrix",
+      "order": 8,
+      "text": "How did you feel during your visit today? Please rate how much you agree with each statement.",
+      "included_in_short": true,
+      "required": true,
+      "row_select_mode": "single",
+      "choices": [
+        { "text": "I felt physically comfortable.", "order": 1 },
+        { "text": "I felt distracted.", "order": 2 },
+        { "text": "I felt stressed or tense.", "order": 3 },
+        { "text": "I felt safe.", "order": 4 },
+        { "text": "I felt socially comfortable.", "order": 5 },
+        { "text": "I would choose to use this space again.", "order": 6 }
+      ],
+      "columns": [ 
+        { "key": "strongly_disagree", "label": "Strongly Disagree", "select_mode": "multi" },
+        { "key": "disagree", "label": "Disagree", "select_mode": "multi" },
+        { "key": "neutral", "label": "Neutral", "select_mode": "multi" },
+        { "key": "agree", "label": "Agree", "select_mode": "multi" },
+        { "key": "strongly_agree", "label": "Strongly Agree", "select_mode": "multi" }
+      ]
     },
     {
       "type": "short_text",
-      "order": 5,
-      "text": "What is one thing that would improve this space?",
+      "order": 9,
+      "text": " Is there anything else you would like us to know about your experience in this space today?",
       "included_in_short": false,
       "required": false
-    },
-    {
-      "type": "image_grid",
-      "order": 6,
-      "text": "Tap the spot on the map where you spend the most time.",
-      "included_in_short": false,
-      "required": true,
-      "grid_image": "../images/map.png",
-      "grid_rows": 4,
-      "grid_cols": 6
     }
+
   ]
 }

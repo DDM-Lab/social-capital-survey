@@ -1,0 +1,46 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block extrastyle %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static 'survey/app.css' %}">
+  <style>
+    .preview-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 1rem; }
+    .preview-wrap { max-width: 840px; }
+    .flow-nav { display: flex; gap: 0.75rem; margin-top: 1rem; }
+  </style>
+{% endblock %}
+
+{% block content %}
+  <div id="content-main" class="preview-wrap">
+    <h1>{{ survey.name }} · {{ length_label }} · Participant flow</h1>
+
+    <div class="preview-actions">
+      <a class="button" href="{{ all_url }}">Switch to all questions</a>
+      <a class="button" href="{{ open_url }}?{{ open_params }}">Adjust mode/variant</a>
+      <a class="button" href="{{ change_url }}">Back to survey</a>
+    </div>
+
+    {% if total == 0 %}
+      <p>No questions are available for this variant.</p>
+    {% else %}
+      {% include "admin/survey/survey/_preview_question.html" with item=question_item step=step total=total empty_answer_value=empty_answer_value empty_selected_choice_ids=empty_selected_choice_ids %}
+
+      <div class="flow-nav">
+        {% if step > 1 %}
+          <a class="button" href="{% url 'admin:survey_survey_preview_flow' survey.pk length step|add:'-1' %}">Previous</a>
+        {% endif %}
+        {% if step < total %}
+          <a class="button" href="{% url 'admin:survey_survey_preview_flow' survey.pk length step|add:'1' %}">Next</a>
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+{% endblock %}
+
+{% block extrahead %}
+  {{ block.super }}
+  {% if question_item.question_script %}
+    <script src="{% static question_item.question_script %}"></script>
+  {% endif %}
+{% endblock %}

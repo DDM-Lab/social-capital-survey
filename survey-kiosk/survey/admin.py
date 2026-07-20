@@ -1,13 +1,15 @@
 import csv
 import json
 from datetime import datetime
+from urllib.parse import urlencode
 
 from django.conf import settings
 from django.contrib import admin, messages
+from django.core.exceptions import PermissionDenied
 from django.db.models import Count, Q
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
-from django.urls import path
+from django.urls import path, reverse
 from django.utils import timezone
 
 from .models import (
@@ -21,6 +23,7 @@ from .models import (
     SurveySession,
 )
 from .json_translate import SurveyTranslationError, import_survey_spec
+from .question_types import QUESTION_TYPES, get_question_runtime_config
 from .question_schema import SurveySchemaError, SurveySpec
 
 
@@ -41,10 +44,31 @@ class SurveyAdmin(admin.ModelAdmin):
     list_display = ("name", "active", "question_count")
     inlines = [QuestionInline]
     change_list_template = "admin/survey/survey/change_list.html"
+    change_form_template = "admin/survey/survey/change_form.html"
 
     def get_urls(self):
         urls = super().get_urls()
         custom = [
+            path(
+                "<path:object_id>/preview/",
+                self.admin_site.admin_view(self.preview_chooser),
+                name="survey_survey_preview_chooser",
+            ),
+            path(
+                "<path:object_id>/preview/open/",
+                self.admin_site.admin_view(self.preview_open),
+                name="survey_survey_preview_open",
+            ),
+            path(
+                "<path:object_id>/preview/all/<str:length>/",
+                self.admin_site.admin_view(self.preview_all),
+                name="survey_survey_preview_all",
+            ),
+            path(
+                "<path:object_id>/preview/flow/<str:length>/<int:step>/",
+                self.admin_site.admin_view(self.preview_flow),
+                name="survey_survey_preview_flow",
+            ),
             path(
                 "upload/",
                 self.admin_site.admin_view(self.upload_survey_json),
@@ -95,6 +119,133 @@ class SurveyAdmin(admin.ModelAdmin):
             "title": "Upload survey JSON",
         }
         return render(request, "admin/survey/survey/upload.html", context)
+
+    def _get_preview_survey(self, request, object_id):
+        survey = self.get_object(request, object_id)
+        if survey is None:
+            raise PermissionDenied
+        if not self.has_view_or_change_permission(request, obj=survey):
+            raise PermissionDenied
+        return survey
+
+    def _preview_mode(self, request):
+        mode = (request.GET.get("mode") or "all").strip().lower()
+        return mode if mode in {"all", "flow"} else "all"
+
+    def _preview_length(self, request):
+        length = (request.GET.get("length") or SurveySession.Length.LONG).strip().lower()
+        return length if length in SurveySession.Length.values else SurveySession.Length.LONG
+
+    def _preview_questions(self, survey, length):
+        return list(survey.questions_for(length).prefetch_related("choices"))
+
+    def _renderable_questions(self, questions):
+        renderable = []
+        for q in questions:
+            definition = QUESTION_TYPES[q.type]
+            renderable.append(
+                {
+                    "question": q,
+                    "question_template": definition.template_name,
+                    "question_script": definition.script_path,
+                    "question_config": get_question_runtime_config(q),
+                }
+            )
+        return renderable
+
+    def _preview_context(self, request, survey, mode, length):
+        all_url = reverse("admin:survey_survey_preview_all", args=[survey.pk, length])
+        flow_url = reverse("admin:survey_survey_preview_flow", args=[survey.pk, length, 1])
+        open_params = urlencode({"mode": mode, "length": length})
+        return {
+            **self.admin_site.each_context(request),
+            "opts": self.model._meta,
+            "original": survey,
+            "survey": survey,
+            "mode": mode,
+            "length": length,
+            "mode_label": "All questions" if mode == "all" else "Participant flow",
+            "length_label": "Short" if length == SurveySession.Length.SHORT else "Long",
+            "open_url": reverse("admin:survey_survey_preview_open", args=[survey.pk]),
+            "open_params": open_params,
+            "all_url": all_url,
+            "flow_url": flow_url,
+            "question_changelist_url": reverse("admin:survey_question_changelist"),
+            "change_url": reverse("admin:survey_survey_change", args=[survey.pk]),
+            "empty_answer_value": {},
+            "empty_selected_choice_ids": [],
+        }
+
+    def preview_chooser(self, request, object_id):
+        survey = self._get_preview_survey(request, object_id)
+        mode = self._preview_mode(request)
+        length = self._preview_length(request)
+        context = self._preview_context(request, survey, mode, length)
+        context["title"] = f"Preview survey: {survey.name}"
+        return render(request, "admin/survey/survey/preview_chooser.html", context)
+
+    def preview_open(self, request, object_id):
+        survey = self._get_preview_survey(request, object_id)
+        mode = self._preview_mode(request)
+        length = self._preview_length(request)
+        if mode == "flow":
+            return redirect("admin:survey_survey_preview_flow", survey.pk, length, 1)
+        return redirect("admin:survey_survey_preview_all", survey.pk, length)
+
+    def preview_all(self, request, object_id, length):
+        survey = self._get_preview_survey(request, object_id)
+        if length not in SurveySession.Length.values:
+            raise PermissionDenied
+
+        questions = self._preview_questions(survey, length)
+        rendered_questions = self._renderable_questions(questions)
+        scripts = sorted({item["question_script"] for item in rendered_questions if item["question_script"]})
+
+        context = self._preview_context(request, survey, mode="all", length=length)
+        context.update(
+            {
+                "title": f"Preview ({context['length_label']}) - {survey.name}",
+                "questions": rendered_questions,
+                "question_count": len(rendered_questions),
+                "scripts": scripts,
+            }
+        )
+        return render(request, "admin/survey/survey/preview_all.html", context)
+
+    def preview_flow(self, request, object_id, length, step):
+        survey = self._get_preview_survey(request, object_id)
+        if length not in SurveySession.Length.values:
+            raise PermissionDenied
+
+        questions = self._preview_questions(survey, length)
+        total = len(questions)
+        if total == 0:
+            context = self._preview_context(request, survey, mode="flow", length=length)
+            context.update({"title": f"Preview ({context['length_label']}) - {survey.name}", "total": 0})
+            return render(request, "admin/survey/survey/preview_flow.html", context)
+
+        if step < 1 or step > total:
+            return redirect("admin:survey_survey_preview_flow", survey.pk, length, 1)
+
+        q = questions[step - 1]
+        definition = QUESTION_TYPES[q.type]
+        question_item = {
+            "question": q,
+            "question_template": definition.template_name,
+            "question_script": definition.script_path,
+            "question_config": get_question_runtime_config(q),
+        }
+
+        context = self._preview_context(request, survey, mode="flow", length=length)
+        context.update(
+            {
+                "title": f"Preview ({context['length_label']}) - {survey.name}",
+                "step": step,
+                "total": total,
+                "question_item": question_item,
+            }
+        )
+        return render(request, "admin/survey/survey/preview_flow.html", context)
 
     @admin.display(description="Questions")
     def question_count(self, obj):

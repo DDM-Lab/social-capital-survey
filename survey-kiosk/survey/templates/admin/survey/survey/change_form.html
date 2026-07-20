@@ -1,0 +1,10 @@
+{% extends "admin/change_form.html" %}
+
+{% block object-tools-items %}
+  {% if change and original %}
+    <li>
+      <a href="{% url 'admin:survey_survey_preview_chooser' original.pk %}" target="_blank" rel="noopener">Preview</a>
+    </li>
+  {% endif %}
+  {{ block.super }}
+{% endblock %}

@@ -1,0 +1,15 @@
+{% load static %}
+<section class="card" id="q-{{ item.question.id }}">
+  <p class="progress">Question {{ step }} of {{ total }} · {{ item.question.get_type_display }}</p>
+  <h2>{{ item.question.text }}</h2>
+
+  <fieldset disabled>
+    {% with question=item.question question_config=item.question_config answer_value=empty_answer_value selected_choice_ids=empty_selected_choice_ids %}
+      {% include item.question_template %}
+    {% endwith %}
+  </fieldset>
+
+  <p>
+    <a href="{% url 'admin:survey_question_change' item.question.id %}" target="_blank" rel="noopener">Edit question</a>
+  </p>
+</section>

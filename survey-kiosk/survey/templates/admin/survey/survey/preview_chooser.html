@@ -1,0 +1,32 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+  <div id="content-main">
+    <h1>{{ title }}</h1>
+    <p>Choose a preview mode and survey variant. Preview opens in this tab and stays read-only.</p>
+
+    <form method="get" action="{{ open_url }}" class="aligned">
+      <div class="form-row">
+        <label for="id_mode">Mode</label>
+        <select id="id_mode" name="mode">
+          <option value="all" {% if mode == 'all' %}selected{% endif %}>All questions stacked</option>
+          <option value="flow" {% if mode == 'flow' %}selected{% endif %}>Participant flow (one-by-one)</option>
+        </select>
+      </div>
+
+      <div class="form-row">
+        <label for="id_length">Variant</label>
+        <select id="id_length" name="length">
+          <option value="long" {% if length == 'long' %}selected{% endif %}>Long</option>
+          <option value="short" {% if length == 'short' %}selected{% endif %}>Short</option>
+        </select>
+      </div>
+
+      <div class="submit-row">
+        <input type="submit" value="Open preview" class="default">
+        <a href="{{ all_url }}">Open default now</a>
+        <a href="{{ change_url }}">Back to survey</a>
+      </div>
+    </form>
+  </div>
+{% endblock %}

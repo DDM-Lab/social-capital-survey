@@ -1,0 +1,42 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block extrastyle %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static 'survey/app.css' %}">
+  <style>
+    .preview-header { margin-bottom: 1rem; }
+    .preview-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 1rem; }
+    .preview-wrap { max-width: 840px; }
+  </style>
+{% endblock %}
+
+{% block content %}
+  <div id="content-main" class="preview-wrap">
+    <div class="preview-header">
+      <h1>{{ survey.name }} · {{ length_label }} · All questions</h1>
+      <p>{{ question_count }} question{{ question_count|pluralize }} in runtime order.</p>
+    </div>
+
+    <div class="preview-actions">
+      <a class="button" href="{{ flow_url }}">Switch to participant flow</a>
+      <a class="button" href="{{ open_url }}?{{ open_params }}">Adjust mode/variant</a>
+      <a class="button" href="{{ change_url }}">Back to survey</a>
+    </div>
+
+    {% if not questions %}
+      <p>No questions are available for this variant.</p>
+    {% endif %}
+
+    {% for item in questions %}
+      {% include "admin/survey/survey/_preview_question.html" with item=item step=forloop.counter total=question_count empty_answer_value=empty_answer_value empty_selected_choice_ids=empty_selected_choice_ids %}
+    {% endfor %}
+  </div>
+{% endblock %}
+
+{% block extrahead %}
+  {{ block.super }}
+  {% for script in scripts %}
+    <script src="{% static script %}"></script>
+  {% endfor %}
+{% endblock %}

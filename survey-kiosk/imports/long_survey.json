@@ -18,8 +18,8 @@
         { "text": "More than 5 hours / most of the day", "order": 5 }
       ],
       "columns": [
-        { "key": "planned", "label": "Planned", "select_mode": "single" },
-        { "key": "actual", "label": "Actual", "select_mode": "single" }
+        { "key": "planned", "label": "Planned", "kind": "choice", "select_mode": "single", "required": true },
+        { "key": "actual", "label": "Actual", "kind": "choice", "select_mode": "single", "required": true }
       ]
     },
      {
@@ -50,21 +50,26 @@
     {
       "type": "multi_matrix",
       "order": 4,
-      "text": "How much did you expect to socialize with each type of group today?",
+      "text": "For each activity below: \n In the Planned column, indicate whether you intended to do this activity before arriving. \n In the Actual column, indicate whether you actually did this activity during your visit. \n In the Ranking columns indicate your top 3 activities where you planned or actually spent most time: 1=  primary activity, 2= Second most important, 3= third most important activity \n",
       "included_in_short": true,
       "required": true,
-      "row_select_mode": "single",
+      "row_select_mode": "multi",
       "choices": [
-        { "text": "Friend", "order": 1 },
-        { "text": "Acquaintance", "order": 2 },
-        { "text": "Stranger", "order": 3 }
+        { "text": "Eating/drinking", "order": 1 },
+        { "text": "Studying/working", "order": 2 },
+        { "text": "Reading/relaxing", "order": 3 },
+        { "text": "Socializing", "order": 4 },
+        { "text": "Meeting someone planned", "order": 5 },
+        { "text": "Taking a break/people-watching", "order": 6 },
+        { "text": "Attending an event/club activity", "order": 7 },
+        { "text": "Passing through", "order": 8 },
+        { "text": "Scrolling/social media", "order": 9 }
       ],
       "columns": [
-        { "key": "none", "label": "None", "select_mode": "multi" },
-        { "key": "low", "label": "Low", "select_mode": "multi" },
-        { "key": "moderate", "label": "Moderate", "select_mode": "multi" },
-        { "key": "high", "label": "High", "select_mode": "multi" },
-        { "key": "very_high", "label": "Very High", "select_mode": "multi" }
+        { "key": "planned", "label": "Planned", "kind": "choice", "select_mode": "multi", "required": true },
+        { "key": "planned_rank", "label": "Planned rank", "kind": "short_text", "text_mode":"integer", "required": true },
+        { "key": "actual", "label": "Actual", "kind": "choice", "select_mode": "multi", "required": true },
+        { "key": "actual_rank", "label": "Actual rank", "kind": "short_text", "text_mode":"integer", "required": true }
       ]
     },
     {
@@ -79,17 +84,55 @@
         { "text": "Acquaintance", "order": 2 },
         { "text": "Stranger", "order": 3 }
       ],
-      "columns": [ 
-        { "key": "none", "label": "None", "select_mode": "multi" },
-        { "key": "low", "label": "Low", "select_mode": "multi" },
-        { "key": "moderate", "label": "Moderate", "select_mode": "multi" },
-        { "key": "high", "label": "High", "select_mode": "multi" },
-        { "key": "very_high", "label": "Very High", "select_mode": "multi" }
+      "columns": [
+        { "key": "none", "label": "None", "kind": "choice", "select_mode": "multi", "required": true },
+        { "key": "low", "label": "Low", "kind": "choice", "select_mode": "multi", "required": true },
+        { "key": "moderate", "label": "Moderate", "kind": "choice", "select_mode": "multi", "required": true },
+        { "key": "high", "label": "High", "kind": "choice", "select_mode": "multi", "required": true },
+        { "key": "very_high", "label": "Very High", "kind": "choice", "select_mode": "multi", "required": true }
       ]
     },
     {
       "type": "multi_matrix",
       "order": 6,
+      "text": "How much did you expect to socialize with each type of group today?",
+      "included_in_short": true,
+      "required": true,
+      "row_select_mode": "single",
+      "choices": [
+        { "text": "Friend", "order": 1 },
+        { "text": "Acquaintance", "order": 2 },
+        { "text": "Stranger", "order": 3 }
+      ],
+      "columns": [ 
+        { "key": "none", "label": "None", "kind": "choice", "select_mode": "multi", "required": true },
+        { "key": "low", "label": "Low", "kind": "choice", "select_mode": "multi", "required": true },
+        { "key": "moderate", "label": "Moderate", "kind": "choice", "select_mode": "multi", "required": true },
+        { "key": "high", "label": "High", "kind": "choice", "select_mode": "multi", "required": true },
+        { "key": "very_high", "label": "Very High", "kind": "choice", "select_mode": "multi", "required": true }
+      ]
+    },
+    {
+      "type": "multi_matrix",
+      "order": 7,
+      "text": "Approximately how many people did you actually meet and you “run into” unexpectedly during your visit today who fit each category?  Did these encounters contribute to new ideas or resources?",
+      "included_in_short": true,
+      "required": true,
+      "row_select_mode": "multi",
+      "choices": [
+        { "text": "Acquaintances/classmates", "order": 1 },
+        { "text": "Non-close friends", "order": 2 },
+        { "text": "Close friends", "order": 3 }
+      ],
+      "columns": [
+        { "key": "actually_met", "label": "Number of people actually met", "kind": "short_text", "text_mode":"string", "required": true },
+        { "key": "ran_into", "label": "Number of people ran into", "kind": "short_text", "text_mode":"string", "required": true },
+        { "key": "resources", "label": "Did they provide you with new ideas/resources (Yes/No/Not sure)", "kind": "short_text","text_mode":"string", "required": true }
+      ]
+    },
+    {
+      "type": "multi_matrix",
+      "order": 8,
       "text": "I would feel comfortable asking someone in this space for help or advice.",
       "included_in_short": true,
       "required": true,
@@ -100,16 +143,16 @@
         { "text": "I feel like I belong in this space", "order": 3 }
       ],
       "columns": [ 
-        { "key": "strongly_disagree", "label": "Strongly Disagree", "select_mode": "multi" },
-        { "key": "disagree", "label": "Disagree", "select_mode": "multi" },
-        { "key": "neutral", "label": "Neutral", "select_mode": "multi" },
-        { "key": "agree", "label": "Agree", "select_mode": "multi" },
-        { "key": "strongly_agree", "label": "Strongly Agree", "select_mode": "multi" }
+        { "key": "strongly_disagree", "label": "Strongly Disagree", "kind": "choice", "select_mode": "multi", "required": true },
+        { "key": "disagree", "label": "Disagree", "kind": "choice", "select_mode": "multi", "required": true },
+        { "key": "neutral", "label": "Neutral", "kind": "choice", "select_mode": "multi", "required": true },
+        { "key": "agree", "label": "Agree", "kind": "choice", "select_mode": "multi", "required": true },
+        { "key": "strongly_agree", "label": "Strongly Agree", "kind": "choice", "select_mode": "multi", "required": true }
       ]
     },
     {
       "type": "multi_matrix",
-      "order": 7,
+      "order": 9,
       "text": "How much did the space conditions affect your experience today?",
       "included_in_short": true,
       "required": true,
@@ -126,17 +169,17 @@
         { "text": "Social atmosphere", "order": 9 }
       ],
       "columns": [ 
-        { "key": "no_effect", "label": "No Effect", "select_mode": "multi" },
-        { "key": "too_low", "label": "Too Low", "select_mode": "multi" },
-        { "key": "slightly_low", "label": "Slightly Low", "select_mode": "multi" },
-        { "key": "just_right", "label": "Just Right", "select_mode": "multi" },
-        { "key": "slightly_high", "label": "Slightly High", "select_mode": "multi" },
-        { "key": "too_high", "label": "Too High", "select_mode": "multi" }
+        { "key": "no_effect", "label": "No Effect", "kind": "choice", "select_mode": "multi", "required": true },
+        { "key": "too_low", "label": "Too Low", "kind": "choice", "select_mode": "multi", "required": true },
+        { "key": "slightly_low", "label": "Slightly Low", "kind": "choice", "select_mode": "multi", "required": true },
+        { "key": "just_right", "label": "Just Right", "kind": "choice", "select_mode": "multi", "required": true },
+        { "key": "slightly_high", "label": "Slightly High", "kind": "choice", "select_mode": "multi", "required": true },
+        { "key": "too_high", "label": "Too High", "kind": "choice", "select_mode": "multi", "required": true }
       ]
     },
     {
       "type": "multi_matrix",
-      "order": 8,
+      "order": 10,
       "text": "How did you feel during your visit today? Please rate how much you agree with each statement.",
       "included_in_short": true,
       "required": true,
@@ -150,19 +193,22 @@
         { "text": "I would choose to use this space again.", "order": 6 }
       ],
       "columns": [ 
-        { "key": "strongly_disagree", "label": "Strongly Disagree", "select_mode": "multi" },
-        { "key": "disagree", "label": "Disagree", "select_mode": "multi" },
-        { "key": "neutral", "label": "Neutral", "select_mode": "multi" },
-        { "key": "agree", "label": "Agree", "select_mode": "multi" },
-        { "key": "strongly_agree", "label": "Strongly Agree", "select_mode": "multi" }
+        { "key": "strongly_disagree", "label": "Strongly Disagree", "kind": "choice", "select_mode": "multi", "required": true },
+        { "key": "disagree", "label": "Disagree", "kind": "choice", "select_mode": "multi", "required": true },
+        { "key": "neutral", "label": "Neutral", "kind": "choice", "select_mode": "multi", "required": true },
+        { "key": "agree", "label": "Agree", "kind": "choice", "select_mode": "multi", "required": true },
+        { "key": "strongly_agree", "label": "Strongly Agree", "kind": "choice", "select_mode": "multi", "required": true }
       ]
     },
     {
       "type": "short_text",
-      "order": 9,
+      "order": 11,
       "text": " Is there anything else you would like us to know about your experience in this space today?",
       "included_in_short": false,
-      "required": false
+      "required": false,
+      "field_count": 1,
+      "char_limit": 200,
+      "field_required": [false]
     }
 
   ]

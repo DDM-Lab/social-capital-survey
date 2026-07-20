@@ -1,5 +1,5 @@
 {
-  "name": "test_post_refactor",
+  "name": "template",
   "consent_text": "I consent to participate in this survey.",
   "active": true,
   "questions": [
@@ -41,8 +41,8 @@
         { "text": "More than 2 hours", "order": 4 }
       ],
       "columns": [
-        { "key": "planned", "label": "Planned", "select_mode": "single" },
-        { "key": "actual", "label": "Actual", "select_mode": "single" }
+        { "key": "planned", "label": "Planned", "kind": "choice", "select_mode": "single", "required": true },
+        { "key": "actual", "label": "Actual", "kind": "choice", "select_mode": "single", "required": true }
       ]
     },
     {
@@ -61,7 +61,10 @@
       "order": 5,
       "text": "What is one thing that would improve this space?",
       "included_in_short": false,
-      "required": false
+      "required": false,
+      "field_count": 3,
+      "char_limit": 80,
+      "field_required": [true, false, false]
     },
     {
       "type": "image_grid",

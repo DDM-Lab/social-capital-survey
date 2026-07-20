@@ -245,8 +245,22 @@ class JsonImportTests(TestCase):
         self.assertEqual(
             matrix.config_json["columns"],
             [
-                {"key": "planned", "label": "Planned", "select_mode": "single"},
-                {"key": "actual", "label": "Actual", "select_mode": "multi"},
+                {
+                    "key": "planned",
+                    "label": "Planned",
+                    "kind": "choice",
+                    "select_mode": "single",
+                    "text_mode": "string",
+                    "required": False,
+                },
+                {
+                    "key": "actual",
+                    "label": "Actual",
+                    "kind": "choice",
+                    "select_mode": "multi",
+                    "text_mode": "string",
+                    "required": False,
+                },
             ],
         )
 
@@ -464,6 +478,38 @@ class MultiMatrixTests(TestCase):
             },
         )
 
+    def test_short_text_column_accepts_text_input(self):
+        self.question.config_json = {
+            "row_select_mode": "single",
+            "char_limit": 12,
+            "columns": [
+                {"key": "planned", "label": "Planned", "kind": "choice", "select_mode": "single", "required": True},
+                {"key": "notes", "label": "Notes", "kind": "short_text", "text_mode": "string", "required": False},
+            ],
+        }
+        self.question.save(update_fields=["config_json"])
+
+        session = self._new_session()
+        response = self.client.post(
+            f"/survey/{session.id}/q/1",
+            {
+                "matrix_planned": str(self.opt2.id),
+                "matrix_text_notes_1": "",
+                "matrix_text_notes_2": "hello",
+                "matrix_text_notes_3": "",
+            },
+        )
+
+        self.assertEqual(response.status_code, 302)
+        answer = self.question.answers.get(session=session)
+        self.assertEqual(
+            answer.value_json,
+            {
+                "columns": {"planned": [self.opt2.id]},
+                "text_cells": {"notes": {"2": "hello"}},
+            },
+        )
+
 
 class CanonicalPayloadTests(TestCase):
     def test_likert_runtime_prefers_config_json(self):
@@ -503,6 +549,23 @@ class CanonicalPayloadTests(TestCase):
         value = get_answer_runtime_value(question, answer)
 
         self.assertEqual(value["text"], "json text")
+
+    def test_short_text_multi_field_runtime_uses_fields(self):
+        survey = Survey.objects.create(name="Answer survey 2", consent_text="consent")
+        question = Question.objects.create(
+            survey=survey,
+            text="Tell us more",
+            type=Question.Type.SHORT_TEXT,
+            order=1,
+            config_json={"field_count": 2, "char_limit": 20, "field_required": [True, False]},
+        )
+        kiosk = Kiosk.objects.create(name="K2", survey=survey)
+        session = SurveySession.objects.create(kiosk=kiosk, survey=survey, length="short")
+        answer = question.answers.create(session=session, value_json={"fields": ["first", "second"]})
+
+        value = get_answer_runtime_value(question, answer)
+
+        self.assertEqual(value["fields"], ["first", "second"])
 
     def test_image_grid_display_uses_value_json(self):
         survey = Survey.objects.create(name="Grid survey", consent_text="consent")

@@ -1,3 +1,4 @@
+{% load survey_extras %}
 <div class="matrix-scroll">
   <table class="matrix-table">
     <thead>
@@ -14,16 +15,28 @@
           <tr>
             <th scope="row">{{ c.text }}</th>
             {% for column in question_config.columns %}
-              {% with selected_key=column.key|add:":"|add:choice_id %}
+              {% with selected_key=column.key|add:":"|add:choice_id text_value=answer_value.text_cells|get_item:column.key|get_item:choice_id %}
                 <td>
-                  <input
-                    type="{% if column.select_mode == 'single' %}radio{% else %}checkbox{% endif %}"
-                    name="matrix_{{ column.key }}"
-                    value="{{ c.id }}"
-                    aria-label="{{ column.label }}: {{ c.text }}"
-                    {% if selected_key in answer_value.selected_keys %}checked{% endif %}
-                    {% if question.required and forloop.parentloop.first and column.select_mode == 'single' %}required{% endif %}
-                  >
+                  {% if column.kind == 'short_text' %}
+                    <input
+                      type="{% if column.text_mode == 'integer' %}number{% else %}text{% endif %}"
+                      name="matrix_text_{{ column.key }}_{{ c.id }}"
+                      value="{{ text_value|default:'' }}"
+                      aria-label="{{ column.label }}: {{ c.text }}"
+                      {% if column.text_mode == 'string' and question_config.char_limit %}maxlength="{{ question_config.char_limit }}"{% endif %}
+                      {% if column.text_mode == 'integer' %}inputmode="numeric" step="1"{% endif %}
+                      {% if column.required %}required{% endif %}
+                    >
+                  {% else %}
+                    <input
+                      type="{% if column.select_mode == 'single' %}radio{% else %}checkbox{% endif %}"
+                      name="matrix_{{ column.key }}"
+                      value="{{ c.id }}"
+                      aria-label="{{ column.label }}: {{ c.text }}"
+                      {% if selected_key in answer_value.selected_keys %}checked{% endif %}
+                      {% if question.required and forloop.parentloop.first and column.select_mode == 'single' %}required{% endif %}
+                    >
+                  {% endif %}
                 </td>
               {% endwith %}
             {% endfor %}
@@ -39,4 +52,7 @@
 {% endif %}
 {% if question_config.row_select_mode == 'single' %}
   <p class="muted matrix-help">Each row can be selected in at most one column.</p>
+{% endif %}
+{% if question_config.char_limit %}
+  <p class="muted matrix-help">Short-answer columns are limited to {{ question_config.char_limit }} characters.</p>
 {% endif %}

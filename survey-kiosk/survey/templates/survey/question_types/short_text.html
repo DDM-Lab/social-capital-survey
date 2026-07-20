@@ -1,1 +1,17 @@
-<textarea name="text" rows="3" {% if question.required %}required{% endif %}>{{ answer_value.text }}</textarea>
+{% load survey_extras %}
+{% if question_config.field_count == 1 %}
+	<textarea name="text" rows="3" {% if question_config.field_required.0 %}required{% endif %}{% if question_config.char_limit %} maxlength="{{ question_config.char_limit }}"{% endif %}>{{ answer_value.text }}</textarea>
+{% else %}
+	{% for required in question_config.field_required %}
+		<div class="stacked-field">
+			<label for="text_{{ forloop.counter }}">Field {{ forloop.counter }}</label>
+			<textarea
+				id="text_{{ forloop.counter }}"
+				name="text_{{ forloop.counter }}"
+				rows="3"
+				{% if required %}required{% endif %}
+				{% if question_config.char_limit %}maxlength="{{ question_config.char_limit }}"{% endif %}
+			>{{ answer_value.fields|get_item:forloop.counter0 }}</textarea>
+		</div>
+	{% endfor %}
+{% endif %}

@@ -40,7 +40,10 @@ class MultiChoiceQuestion(SurveyQuestion):
 class MatrixColumnSpec:
     key: str
     label: str
+    kind: str = "choice"
     select_mode: str = "single"
+    text_mode: str = "string"
+    required: bool = False
 
 
 @dataclass(frozen=True)
@@ -48,6 +51,7 @@ class MultiMatrixQuestion(SurveyQuestion):
     choices: list[ChoiceSpec] = field(default_factory=list)
     columns: list[MatrixColumnSpec] = field(default_factory=list)
     row_select_mode: str = "multi"
+    char_limit: int | None = None
 
 
 @dataclass(frozen=True)
@@ -60,7 +64,9 @@ class LikertQuestion(SurveyQuestion):
 
 @dataclass(frozen=True)
 class ShortTextQuestion(SurveyQuestion):
-    pass
+    field_count: int = 1
+    char_limit: int | None = None
+    field_required: list[bool] = field(default_factory=list)
 
 
 @dataclass(frozen=True)
@@ -312,18 +318,60 @@ class ShortTextDefinition(QuestionTypeDefinition):
     template_name = "survey/question_types/short_text.html"
 
     def build_question(self, common: dict[str, Any], raw: dict[str, Any]) -> SurveyQuestion:
-        return ShortTextQuestion(**common)
+        field_count = raw.get("field_count", 1)
+        char_limit = raw.get("char_limit")
+        field_required = raw.get("field_required")
+        if not isinstance(field_count, int) or field_count <= 0:
+            raise SurveySchemaError("Short-text 'field_count' must be an integer > 0.")
+        if char_limit is not None and (not isinstance(char_limit, int) or char_limit <= 0):
+            raise SurveySchemaError("Short-text 'char_limit' must be an integer > 0 when provided.")
+        if field_required is None:
+            field_required = [common["required"]] * field_count
+        if not isinstance(field_required, list) or len(field_required) != field_count:
+            raise SurveySchemaError("Short-text 'field_required' must be a list with one value per field.")
+        if any(not isinstance(item, bool) for item in field_required):
+            raise SurveySchemaError("Short-text 'field_required' values must be booleans.")
+        return ShortTextQuestion(
+            **common,
+            field_count=field_count,
+            char_limit=char_limit,
+            field_required=field_required,
+        )
+
+    def question_config(self, question_spec: SurveyQuestion) -> dict[str, Any]:
+        question_spec = ensure_question_type(question_spec, ShortTextQuestion)
+        return {
+            "field_count": question_spec.field_count,
+            "char_limit": question_spec.char_limit,
+            "field_required": question_spec.field_required,
+        }
 
     def save_answer(self, answer, question, request) -> str | None:
-        text = (request.POST.get("text") or "").strip()
-        if not text and question.required:
-            return "Please enter a response."
-        answer.value_json = {"text": text}
+        config = self.get_question_config(question)
+        field_count = config.get("field_count", 1)
+        char_limit = config.get("char_limit")
+        field_required = config.get("field_required") or []
+
+        values: list[str] = []
+        for index in range(1, field_count + 1):
+            raw_value = (request.POST.get("text") if field_count == 1 else request.POST.get(f"text_{index}")) or ""
+            text = raw_value.strip()
+            required = field_required[index - 1] if index - 1 < len(field_required) else question.required
+            if not text and required:
+                return f"Please enter a response for field {index}."
+            if char_limit is not None and len(text) > char_limit:
+                return f"Please keep field {index} to {char_limit} characters or fewer."
+            values.append(text)
+
+        answer.value_json = {"text": values[0] if field_count == 1 else None, "fields": values}
         answer.save(update_fields=["value_json"])
         return None
 
     def display_answer(self, answer) -> str:
-        return self.get_answer_value(answer).get("text", "")
+        value = self.get_answer_value(answer)
+        if value.get("fields"):
+            return "; ".join(str(item) for item in value["fields"] if item not in (None, ""))
+        return value.get("text", "")
 
 
 class ImageGridDefinition(QuestionTypeDefinition):
@@ -396,11 +444,15 @@ class MultiMatrixDefinition(QuestionTypeDefinition):
     template_name = "survey/question_types/multi_matrix.html"
 
     def build_question(self, common: dict[str, Any], raw: dict[str, Any]) -> SurveyQuestion:
+        char_limit = raw.get("char_limit")
+        if char_limit is not None and (not isinstance(char_limit, int) or char_limit <= 0):
+            raise SurveySchemaError("Multi-matrix 'char_limit' must be an integer > 0 when provided.")
         return MultiMatrixQuestion(
             **common,
             choices=parse_choices(raw, self.type_name),
             columns=parse_matrix_columns(raw),
             row_select_mode=parse_matrix_select_mode(raw, "row_select_mode", default="multi"),
+            char_limit=char_limit,
         )
 
     def question_config(self, question_spec: SurveyQuestion) -> dict[str, Any]:
@@ -414,49 +466,84 @@ class MultiMatrixDefinition(QuestionTypeDefinition):
                 {
                     "key": column.key,
                     "label": column.label,
+                    "kind": column.kind,
                     "select_mode": column.select_mode,
+                    "text_mode": column.text_mode,
+                    "required": column.required,
                 }
                 for column in question_spec.columns
             ],
             "row_select_mode": question_spec.row_select_mode,
+            "char_limit": question_spec.char_limit,
         }
 
     def save_answer(self, answer, question, request) -> str | None:
         config = self.get_question_config(question)
         columns = config.get("columns", [])
         row_select_mode = config.get("row_select_mode", "multi")
+        char_limit = config.get("char_limit")
         allowed_choice_ids = set(question.choices.values_list("id", flat=True))
         labels_by_id = {choice.id: choice.text for choice in question.choices.all()}
 
         selected_by_column: dict[str, list[int]] = {}
+        text_cells_by_column: dict[str, dict[str, str | int]] = {}
         selected_choice_ids: set[int] = set()
 
         for column in columns:
             key = column.get("key")
             label = column.get("label") or key
+            kind = column.get("kind", "choice")
             select_mode = column.get("select_mode", "single")
-            posted_ids = request.POST.getlist(f"matrix_{key}")
-            if not posted_ids:
-                if question.required:
-                    return f"Please select at least one option in {label}."
-                selected_by_column[key] = []
+            column_required = bool(column.get("required", question.required))
+
+            if kind == "choice":
+                posted_ids = request.POST.getlist(f"matrix_{key}")
+                if not posted_ids:
+                    if column_required:
+                        return f"Please select at least one option in {label}."
+                    selected_by_column[key] = []
+                    continue
+
+                try:
+                    parsed_ids = [int(raw_id) for raw_id in posted_ids]
+                except (TypeError, ValueError):
+                    return f"Invalid selection in {label}."
+
+                normalized_ids = list(dict.fromkeys(parsed_ids))
+                if select_mode == "single" and len(normalized_ids) > 1:
+                    return f"Please select only one option in {label}."
+
+                invalid_ids = [choice_id for choice_id in normalized_ids if choice_id not in allowed_choice_ids]
+                if invalid_ids:
+                    return f"Invalid selection in {label}."
+
+                selected_by_column[key] = normalized_ids
+                selected_choice_ids.update(normalized_ids)
                 continue
 
-            try:
-                parsed_ids = [int(raw_id) for raw_id in posted_ids]
-            except (TypeError, ValueError):
-                return f"Invalid selection in {label}."
+            if kind == "short_text":
+                cell_values: dict[str, str | int] = {}
+                for choice in question.choices.all():
+                    field_name = f"matrix_text_{key}_{choice.id}"
+                    raw_value = (request.POST.get(field_name) or "").strip()
+                    if not raw_value:
+                        if column_required:
+                            return f"Please enter a response for {label}: {choice.text}."
+                        continue
+                    if char_limit is not None and len(raw_value) > char_limit:
+                        return f"Please keep responses in {label} to {char_limit} characters or fewer."
+                    text_mode = column.get("text_mode", "string")
+                    if text_mode == "integer":
+                        try:
+                            cell_values[str(choice.id)] = int(raw_value)
+                        except ValueError:
+                            return f"Please enter a whole number for {label}: {choice.text}."
+                    else:
+                        cell_values[str(choice.id)] = raw_value
+                text_cells_by_column[key] = cell_values
+                continue
 
-            normalized_ids = list(dict.fromkeys(parsed_ids))
-            if select_mode == "single" and len(normalized_ids) > 1:
-                return f"Please select only one option in {label}."
-
-            invalid_ids = [choice_id for choice_id in normalized_ids if choice_id not in allowed_choice_ids]
-            if invalid_ids:
-                return f"Invalid selection in {label}."
-
-            selected_by_column[key] = normalized_ids
-            selected_choice_ids.update(normalized_ids)
+            raise SurveySchemaError(f"Unsupported matrix column kind: {kind!r}.")
 
         row_occurrence_count: dict[int, int] = {}
         for selected_ids in selected_by_column.values():
@@ -470,12 +557,15 @@ class MultiMatrixDefinition(QuestionTypeDefinition):
 
         answer.choices.set(question.choices.filter(pk__in=selected_choice_ids))
         answer.value_json = {"columns": selected_by_column}
+        if text_cells_by_column:
+            answer.value_json["text_cells"] = text_cells_by_column
         answer.save(update_fields=["value_json"])
         return None
 
     def get_answer_value(self, answer) -> dict[str, Any]:
         value = answer.value_json or {}
         columns = value.get("columns") or {}
+        text_cells = value.get("text_cells") or {}
         selected_keys: list[str] = []
         for column_key, choice_ids in columns.items():
             if not isinstance(column_key, str) or not isinstance(choice_ids, list):
@@ -483,23 +573,37 @@ class MultiMatrixDefinition(QuestionTypeDefinition):
             for choice_id in choice_ids:
                 if isinstance(choice_id, int):
                     selected_keys.append(f"{column_key}:{choice_id}")
-        return {"columns": columns, "selected_keys": selected_keys}
+        return {"columns": columns, "text_cells": text_cells, "selected_keys": selected_keys}
 
     def display_answer(self, answer) -> str:
         config = self.get_question_config(answer.question)
         value = self.get_answer_value(answer)
         selected_by_column = value.get("columns", {})
+        text_cells = value.get("text_cells", {})
         labels_by_id = {choice.id: choice.text for choice in answer.question.choices.all()}
 
         rendered_columns: list[str] = []
         for column in config.get("columns", []):
             key = column.get("key")
             label = column.get("label") or key
+            if column.get("kind", "choice") == "short_text":
+                cell_map = text_cells.get(key, {})
+                if not isinstance(cell_map, dict):
+                    continue
+                rendered_cells: list[str] = []
+                for choice in answer.question.choices.all():
+                    raw_value = cell_map.get(str(choice.id))
+                    if raw_value in (None, ""):
+                        continue
+                    rendered_cells.append(f"{choice.text}: {raw_value}")
+                if rendered_cells:
+                    rendered_columns.append(f"{label}: {', '.join(rendered_cells)}")
+                continue
+
             selected_ids = selected_by_column.get(key, [])
             selected_labels = [labels_by_id[choice_id] for choice_id in selected_ids if choice_id in labels_by_id]
-            if not selected_labels:
-                continue
-            rendered_columns.append(f"{label}: {', '.join(selected_labels)}")
+            if selected_labels:
+                rendered_columns.append(f"{label}: {', '.join(selected_labels)}")
         return "; ".join(rendered_columns)
 
 
@@ -550,17 +654,36 @@ def parse_matrix_columns(raw: dict[str, Any]) -> list[MatrixColumnSpec]:
         key = key.strip()
         if not isinstance(label, str) or not label.strip():
             raise SurveySchemaError("Column 'label' must be a non-empty string.")
-        if not isinstance(select_mode, str) or select_mode not in {"single", "multi"}:
-            raise SurveySchemaError("Column 'select_mode' must be 'single' or 'multi'.")
         if key in keys_seen:
             raise SurveySchemaError("Column 'key' values must be unique.")
+
+        kind = raw_column.get("kind", "choice")
+        text_mode = raw_column.get("text_mode", "string")
+        required = raw_column.get("required", False)
+        if not isinstance(kind, str) or kind not in {"choice", "short_text"}:
+            raise SurveySchemaError("Column 'kind' must be 'choice' or 'short_text'.")
+        if not isinstance(required, bool):
+            raise SurveySchemaError("Column 'required' must be a boolean.")
+        if kind == "choice":
+            if not isinstance(select_mode, str) or select_mode not in {"single", "multi"}:
+                raise SurveySchemaError("Column 'select_mode' must be 'single' or 'multi'.")
+            text_mode = "string"
+        else:
+            if select_mode not in {None, "", "single"}:
+                raise SurveySchemaError("Short-text columns do not use 'select_mode'.")
+            if not isinstance(text_mode, str) or text_mode not in {"string", "integer"}:
+                raise SurveySchemaError("Short-text columns require 'text_mode' of 'string' or 'integer'.")
+            select_mode = "single"
 
         keys_seen.add(key)
         columns.append(
             MatrixColumnSpec(
                 key=key,
                 label=label.strip(),
+                kind=kind,
                 select_mode=select_mode,
+                text_mode=text_mode,
+                required=required,
             )
         )
     return columns

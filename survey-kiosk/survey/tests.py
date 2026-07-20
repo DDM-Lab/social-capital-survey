@@ -478,25 +478,57 @@ class MultiMatrixTests(TestCase):
             },
         )
 
-    def test_short_text_column_accepts_text_input(self):
-        self.question.config_json = {
-            "row_select_mode": "single",
-            "char_limit": 12,
-            "columns": [
-                {"key": "planned", "label": "Planned", "kind": "choice", "select_mode": "single", "required": True},
-                {"key": "notes", "label": "Notes", "kind": "short_text", "text_mode": "string", "required": False},
-            ],
-        }
-        self.question.save(update_fields=["config_json"])
 
+class MatrixWithGridTests(TestCase):
+    def setUp(self):
+        self.survey = Survey.objects.create(name="Matrix+Grid survey", consent_text="consent")
+        self.question = Question.objects.create(
+            survey=self.survey,
+            text="Map and describe",
+            type=Question.Type.MATRIX_WITH_GRID,
+            order=1,
+            included_in_short=True,
+            required=True,
+            config_json={
+                "grid_rows": 4,
+                "grid_cols": 6,
+                "char_limit": 80,
+                "row_required": [True, False],
+                "columns": [
+                    {"key": "mark", "label": "Mark on map", "kind": "map", "required": True},
+                    {
+                        "key": "notes",
+                        "label": "Notes",
+                        "kind": "short_text",
+                        "text_mode": "string",
+                        "required": True,
+                    },
+                ],
+            },
+        )
+        self.opt1 = Choice.objects.create(question=self.question, text="Row 1", order=1)
+        self.opt2 = Choice.objects.create(question=self.question, text="Row 2", order=2)
+        self.kiosk = Kiosk.objects.create(name="Matrix+Grid kiosk", survey=self.survey)
+
+    def _new_session(self):
+        return SurveySession.objects.create(
+            kiosk=self.kiosk,
+            survey=self.survey,
+            length=SurveySession.Length.SHORT,
+            consented=True,
+            status=SurveySession.Status.ACTIVE,
+        )
+
+    def test_accepts_required_row_map_and_text(self):
         session = self._new_session()
         response = self.client.post(
             f"/survey/{session.id}/q/1",
             {
-                "matrix_planned": str(self.opt2.id),
-                "matrix_text_notes_1": "",
-                "matrix_text_notes_2": "hello",
-                "matrix_text_notes_3": "",
+                f"map_toggle_{self.opt1.id}": "on",
+                f"map_row_{self.opt1.id}": "1",
+                f"map_col_{self.opt1.id}": "3",
+                f"matrix_text_notes_{self.opt1.id}": "Near outlets",
+                f"matrix_text_notes_{self.opt2.id}": "",
             },
         )
 
@@ -505,10 +537,98 @@ class MultiMatrixTests(TestCase):
         self.assertEqual(
             answer.value_json,
             {
-                "columns": {"planned": [self.opt2.id]},
-                "text_cells": {"notes": {"2": "hello"}},
+                "map_points_by_row": {str(self.opt1.id): {"row": 1, "col": 3}},
+                "column_text_by_row": {"notes": {str(self.opt1.id): "Near outlets"}},
             },
         )
+
+    def test_rejects_missing_required_map_row(self):
+        session = self._new_session()
+        response = self.client.post(
+            f"/survey/{session.id}/q/1",
+            {
+                f"matrix_text_notes_{self.opt1.id}": "Near outlets",
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Please mark a map location for row Row 1.")
+
+
+class GridPreferenceFlowTests(TestCase):
+    def setUp(self):
+        self.survey = Survey.objects.create(name="Preference flow survey", consent_text="consent")
+        self.question = Question.objects.create(
+            survey=self.survey,
+            text="Preference flow",
+            type=Question.Type.GRID_PREFERENCE_FLOW,
+            order=1,
+            included_in_short=True,
+            required=True,
+            config_json={
+                "grid_rows": 4,
+                "grid_cols": 6,
+                "prompts": {
+                    "initial_grid": "Initial",
+                    "preferred_yes_no": "Preferred?",
+                    "yes_reason": "Why yes?",
+                    "no_grid": "Where instead?",
+                    "no_reason": "Why there?",
+                },
+                "yes_reason_char_limit": 120,
+                "no_reason_char_limit": 120,
+                "require_no_branch_fields": True,
+            },
+        )
+        self.kiosk = Kiosk.objects.create(name="Preference kiosk", survey=self.survey)
+
+    def _new_session(self):
+        return SurveySession.objects.create(
+            kiosk=self.kiosk,
+            survey=self.survey,
+            length=SurveySession.Length.SHORT,
+            consented=True,
+            status=SurveySession.Status.ACTIVE,
+        )
+
+    def test_yes_branch_saves_expected_shape(self):
+        session = self._new_session()
+        response = self.client.post(
+            f"/survey/{session.id}/q/1",
+            {
+                "initial_row": "2",
+                "initial_col": "1",
+                "preferred_today": "yes",
+                "yes_reason": "Best light",
+            },
+        )
+
+        self.assertEqual(response.status_code, 302)
+        answer = self.question.answers.get(session=session)
+        self.assertEqual(
+            answer.value_json,
+            {
+                "initial_cell": {"row": 2, "col": 1},
+                "preferred_today": True,
+                "preferred_reason": "Best light",
+                "alternative_cell": None,
+                "alternative_reason": None,
+            },
+        )
+
+    def test_no_branch_requires_alternative_fields(self):
+        session = self._new_session()
+        response = self.client.post(
+            f"/survey/{session.id}/q/1",
+            {
+                "initial_row": "2",
+                "initial_col": "1",
+                "preferred_today": "no",
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Please tap a preferred alternative location.")
 
 
 class CanonicalPayloadTests(TestCase):
@@ -598,6 +718,41 @@ class CanonicalPayloadTests(TestCase):
                     "text": "Rate this",
                     "likert_min": 5,
                     "likert_max": 1,
+                }
+            ],
+        }
+
+        with self.assertRaises(SurveySchemaError):
+            SurveySpec.from_dict(payload)
+
+    def test_invalid_matrix_with_grid_short_text_select_mode_fails(self):
+        payload = {
+            "name": "Bad matrix+grid",
+            "consent_text": "Consent",
+            "active": True,
+            "questions": [
+                {
+                    "type": "matrix_with_grid",
+                    "order": 1,
+                    "text": "Map and describe",
+                    "grid_image": "../images/map.png",
+                    "grid_rows": 4,
+                    "grid_cols": 5,
+                    "choices": [
+                        {"text": "Row A", "order": 1},
+                    ],
+                    "columns": [
+                        {"key": "mark", "label": "Mark", "kind": "map", "required": True},
+                        {
+                            "key": "note",
+                            "label": "Note",
+                            "kind": "short_text",
+                            "text_mode": "string",
+                            "select_mode": "multi",
+                            "required": False,
+                        },
+                    ],
+                    "row_required": [True],
                 }
             ],
         }

@@ -40,7 +40,8 @@
 
 {% block extrahead %}
   {{ block.super }}
+  <script defer src="{% static 'survey/preview_state.js' %}"></script>
   {% if question_item.question_script %}
-    <script src="{% static question_item.question_script %}"></script>
+    <script defer src="{% static question_item.question_script %}"></script>
   {% endif %}
 {% endblock %}

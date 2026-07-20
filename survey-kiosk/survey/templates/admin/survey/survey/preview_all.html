@@ -36,7 +36,8 @@
 
 {% block extrahead %}
   {{ block.super }}
+  <script defer src="{% static 'survey/preview_state.js' %}"></script>
   {% for script in scripts %}
-    <script src="{% static script %}"></script>
+    <script defer src="{% static script %}"></script>
   {% endfor %}
 {% endblock %}

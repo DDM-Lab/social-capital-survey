@@ -1,0 +1,56 @@
+{% load survey_extras %}
+{% with initial=answer_value.initial_cell alt=answer_value.alternative_cell prompts=question_config.prompts %}
+  <p>{{ prompts.initial_grid }}</p>
+  <div class="grid-wrap preference-grid-wrap"
+       data-rows="{{ question_config.grid_rows }}"
+       data-cols="{{ question_config.grid_cols }}"
+       data-selected-row="{{ initial|get_item:'row'|default_if_none:'' }}"
+       data-selected-col="{{ initial|get_item:'col'|default_if_none:'' }}"
+       data-row-field="initial_row"
+       data-col-field="initial_col">
+    <img src="{% if question.grid_image %}{{ question.grid_image.url }}{% else %}{{ question_config.grid_image }}{% endif %}" alt="Select your initial location">
+    <div class="grid-overlay"
+         style="grid-template-rows: repeat({{ question_config.grid_rows }}, 1fr);
+                grid-template-columns: repeat({{ question_config.grid_cols }}, 1fr);"></div>
+  </div>
+  <input type="hidden" name="initial_row" id="initial_row" value="{{ initial|get_item:'row'|default_if_none:'' }}">
+  <input type="hidden" name="initial_col" id="initial_col" value="{{ initial|get_item:'col'|default_if_none:'' }}">
+
+  <p>{{ prompts.preferred_yes_no }}</p>
+  <label>
+    <input type="radio" name="preferred_today" value="yes" {% if answer_value.preferred_today == True %}checked{% endif %} required>
+    Yes
+  </label>
+  <label>
+    <input type="radio" name="preferred_today" value="no" {% if answer_value.preferred_today == False %}checked{% endif %} required>
+    No
+  </label>
+
+  <div id="yes_branch">
+    <label for="yes_reason">{{ prompts.yes_reason }}</label>
+    <textarea id="yes_reason" name="yes_reason" rows="3" maxlength="{{ question_config.yes_reason_char_limit }}">{{ answer_value.preferred_reason }}</textarea>
+  </div>
+
+  <div id="no_branch">
+    <p>{{ prompts.no_grid }}</p>
+    <div class="grid-wrap preference-grid-wrap"
+         data-rows="{{ question_config.grid_rows }}"
+         data-cols="{{ question_config.grid_cols }}"
+         data-selected-row="{{ alt|get_item:'row'|default_if_none:'' }}"
+         data-selected-col="{{ alt|get_item:'col'|default_if_none:'' }}"
+         data-row-field="alternative_row"
+         data-col-field="alternative_col">
+      <img src="{% if question.grid_image %}{{ question.grid_image.url }}{% else %}{{ question_config.grid_image }}{% endif %}" alt="Select your preferred alternative location">
+      <div class="grid-overlay"
+           style="grid-template-rows: repeat({{ question_config.grid_rows }}, 1fr);
+                  grid-template-columns: repeat({{ question_config.grid_cols }}, 1fr);"></div>
+    </div>
+    <input type="hidden" name="alternative_row" id="alternative_row" value="{{ alt|get_item:'row'|default_if_none:'' }}">
+    <input type="hidden" name="alternative_col" id="alternative_col" value="{{ alt|get_item:'col'|default_if_none:'' }}">
+
+    <label for="no_reason">{{ prompts.no_reason }}</label>
+    <textarea id="no_reason" name="no_reason" rows="3" maxlength="{{ question_config.no_reason_char_limit }}">{{ answer_value.alternative_reason }}</textarea>
+  </div>
+
+  <input type="hidden" id="require_no_branch_fields" value="{% if question_config.require_no_branch_fields %}true{% else %}false{% endif %}">
+{% endwith %}

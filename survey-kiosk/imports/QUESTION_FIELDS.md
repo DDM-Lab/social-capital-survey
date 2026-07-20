@@ -15,7 +15,7 @@ This file documents the JSON schema used by files in this folder.
 
 | Field | Type | Required | Meaning |
 |---|---|---|---|
-| type | string | Yes | Question type. One of: single, multi, multi_matrix, likert, short_text, image_grid. |
+| type | string | Yes | Question type. One of: single, multi, multi_matrix, matrix_with_grid, grid_preference_flow, likert, short_text, image_grid. |
 | order | integer | Yes | Display order. Must be unique across all questions. |
 | text | string | Yes | Question prompt (non-empty). |
 | included_in_short | boolean | No | Include in short survey mode. Default: false. |
@@ -77,6 +77,50 @@ This file documents the JSON schema used by files in this folder.
 | grid_image | string | Yes | Image path for the grid prompt. |
 | grid_rows | integer | Yes | Number of grid rows. Must be > 0. |
 | grid_cols | integer | Yes | Number of grid columns. Must be > 0. |
+
+## matrix_with_grid
+
+| Field | Type | Required | Meaning |
+|---|---|---|---|
+| choices | array<object> | Yes | Matrix rows. Must be non-empty. |
+| columns | array<object> | Yes | Matrix columns. Must be non-empty. Must include exactly one map column. |
+| grid_image | string | Yes | Image path for map interaction. |
+| grid_rows | integer | Yes | Number of map rows. Must be > 0. |
+| grid_cols | integer | Yes | Number of map columns. Must be > 0. |
+| char_limit | integer | No | Shared max length for short_text matrix cells. Must be > 0 if present. |
+| row_required | array<boolean> | No | Per-row required flags. Length must equal choices length. Default: repeats required for each row. |
+
+### matrix_with_grid column object
+
+| Field | Type | Required | Meaning |
+|---|---|---|---|
+| key | string | Yes | Column key (unique within question). |
+| label | string | Yes | Column label shown in UI. |
+| kind | string | Yes | Column behavior. Values: map or short_text. |
+| required | boolean | No | Whether this column is required for required rows. Default: false. |
+| text_mode | string | Conditional | For kind=short_text only. Values: string or integer. Default: string. |
+
+## grid_preference_flow
+
+| Field | Type | Required | Meaning |
+|---|---|---|---|
+| grid_image | string | Yes | Image path for both grid prompts. |
+| grid_rows | integer | Yes | Number of grid rows. Must be > 0. |
+| grid_cols | integer | Yes | Number of grid columns. Must be > 0. |
+| prompts | object | Yes | Prompt strings for each step in the conditional flow. |
+| yes_reason_char_limit | integer | No | Character limit for preferred_reason branch. Default: 120. |
+| no_reason_char_limit | integer | No | Character limit for alternative_reason branch. Default: 120. |
+| require_no_branch_fields | boolean | No | If true, no-branch requires both alternative grid and reason. Default: true. |
+
+### grid_preference_flow prompts object
+
+| Field | Type | Required | Meaning |
+|---|---|---|---|
+| initial_grid | string | Yes | Prompt shown before initial grid selection. |
+| preferred_yes_no | string | Yes | Prompt for yes/no preferred question. |
+| yes_reason | string | Yes | Prompt for yes-branch reason text. |
+| no_grid | string | Yes | Prompt for no-branch alternative grid selection. |
+| no_reason | string | Yes | Prompt for no-branch reason text. |
 
 ## Reusable nested objects
 

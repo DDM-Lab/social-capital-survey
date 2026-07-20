@@ -62,6 +62,8 @@ class Question(models.Model):
         SINGLE = "single", "Single choice"
         MULTI = "multi", "Multiple choice"
         MULTI_MATRIX = "multi_matrix", "Multi-column choice matrix"
+        MATRIX_WITH_GRID = "matrix_with_grid", "Matrix with grid"
+        GRID_PREFERENCE_FLOW = "grid_preference_flow", "Grid preference flow"
         LIKERT = "likert", "Likert scale"
         SHORT_TEXT = "short_text", "Short text"
         IMAGE_GRID = "image_grid", "Image grid (single cell)"

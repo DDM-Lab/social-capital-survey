@@ -1,0 +1,71 @@
+{% load survey_extras %}
+<div class="matrix-scroll">
+  <table class="matrix-table">
+    <thead>
+      <tr>
+        <th scope="col">Option</th>
+        {% for column in question_config.columns %}
+          <th scope="col">{{ column.label }}</th>
+        {% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for c in question.choices.all %}
+        {% with row_key=c.id|stringformat:"s" %}
+        {% with point=answer_value.map_points_by_row|get_item:row_key %}
+          <tr>
+            <th scope="row">{{ c.text }}</th>
+            {% for column in question_config.columns %}
+              {% with text_value=answer_value.column_text_by_row|get_item:column.key|get_item:row_key %}
+                <td>
+                  {% if column.kind == 'map' %}
+                    <label>
+                      <input
+                        type="checkbox"
+                        class="map-toggle"
+                        data-row-id="{{ c.id }}"
+                        name="map_toggle_{{ c.id }}"
+                        {% if point %}checked{% endif %}
+                      >
+                      Mark
+                    </label>
+                    <button type="button" class="map-clear" data-row-id="{{ c.id }}">Clear</button>
+                    <div class="muted" id="map_coord_{{ c.id }}">
+                      {% if point %}({{ point.row }}, {{ point.col }}){% endif %}
+                    </div>
+                    <input type="hidden" id="map_row_{{ c.id }}" name="map_row_{{ c.id }}" value="{{ point.row|default_if_none:'' }}">
+                    <input type="hidden" id="map_col_{{ c.id }}" name="map_col_{{ c.id }}" value="{{ point.col|default_if_none:'' }}">
+                  {% elif column.kind == 'short_text' %}
+                    <input
+                      type="{% if column.text_mode == 'integer' %}number{% else %}text{% endif %}"
+                      name="matrix_text_{{ column.key }}_{{ c.id }}"
+                      value="{{ text_value|default:'' }}"
+                      aria-label="{{ column.label }}: {{ c.text }}"
+                      {% if column.text_mode == 'string' and question_config.char_limit %}maxlength="{{ question_config.char_limit }}"{% endif %}
+                      {% if column.text_mode == 'integer' %}inputmode="numeric" step="1"{% endif %}
+                    >
+                  {% endif %}
+                </td>
+              {% endwith %}
+            {% endfor %}
+          </tr>
+        {% endwith %}
+        {% endwith %}
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<div class="grid-wrap matrix-grid-wrap"
+     data-rows="{{ question_config.grid_rows }}"
+     data-cols="{{ question_config.grid_cols }}">
+  <img src="{% if question.grid_image %}{{ question.grid_image.url }}{% else %}{{ question_config.grid_image }}{% endif %}" alt="Tap a cell for the active row">
+  <div class="grid-overlay"
+       style="grid-template-rows: repeat({{ question_config.grid_rows }}, 1fr);
+              grid-template-columns: repeat({{ question_config.grid_cols }}, 1fr);"></div>
+</div>
+
+<p class="muted matrix-help">Select a row's Mark checkbox, then tap a map cell. Coordinates are zero-based.</p>
+{% if question_config.char_limit %}
+  <p class="muted matrix-help">Short-answer columns are limited to {{ question_config.char_limit }} characters.</p>
+{% endif %}

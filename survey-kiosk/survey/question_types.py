@@ -77,6 +77,37 @@ class ImageGridQuestion(SurveyQuestion):
 
 
 @dataclass(frozen=True)
+class MatrixWithGridColumnSpec:
+    key: str
+    label: str
+    kind: str
+    text_mode: str = "string"
+    required: bool = False
+
+
+@dataclass(frozen=True)
+class MatrixWithGridQuestion(SurveyQuestion):
+    choices: list[ChoiceSpec] = field(default_factory=list)
+    columns: list[MatrixWithGridColumnSpec] = field(default_factory=list)
+    grid_image: str = ""
+    grid_rows: int = 0
+    grid_cols: int = 0
+    char_limit: int | None = None
+    row_required: list[bool] = field(default_factory=list)
+
+
+@dataclass(frozen=True)
+class GridPreferenceFlowQuestion(SurveyQuestion):
+    grid_image: str = ""
+    grid_rows: int = 0
+    grid_cols: int = 0
+    prompts: dict[str, str] = field(default_factory=dict)
+    yes_reason_char_limit: int = 120
+    no_reason_char_limit: int = 120
+    require_no_branch_fields: bool = True
+
+
+@dataclass(frozen=True)
 class SurveySpec:
     name: str
     consent_text: str
@@ -438,6 +469,312 @@ class ImageGridDefinition(QuestionTypeDefinition):
         return f"{row},{col}"
 
 
+class MatrixWithGridDefinition(QuestionTypeDefinition):
+    type_name = "matrix_with_grid"
+    question_class = MatrixWithGridQuestion
+    template_name = "survey/question_types/matrix_with_grid.html"
+    script_path = "survey/matrix_grid.js"
+
+    def build_question(self, common: dict[str, Any], raw: dict[str, Any]) -> SurveyQuestion:
+        choices = parse_choices(raw, self.type_name)
+        columns = parse_matrix_with_grid_columns(raw)
+        grid_image = raw.get("grid_image")
+        grid_rows = raw.get("grid_rows")
+        grid_cols = raw.get("grid_cols")
+        char_limit = raw.get("char_limit")
+        row_required = raw.get("row_required")
+
+        if not isinstance(grid_image, str) or not grid_image.strip():
+            raise SurveySchemaError("matrix_with_grid requires non-empty 'grid_image'.")
+        if not isinstance(grid_rows, int) or grid_rows <= 0:
+            raise SurveySchemaError("matrix_with_grid 'grid_rows' must be an integer > 0.")
+        if not isinstance(grid_cols, int) or grid_cols <= 0:
+            raise SurveySchemaError("matrix_with_grid 'grid_cols' must be an integer > 0.")
+        if char_limit is not None and (not isinstance(char_limit, int) or char_limit <= 0):
+            raise SurveySchemaError("matrix_with_grid 'char_limit' must be an integer > 0 when provided.")
+        if row_required is None:
+            row_required = [common["required"]] * len(choices)
+        if not isinstance(row_required, list) or len(row_required) != len(choices):
+            raise SurveySchemaError("matrix_with_grid 'row_required' must match choices length.")
+        if any(not isinstance(item, bool) for item in row_required):
+            raise SurveySchemaError("matrix_with_grid 'row_required' entries must be booleans.")
+
+        return MatrixWithGridQuestion(
+            **common,
+            choices=choices,
+            columns=columns,
+            grid_image=grid_image,
+            grid_rows=grid_rows,
+            grid_cols=grid_cols,
+            char_limit=char_limit,
+            row_required=row_required,
+        )
+
+    def question_config(self, question_spec: SurveyQuestion) -> dict[str, Any]:
+        question_spec = ensure_question_type(question_spec, MatrixWithGridQuestion)
+        return {
+            "choices": [
+                {"text": choice.text, "order": choice.order}
+                for choice in sorted(question_spec.choices, key=lambda item: item.order)
+            ],
+            "columns": [
+                {
+                    "key": column.key,
+                    "label": column.label,
+                    "kind": column.kind,
+                    "text_mode": column.text_mode,
+                    "required": column.required,
+                }
+                for column in question_spec.columns
+            ],
+            "grid_image": question_spec.grid_image,
+            "grid_rows": question_spec.grid_rows,
+            "grid_cols": question_spec.grid_cols,
+            "char_limit": question_spec.char_limit,
+            "row_required": question_spec.row_required,
+        }
+
+    def persist_question(self, question, question_spec: SurveyQuestion, source_dir: Path | None = None):
+        question_spec = ensure_question_type(question_spec, MatrixWithGridQuestion)
+        image_path = resolve_local_image(question_spec.grid_image, source_dir)
+        if not image_path.exists() or not image_path.is_file():
+            raise SurveySchemaError(f"Image file not found: {image_path}")
+        question.grid_image.save(image_path.name, ContentFile(image_path.read_bytes()), save=True)
+
+    def save_answer(self, answer, question, request) -> str | None:
+        config = self.get_question_config(question)
+        columns = config.get("columns", [])
+        row_required = config.get("row_required", [])
+        char_limit = config.get("char_limit")
+        grid_rows = config.get("grid_rows") or 0
+        grid_cols = config.get("grid_cols") or 0
+
+        rows = list(question.choices.all())
+        required_by_row: dict[int, bool] = {}
+        for index, choice in enumerate(rows):
+            required_by_row[choice.id] = bool(row_required[index]) if index < len(row_required) else bool(question.required)
+
+        map_columns = [column for column in columns if column.get("kind") == "map"]
+        if len(map_columns) != 1:
+            raise SurveySchemaError("matrix_with_grid requires exactly one map column.")
+        map_column = map_columns[0]
+
+        map_points_by_row: dict[str, dict[str, int]] = {}
+        for choice in rows:
+            row_id = choice.id
+            enabled = request.POST.get(f"map_toggle_{row_id}") == "on"
+            row_is_required = required_by_row[row_id] and bool(map_column.get("required", question.required))
+            if row_is_required and not enabled:
+                return f"Please mark a map location for row {choice.text}."
+            if not enabled:
+                continue
+
+            try:
+                row_value = int(request.POST.get(f"map_row_{row_id}"))
+                col_value = int(request.POST.get(f"map_col_{row_id}"))
+            except (TypeError, ValueError):
+                return f"Please tap a map cell for row {choice.text}."
+
+            if not (0 <= row_value < grid_rows and 0 <= col_value < grid_cols):
+                return f"Map selection is out of range for row {choice.text}."
+
+            map_points_by_row[str(row_id)] = {"row": row_value, "col": col_value}
+
+        column_text_by_row: dict[str, dict[str, str | int]] = {}
+        for column in columns:
+            if column.get("kind") != "short_text":
+                continue
+            key = column.get("key")
+            label = column.get("label") or key
+            text_mode = column.get("text_mode", "string")
+            column_required = bool(column.get("required", question.required))
+            values_for_column: dict[str, str | int] = {}
+
+            for choice in rows:
+                raw_value = (request.POST.get(f"matrix_text_{key}_{choice.id}") or "").strip()
+                row_is_required = required_by_row[choice.id]
+                if not raw_value:
+                    if row_is_required and column_required:
+                        return f"Please enter a response for {label}: {choice.text}."
+                    continue
+                if char_limit is not None and len(raw_value) > char_limit:
+                    return f"Please keep responses in {label} to {char_limit} characters or fewer."
+
+                if text_mode == "integer":
+                    try:
+                        values_for_column[str(choice.id)] = int(raw_value)
+                    except ValueError:
+                        return f"Please enter a whole number for {label}: {choice.text}."
+                else:
+                    values_for_column[str(choice.id)] = raw_value
+
+            column_text_by_row[key] = values_for_column
+
+        answer.choices.clear()
+        answer.value_json = {
+            "map_points_by_row": map_points_by_row,
+            "column_text_by_row": column_text_by_row,
+        }
+        answer.save(update_fields=["value_json"])
+        return None
+
+    def get_answer_value(self, answer) -> dict[str, Any]:
+        value = answer.value_json or {}
+        return {
+            "map_points_by_row": value.get("map_points_by_row") or {},
+            "column_text_by_row": value.get("column_text_by_row") or {},
+        }
+
+    def display_answer(self, answer) -> str:
+        value = self.get_answer_value(answer)
+        map_points = value.get("map_points_by_row", {})
+        if not map_points:
+            return ""
+        labels_by_id = {str(choice.id): choice.text for choice in answer.question.choices.all()}
+        parts: list[str] = []
+        for row_id, point in map_points.items():
+            row_label = labels_by_id.get(row_id, row_id)
+            parts.append(f"{row_label}: ({point.get('row')},{point.get('col')})")
+        return "; ".join(parts)
+
+
+class GridPreferenceFlowDefinition(QuestionTypeDefinition):
+    type_name = "grid_preference_flow"
+    question_class = GridPreferenceFlowQuestion
+    template_name = "survey/question_types/grid_preference_flow.html"
+    script_path = "survey/grid_preference_flow.js"
+
+    def build_question(self, common: dict[str, Any], raw: dict[str, Any]) -> SurveyQuestion:
+        grid_image = raw.get("grid_image")
+        grid_rows = raw.get("grid_rows")
+        grid_cols = raw.get("grid_cols")
+        prompts = raw.get("prompts") or {}
+        yes_reason_char_limit = raw.get("yes_reason_char_limit", 120)
+        no_reason_char_limit = raw.get("no_reason_char_limit", 120)
+        require_no_branch_fields = raw.get("require_no_branch_fields", True)
+
+        if not isinstance(grid_image, str) or not grid_image.strip():
+            raise SurveySchemaError("grid_preference_flow requires non-empty 'grid_image'.")
+        if not isinstance(grid_rows, int) or grid_rows <= 0:
+            raise SurveySchemaError("grid_preference_flow 'grid_rows' must be an integer > 0.")
+        if not isinstance(grid_cols, int) or grid_cols <= 0:
+            raise SurveySchemaError("grid_preference_flow 'grid_cols' must be an integer > 0.")
+        if not isinstance(prompts, dict):
+            raise SurveySchemaError("grid_preference_flow 'prompts' must be an object.")
+        for key in ["initial_grid", "preferred_yes_no", "yes_reason", "no_grid", "no_reason"]:
+            value = prompts.get(key)
+            if not isinstance(value, str) or not value.strip():
+                raise SurveySchemaError(f"grid_preference_flow prompt '{key}' must be a non-empty string.")
+        if not isinstance(yes_reason_char_limit, int) or yes_reason_char_limit <= 0:
+            raise SurveySchemaError("grid_preference_flow 'yes_reason_char_limit' must be an integer > 0.")
+        if not isinstance(no_reason_char_limit, int) or no_reason_char_limit <= 0:
+            raise SurveySchemaError("grid_preference_flow 'no_reason_char_limit' must be an integer > 0.")
+        if not isinstance(require_no_branch_fields, bool):
+            raise SurveySchemaError("grid_preference_flow 'require_no_branch_fields' must be a boolean.")
+
+        return GridPreferenceFlowQuestion(
+            **common,
+            grid_image=grid_image,
+            grid_rows=grid_rows,
+            grid_cols=grid_cols,
+            prompts=prompts,
+            yes_reason_char_limit=yes_reason_char_limit,
+            no_reason_char_limit=no_reason_char_limit,
+            require_no_branch_fields=require_no_branch_fields,
+        )
+
+    def question_config(self, question_spec: SurveyQuestion) -> dict[str, Any]:
+        question_spec = ensure_question_type(question_spec, GridPreferenceFlowQuestion)
+        return {
+            "grid_image": question_spec.grid_image,
+            "grid_rows": question_spec.grid_rows,
+            "grid_cols": question_spec.grid_cols,
+            "prompts": question_spec.prompts,
+            "yes_reason_char_limit": question_spec.yes_reason_char_limit,
+            "no_reason_char_limit": question_spec.no_reason_char_limit,
+            "require_no_branch_fields": question_spec.require_no_branch_fields,
+        }
+
+    def persist_question(self, question, question_spec: SurveyQuestion, source_dir: Path | None = None):
+        question_spec = ensure_question_type(question_spec, GridPreferenceFlowQuestion)
+        image_path = resolve_local_image(question_spec.grid_image, source_dir)
+        if not image_path.exists() or not image_path.is_file():
+            raise SurveySchemaError(f"Image file not found: {image_path}")
+        question.grid_image.save(image_path.name, ContentFile(image_path.read_bytes()), save=True)
+
+    def save_answer(self, answer, question, request) -> str | None:
+        config = self.get_question_config(question)
+        rows = config.get("grid_rows") or 0
+        cols = config.get("grid_cols") or 0
+
+        try:
+            initial_row = int(request.POST.get("initial_row"))
+            initial_col = int(request.POST.get("initial_col"))
+        except (TypeError, ValueError):
+            return "Please tap a cell for your initial location."
+        if not (0 <= initial_row < rows and 0 <= initial_col < cols):
+            return "Initial location is out of range."
+
+        preferred_today_raw = request.POST.get("preferred_today")
+        if preferred_today_raw not in {"yes", "no"}:
+            return "Please answer whether that spot was preferred today."
+        preferred_today = preferred_today_raw == "yes"
+
+        yes_reason = (request.POST.get("yes_reason") or "").strip()
+        no_reason = (request.POST.get("no_reason") or "").strip()
+        alternative_cell: dict[str, int] | None = None
+
+        if preferred_today:
+            if not yes_reason:
+                return "Please explain why it was your preferred spot."
+            if len(yes_reason) > (config.get("yes_reason_char_limit") or 120):
+                return f"Please keep your response to {config.get('yes_reason_char_limit')} characters or fewer."
+            no_reason = ""
+        else:
+            yes_reason = ""
+            if config.get("require_no_branch_fields", True):
+                try:
+                    alt_row = int(request.POST.get("alternative_row"))
+                    alt_col = int(request.POST.get("alternative_col"))
+                except (TypeError, ValueError):
+                    return "Please tap a preferred alternative location."
+                if not (0 <= alt_row < rows and 0 <= alt_col < cols):
+                    return "Preferred alternative location is out of range."
+                if not no_reason:
+                    return "Please explain why you preferred that location."
+                if len(no_reason) > (config.get("no_reason_char_limit") or 120):
+                    return f"Please keep your response to {config.get('no_reason_char_limit')} characters or fewer."
+                alternative_cell = {"row": alt_row, "col": alt_col}
+
+        answer.choices.clear()
+        answer.value_json = {
+            "initial_cell": {"row": initial_row, "col": initial_col},
+            "preferred_today": preferred_today,
+            "preferred_reason": yes_reason or None,
+            "alternative_cell": alternative_cell,
+            "alternative_reason": no_reason or None,
+        }
+        answer.save(update_fields=["value_json"])
+        return None
+
+    def get_answer_value(self, answer) -> dict[str, Any]:
+        value = answer.value_json or {}
+        return {
+            "initial_cell": value.get("initial_cell"),
+            "preferred_today": value.get("preferred_today"),
+            "preferred_reason": value.get("preferred_reason") or "",
+            "alternative_cell": value.get("alternative_cell"),
+            "alternative_reason": value.get("alternative_reason") or "",
+        }
+
+    def display_answer(self, answer) -> str:
+        value = self.get_answer_value(answer)
+        initial = value.get("initial_cell") or {}
+        preferred = value.get("preferred_today")
+        preferred_label = "Yes" if preferred else "No"
+        return f"Initial ({initial.get('row')},{initial.get('col')}), Preferred: {preferred_label}"
+
+
 class MultiMatrixDefinition(QuestionTypeDefinition):
     type_name = "multi_matrix"
     question_class = MultiMatrixQuestion
@@ -698,6 +1035,63 @@ def parse_matrix_select_mode(raw: dict[str, Any], field_name: str, default: str)
     return value
 
 
+def parse_matrix_with_grid_columns(raw: dict[str, Any]) -> list[MatrixWithGridColumnSpec]:
+    raw_columns = raw.get("columns", [])
+    if not isinstance(raw_columns, list) or not raw_columns:
+        raise SurveySchemaError("matrix_with_grid requires a non-empty 'columns' list.")
+
+    columns: list[MatrixWithGridColumnSpec] = []
+    keys_seen: set[str] = set()
+    map_count = 0
+    for raw_column in raw_columns:
+        if not isinstance(raw_column, dict):
+            raise SurveySchemaError("Each matrix_with_grid column must be an object.")
+        key = raw_column.get("key")
+        label = raw_column.get("label")
+        kind = raw_column.get("kind")
+        text_mode = raw_column.get("text_mode", "string")
+        required = raw_column.get("required", False)
+        select_mode = raw_column.get("select_mode")
+
+        if not isinstance(key, str) or not key.strip():
+            raise SurveySchemaError("matrix_with_grid column 'key' must be a non-empty string.")
+        key = key.strip()
+        if key in keys_seen:
+            raise SurveySchemaError("matrix_with_grid column 'key' values must be unique.")
+        if not isinstance(label, str) or not label.strip():
+            raise SurveySchemaError("matrix_with_grid column 'label' must be a non-empty string.")
+        if not isinstance(kind, str) or kind not in {"map", "short_text"}:
+            raise SurveySchemaError("matrix_with_grid column 'kind' must be 'map' or 'short_text'.")
+        if not isinstance(required, bool):
+            raise SurveySchemaError("matrix_with_grid column 'required' must be a boolean.")
+
+        if kind == "map":
+            map_count += 1
+            text_mode = "string"
+            if select_mode not in {None, ""}:
+                raise SurveySchemaError("map columns do not use 'select_mode'.")
+        else:
+            if select_mode not in {None, "", "single"}:
+                raise SurveySchemaError("short_text columns do not use 'select_mode'.")
+            if not isinstance(text_mode, str) or text_mode not in {"string", "integer"}:
+                raise SurveySchemaError("short_text columns require text_mode 'string' or 'integer'.")
+
+        keys_seen.add(key)
+        columns.append(
+            MatrixWithGridColumnSpec(
+                key=key,
+                label=label.strip(),
+                kind=kind,
+                text_mode=text_mode,
+                required=required,
+            )
+        )
+
+    if map_count != 1:
+        raise SurveySchemaError("matrix_with_grid requires exactly one column with kind 'map'.")
+    return columns
+
+
 def ensure_question_type(question_spec: SurveyQuestion, expected_type: type[SurveyQuestion]):
     if not isinstance(question_spec, expected_type):
         raise SurveySchemaError(
@@ -712,6 +1106,8 @@ QUESTION_TYPES: dict[str, QuestionTypeDefinition] = {
         SingleChoiceDefinition(),
         MultiChoiceDefinition(),
         MultiMatrixDefinition(),
+        MatrixWithGridDefinition(),
+        GridPreferenceFlowDefinition(),
         LikertDefinition(),
         ShortTextDefinition(),
         ImageGridDefinition(),

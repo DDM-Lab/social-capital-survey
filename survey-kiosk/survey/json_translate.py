@@ -8,8 +8,13 @@ from .models import Choice, Question, Survey
 from .question_schema import (
     SurveySpec,
 )
-from .question_types import ImageGridQuestion, MultiChoiceQuestion, QUESTION_TYPES, SingleChoiceQuestion
-from .question_types import MultiMatrixQuestion
+from .question_types import (
+    MatrixWithGridQuestion,
+    MultiChoiceQuestion,
+    MultiMatrixQuestion,
+    QUESTION_TYPES,
+    SingleChoiceQuestion,
+)
 
 
 class SurveyTranslationError(ValueError):
@@ -50,13 +55,12 @@ def import_survey_spec(spec: SurveySpec, source_dir: Path | None = None) -> Tran
             )
             question_count += 1
 
-            if isinstance(q, (SingleChoiceQuestion, MultiChoiceQuestion, MultiMatrixQuestion)):
+            if isinstance(q, (SingleChoiceQuestion, MultiChoiceQuestion, MultiMatrixQuestion, MatrixWithGridQuestion)):
                 for choice in sorted(q.choices, key=lambda c: c.order):
                     Choice.objects.create(question=question, text=choice.text, order=choice.order)
                     choice_count += 1
 
-            if isinstance(q, ImageGridQuestion):
-                definition.persist_question(question, q, source_dir)
+            definition.persist_question(question, q, source_dir)
 
         return TranslationResult(
             survey_id=survey.id,

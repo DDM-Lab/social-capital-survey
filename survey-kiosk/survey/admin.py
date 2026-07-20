@@ -10,6 +10,7 @@ from django.db.models import Count, Q
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import path, reverse
+from django.utils.html import format_html
 from django.utils import timezone
 
 from .models import (
@@ -41,7 +42,7 @@ class QuestionInline(admin.TabularInline):
 
 @admin.register(Survey)
 class SurveyAdmin(admin.ModelAdmin):
-    list_display = ("name", "active", "question_count")
+    list_display = ("name", "active", "question_count", "delete_link")
     inlines = [QuestionInline]
     change_list_template = "admin/survey/survey/change_list.html"
     change_form_template = "admin/survey/survey/change_form.html"
@@ -246,6 +247,11 @@ class SurveyAdmin(admin.ModelAdmin):
             }
         )
         return render(request, "admin/survey/survey/preview_flow.html", context)
+
+    @admin.display(description="Delete")
+    def delete_link(self, obj):
+        url = reverse("admin:survey_survey_delete", args=[obj.pk])
+        return format_html('<a class="deletelink" href="{}">Delete</a>', url)
 
     @admin.display(description="Questions")
     def question_count(self, obj):

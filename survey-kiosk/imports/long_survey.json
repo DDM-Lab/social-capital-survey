@@ -95,7 +95,7 @@
     {
       "type": "multi_matrix",
       "order": 6,
-      "text": "How much did you expect to socialize with each type of group today?",
+      "text": "How much did you actually socialize with each type of group today?",
       "included_in_short": true,
       "required": true,
       "row_select_mode": "single",
@@ -178,8 +178,52 @@
       ]
     },
     {
-      "type": "multi_matrix",
+      "type": "matrix_with_grid",
       "order": 10,
+      "text": "For each of the activities you performed today, mark the area(s) of the space that you prefer for performing the activity during your visit.",
+      "included_in_short": false,
+      "required": true,
+      "grid_image": "../images/map.png",
+      "grid_rows": 4,
+      "grid_cols": 6,
+      "char_limit": 80,
+      "choices": [
+        { "text": "Studying/working", "order": 1 },
+        { "text": "Socializing", "order": 2 },
+        { "text": "Relaxing/recreation", "order": 3 },
+        { "text": "Eating/drinking", "order": 4 },
+        { "text": "People-watching", "order": 5 }
+      ],
+      "columns": [
+        { "key": "mark_on_map", "label": "Mark on map?", "kind": "map", "required": true },
+        { "key": "why_preferred", "label": "Why did you prefer this spot?", "kind": "short_text", "text_mode": "string", "required": true },
+        { "key": "stay_duration", "label": "How long did you stay there?", "kind": "short_text", "text_mode": "string", "required": false }
+      ],
+      "row_required": [false, false, false, false, false]
+    },
+    {
+      "type": "grid_preference_flow",
+      "order": 11,
+      "text": "Please mark where on the map you spent most of your time.",
+      "included_in_short": false,
+      "required": true,
+      "grid_image": "../images/map.png",
+      "grid_rows": 4,
+      "grid_cols": 6,
+      "prompts": {
+        "initial_grid": "Please mark where on the map you spent most of your time.",
+        "preferred_yes_no": "Was this your preferred spot today?",
+        "yes_reason": "Why was this your preferred spot today?",
+        "no_grid": "Where would you have preferred to stay?",
+        "no_reason": "Why did you prefer that location?"
+      },
+      "yes_reason_char_limit": 120,
+      "no_reason_char_limit": 120,
+      "require_no_branch_fields": true
+    },
+    {
+      "type": "multi_matrix",
+      "order": 12,
       "text": "How did you feel during your visit today? Please rate how much you agree with each statement.",
       "included_in_short": true,
       "required": true,
@@ -202,7 +246,7 @@
     },
     {
       "type": "short_text",
-      "order": 11,
+      "order": 13,
       "text": " Is there anything else you would like us to know about your experience in this space today?",
       "included_in_short": false,
       "required": false,

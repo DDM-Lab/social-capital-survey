@@ -5,7 +5,7 @@
 {% block content %}
 <section class="card">
   <p class="progress">Question {{ step }} of {{ total }}</p>
-  <h1>{{ question.text }}</h1>
+  <h1 class="question-text">{{ question.text|linebreaksbr }}</h1>
 
   {% if error %}<ul class="messages"><li class="msg error">{{ error }}</li></ul>{% endif %}
 

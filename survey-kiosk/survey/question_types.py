@@ -52,6 +52,9 @@ class MultiMatrixQuestion(SurveyQuestion):
     columns: list[MatrixColumnSpec] = field(default_factory=list)
     row_select_mode: str = "multi"
     char_limit: int | None = None
+    row_required: list[bool] = field(default_factory=list)
+    require_complete_started_row: bool = False
+    require_single_choice_per_row: bool = False
 
 
 @dataclass(frozen=True)
@@ -779,17 +782,37 @@ class MultiMatrixDefinition(QuestionTypeDefinition):
     type_name = "multi_matrix"
     question_class = MultiMatrixQuestion
     template_name = "survey/question_types/multi_matrix.html"
+    script_path = "survey/multi_matrix.js"
 
     def build_question(self, common: dict[str, Any], raw: dict[str, Any]) -> SurveyQuestion:
         char_limit = raw.get("char_limit")
+        choices = parse_choices(raw, self.type_name)
+        row_required = raw.get("row_required")
+        require_complete_started_row = raw.get("require_complete_started_row", False)
+        require_single_choice_per_row = raw.get("require_single_choice_per_row", False)
+
         if char_limit is not None and (not isinstance(char_limit, int) or char_limit <= 0):
             raise SurveySchemaError("Multi-matrix 'char_limit' must be an integer > 0 when provided.")
+        if row_required is None:
+            row_required = [common["required"]] * len(choices)
+        if not isinstance(row_required, list) or len(row_required) != len(choices):
+            raise SurveySchemaError("Multi-matrix 'row_required' must match choices length.")
+        if any(not isinstance(item, bool) for item in row_required):
+            raise SurveySchemaError("Multi-matrix 'row_required' entries must be booleans.")
+        if not isinstance(require_complete_started_row, bool):
+            raise SurveySchemaError("Multi-matrix 'require_complete_started_row' must be a boolean.")
+        if not isinstance(require_single_choice_per_row, bool):
+            raise SurveySchemaError("Multi-matrix 'require_single_choice_per_row' must be a boolean.")
+
         return MultiMatrixQuestion(
             **common,
-            choices=parse_choices(raw, self.type_name),
+            choices=choices,
             columns=parse_matrix_columns(raw),
             row_select_mode=parse_matrix_select_mode(raw, "row_select_mode", default="multi"),
             char_limit=char_limit,
+            row_required=row_required,
+            require_complete_started_row=require_complete_started_row,
+            require_single_choice_per_row=require_single_choice_per_row,
         )
 
     def question_config(self, question_spec: SurveyQuestion) -> dict[str, Any]:
@@ -812,6 +835,9 @@ class MultiMatrixDefinition(QuestionTypeDefinition):
             ],
             "row_select_mode": question_spec.row_select_mode,
             "char_limit": question_spec.char_limit,
+            "row_required": question_spec.row_required,
+            "require_complete_started_row": question_spec.require_complete_started_row,
+            "require_single_choice_per_row": question_spec.require_single_choice_per_row,
         }
 
     def save_answer(self, answer, question, request) -> str | None:
@@ -819,11 +845,23 @@ class MultiMatrixDefinition(QuestionTypeDefinition):
         columns = config.get("columns", [])
         row_select_mode = config.get("row_select_mode", "multi")
         char_limit = config.get("char_limit")
+        row_required = config.get("row_required") or []
+        require_complete_started_row = bool(config.get("require_complete_started_row", False))
+        require_single_choice_per_row = bool(config.get("require_single_choice_per_row", False))
         allowed_choice_ids = set(question.choices.values_list("id", flat=True))
-        labels_by_id = {choice.id: choice.text for choice in question.choices.all()}
+        rows = list(question.choices.all())
+        labels_by_id = {choice.id: choice.text for choice in rows}
+        required_by_row: dict[int, bool] = {}
+        for index, choice in enumerate(rows):
+            if index < len(row_required):
+                required_by_row[choice.id] = bool(row_required[index])
+            else:
+                required_by_row[choice.id] = bool(question.required)
 
         selected_by_column: dict[str, list[int]] = {}
+        selected_rows_by_column: dict[str, set[int]] = {}
         text_cells_by_column: dict[str, dict[str, str | int]] = {}
+        text_rows_by_column: dict[str, set[int]] = {}
         selected_choice_ids: set[int] = set()
 
         for column in columns:
@@ -836,9 +874,10 @@ class MultiMatrixDefinition(QuestionTypeDefinition):
             if kind == "choice":
                 posted_ids = request.POST.getlist(f"matrix_{key}")
                 if not posted_ids:
-                    if column_required:
+                    if column_required and not require_single_choice_per_row:
                         return f"Please select at least one option in {label}."
                     selected_by_column[key] = []
+                    selected_rows_by_column[key] = set()
                     continue
 
                 try:
@@ -855,12 +894,14 @@ class MultiMatrixDefinition(QuestionTypeDefinition):
                     return f"Invalid selection in {label}."
 
                 selected_by_column[key] = normalized_ids
+                selected_rows_by_column[key] = set(normalized_ids)
                 selected_choice_ids.update(normalized_ids)
                 continue
 
             if kind == "short_text":
                 cell_values: dict[str, str | int] = {}
-                for choice in question.choices.all():
+                filled_rows: set[int] = set()
+                for choice in rows:
                     field_name = f"matrix_text_{key}_{choice.id}"
                     raw_value = (request.POST.get(field_name) or "").strip()
                     if not raw_value:
@@ -873,11 +914,14 @@ class MultiMatrixDefinition(QuestionTypeDefinition):
                     if text_mode == "integer":
                         try:
                             cell_values[str(choice.id)] = int(raw_value)
+                            filled_rows.add(choice.id)
                         except ValueError:
                             return f"Please enter a whole number for {label}: {choice.text}."
                     else:
                         cell_values[str(choice.id)] = raw_value
+                        filled_rows.add(choice.id)
                 text_cells_by_column[key] = cell_values
+                text_rows_by_column[key] = filled_rows
                 continue
 
             raise SurveySchemaError(f"Unsupported matrix column kind: {kind!r}.")
@@ -891,6 +935,56 @@ class MultiMatrixDefinition(QuestionTypeDefinition):
             if violating_ids:
                 row_label = labels_by_id.get(violating_ids[0], "a row")
                 return f"Please select only one column for row {row_label}."
+
+        if require_complete_started_row:
+            for choice in rows:
+                row_id = choice.id
+                started = False
+                for column in columns:
+                    key = column.get("key")
+                    if column.get("kind", "choice") == "choice":
+                        if row_id in selected_rows_by_column.get(key, set()):
+                            started = True
+                            break
+                    elif row_id in text_rows_by_column.get(key, set()):
+                        started = True
+                        break
+
+                if not started:
+                    continue
+
+                missing_columns: list[str] = []
+                for column in columns:
+                    key = column.get("key")
+                    if not bool(column.get("required", question.required)):
+                        continue
+                    if column.get("kind", "choice") == "choice":
+                        if row_id not in selected_rows_by_column.get(key, set()):
+                            missing_columns.append(column.get("label") or str(key))
+                    elif row_id not in text_rows_by_column.get(key, set()):
+                        missing_columns.append(column.get("label") or str(key))
+
+                if missing_columns:
+                    return (
+                        f"Please complete all required columns for row {choice.text}. "
+                        f"Missing: {', '.join(missing_columns)}."
+                    )
+
+        if require_single_choice_per_row:
+            choice_columns = [column for column in columns if column.get("kind", "choice") == "choice"]
+            for choice in rows:
+                row_id = choice.id
+                selection_count = 0
+                for column in choice_columns:
+                    key = column.get("key")
+                    if row_id in selected_rows_by_column.get(key, set()):
+                        selection_count += 1
+
+                row_is_required = required_by_row.get(row_id, bool(question.required))
+                if row_is_required and selection_count == 0:
+                    return f"Please select one option for row {choice.text}."
+                if selection_count > 1:
+                    return f"Please select only one option for row {choice.text}."
 
         answer.choices.set(question.choices.filter(pk__in=selected_choice_ids))
         answer.value_json = {"columns": selected_by_column}

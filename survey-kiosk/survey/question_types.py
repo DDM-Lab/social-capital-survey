@@ -864,6 +864,21 @@ class MultiMatrixDefinition(QuestionTypeDefinition):
         text_rows_by_column: dict[str, set[int]] = {}
         selected_choice_ids: set[int] = set()
 
+        row_selected_column_by_choice_id: dict[int, str] = {}
+        if require_single_choice_per_row:
+            choice_column_keys = {
+                column.get("key")
+                for column in columns
+                if column.get("kind", "choice") == "choice"
+            }
+            for choice in rows:
+                selected_column_key = (request.POST.get(f"matrix_row_{choice.id}") or "").strip()
+                if not selected_column_key:
+                    continue
+                if selected_column_key not in choice_column_keys:
+                    return f"Invalid selection in row {choice.text}."
+                row_selected_column_by_choice_id[choice.id] = selected_column_key
+
         for column in columns:
             key = column.get("key")
             label = column.get("label") or key
@@ -872,6 +887,17 @@ class MultiMatrixDefinition(QuestionTypeDefinition):
             column_required = bool(column.get("required", question.required))
 
             if kind == "choice":
+                if require_single_choice_per_row:
+                    selected_ids = [
+                        row_id
+                        for row_id, selected_column_key in row_selected_column_by_choice_id.items()
+                        if selected_column_key == key
+                    ]
+                    selected_by_column[key] = selected_ids
+                    selected_rows_by_column[key] = set(selected_ids)
+                    selected_choice_ids.update(selected_ids)
+                    continue
+
                 posted_ids = request.POST.getlist(f"matrix_{key}")
                 if not posted_ids:
                     if column_required and not require_single_choice_per_row:
@@ -905,7 +931,7 @@ class MultiMatrixDefinition(QuestionTypeDefinition):
                     field_name = f"matrix_text_{key}_{choice.id}"
                     raw_value = (request.POST.get(field_name) or "").strip()
                     if not raw_value:
-                        if column_required:
+                        if column_required and not require_complete_started_row:
                             return f"Please enter a response for {label}: {choice.text}."
                         continue
                     if char_limit is not None and len(raw_value) > char_limit:
@@ -930,7 +956,7 @@ class MultiMatrixDefinition(QuestionTypeDefinition):
         for selected_ids in selected_by_column.values():
             for choice_id in selected_ids:
                 row_occurrence_count[choice_id] = row_occurrence_count.get(choice_id, 0) + 1
-        if row_select_mode == "single":
+        if row_select_mode == "single" and not require_single_choice_per_row:
             violating_ids = [choice_id for choice_id, count in row_occurrence_count.items() if count > 1]
             if violating_ids:
                 row_label = labels_by_id.get(violating_ids[0], "a row")

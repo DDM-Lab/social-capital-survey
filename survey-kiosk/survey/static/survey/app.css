@@ -24,6 +24,9 @@ body {
 }
 
 h1 { font-size: 1.6rem; margin: 0 0 1rem; }
+.question-text {
+  white-space: normal;
+}
 .muted { color: var(--muted); }
 .center { text-align: center; }
 
@@ -116,6 +119,33 @@ input[type=text], input[type=email], textarea {
 
 .matrix-help {
   margin-top: 0.6rem;
+}
+
+.matrix-help-block {
+  margin-bottom: 0.75rem;
+}
+
+.matrix-help-block .matrix-help {
+  margin: 0.2rem 0;
+}
+
+.matrix-validation-message {
+  margin: 0.5rem 0 0.75rem;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid #d93025;
+  border-radius: 8px;
+  color: #9b1c1c;
+  background: #fde8e8;
+}
+
+.matrix-row-error > th,
+.matrix-row-error > td {
+  background: #fff5f5;
+}
+
+.matrix-cell-error {
+  outline: 2px solid #d93025;
+  outline-offset: -2px;
 }
 
 .code-box {

@@ -263,6 +263,9 @@ class JsonImportTests(TestCase):
                 },
             ],
         )
+        self.assertEqual(matrix.config_json["row_required"], [True, True])
+        self.assertFalse(matrix.config_json["require_complete_started_row"])
+        self.assertFalse(matrix.config_json["require_single_choice_per_row"])
 
     def test_invalid_question_type_fails(self):
         payload = {
@@ -474,6 +477,108 @@ class MultiMatrixTests(TestCase):
                 "columns": {
                     "planned": [self.opt2.id],
                     "actual": [self.opt2.id],
+                }
+            },
+        )
+
+    def test_require_complete_started_row_rejects_partial_row(self):
+        self.question.config_json = {
+            "row_select_mode": "multi",
+            "require_complete_started_row": True,
+            "columns": [
+                {"key": "planned", "label": "Planned", "kind": "choice", "select_mode": "multi", "required": True},
+                {"key": "actual", "label": "Actual", "kind": "choice", "select_mode": "multi", "required": True},
+            ],
+        }
+        self.question.save(update_fields=["config_json"])
+
+        session = self._new_session()
+        response = self.client.post(
+            f"/survey/{session.id}/q/1",
+            {
+                "matrix_planned": [str(self.opt1.id)],
+                "matrix_actual": [str(self.opt2.id)],
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Please complete all required columns for row Less than 30 min.")
+
+    def test_require_single_choice_per_row_enforces_exactly_one(self):
+        self.question.config_json = {
+            "row_select_mode": "single",
+            "require_single_choice_per_row": True,
+            "row_required": [True, True, True],
+            "columns": [
+                {"key": "none", "label": "None", "kind": "choice", "select_mode": "multi", "required": True},
+                {"key": "some", "label": "Some", "kind": "choice", "select_mode": "multi", "required": True},
+            ],
+        }
+        self.question.save(update_fields=["config_json"])
+
+        session = self._new_session()
+        missing_response = self.client.post(
+            f"/survey/{session.id}/q/1",
+            {
+                "matrix_none": [str(self.opt2.id)],
+                "matrix_some": [str(self.opt3.id)],
+            },
+        )
+        self.assertEqual(missing_response.status_code, 200)
+        self.assertContains(missing_response, "Please select one option for row Less than 30 min.")
+
+    def test_require_single_choice_per_row_renders_row_radios(self):
+        self.question.config_json = {
+            "row_select_mode": "single",
+            "require_single_choice_per_row": True,
+            "row_required": [True, True, True],
+            "columns": [
+                {"key": "none", "label": "None", "kind": "choice", "select_mode": "multi", "required": True},
+                {"key": "some", "label": "Some", "kind": "choice", "select_mode": "multi", "required": True},
+            ],
+        }
+        self.question.save(update_fields=["config_json"])
+
+        session = self._new_session()
+        response = self.client.get(f"/survey/{session.id}/q/1")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, f'name="matrix_row_{self.opt1.id}"')
+        self.assertContains(response, f'name="matrix_row_{self.opt2.id}"')
+        self.assertContains(response, f'name="matrix_row_{self.opt3.id}"')
+        self.assertNotContains(response, 'name="matrix_none"')
+        self.assertNotContains(response, 'name="matrix_some"')
+
+    def test_require_single_choice_per_row_accepts_row_radio_payload(self):
+        self.question.config_json = {
+            "row_select_mode": "single",
+            "require_single_choice_per_row": True,
+            "row_required": [True, True, True],
+            "columns": [
+                {"key": "none", "label": "None", "kind": "choice", "select_mode": "multi", "required": True},
+                {"key": "some", "label": "Some", "kind": "choice", "select_mode": "multi", "required": True},
+            ],
+        }
+        self.question.save(update_fields=["config_json"])
+
+        session = self._new_session()
+        response = self.client.post(
+            f"/survey/{session.id}/q/1",
+            {
+                f"matrix_row_{self.opt1.id}": "none",
+                f"matrix_row_{self.opt2.id}": "some",
+                f"matrix_row_{self.opt3.id}": "none",
+            },
+        )
+
+        self.assertEqual(response.status_code, 302)
+        answer = self.question.answers.get(session=session)
+        self.assertEqual(
+            answer.value_json,
+            {
+                "columns": {
+                    "none": [self.opt1.id, self.opt3.id],
+                    "some": [self.opt2.id],
                 }
             },
         )

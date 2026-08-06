@@ -31,7 +31,7 @@
           <a class="button" href="{% url 'admin:survey_survey_preview_flow' survey.pk length step|add:'-1' %}">Previous</a>
         {% endif %}
         {% if step < total %}
-          <a class="button" href="{% url 'admin:survey_survey_preview_flow' survey.pk length step|add:'1' %}">Next</a>
+          <a class="button preview-next-link" href="{% url 'admin:survey_survey_preview_flow' survey.pk length step|add:'1' %}" data-validate-current-card="true">Next</a>
         {% endif %}
       </div>
     {% endif %}
@@ -44,4 +44,5 @@
   {% if question_item.question_script %}
     <script defer src="{% static question_item.question_script %}"></script>
   {% endif %}
+  <script defer src="{% static 'survey/required_feedback.js' %}"></script>
 {% endblock %}

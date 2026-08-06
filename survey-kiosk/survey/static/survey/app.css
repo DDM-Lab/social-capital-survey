@@ -81,6 +81,27 @@ input[type=text], input[type=email], textarea {
 .msg.error { background: #fde8e8; color: #9b1c1c; }
 .msg.success { background: #e6f4ea; color: #1e6b32; }
 
+.validation-errors {
+  margin-bottom: 0.8rem;
+}
+
+.required-invalid {
+  outline: 2px solid #d93025;
+  outline-offset: 2px;
+}
+
+label.required-invalid {
+  display: inline-block;
+  border-radius: 6px;
+}
+
+.grid-wrap.required-invalid,
+.matrix-scroll.required-invalid {
+  border: 2px solid #d93025;
+  border-radius: 8px;
+  padding: 0.25rem;
+}
+
 .likert { display: flex; gap: 0.5rem; justify-content: space-between; flex-wrap: wrap; }
 .likert label { text-align: center; }
 

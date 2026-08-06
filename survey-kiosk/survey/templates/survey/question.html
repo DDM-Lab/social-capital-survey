@@ -8,8 +8,9 @@
   <h1 class="question-text">{{ question.text|linebreaksbr }}</h1>
 
   {% if error %}<ul class="messages"><li class="msg error">{{ error }}</li></ul>{% endif %}
+  <ul class="messages validation-errors" hidden><li class="msg error"></li></ul>
 
-  <form method="post" action="{% url 'survey:question' session.id step %}" id="qform">
+  <form method="post" action="{% url 'survey:question' session.id step %}" id="qform" data-question-type="{{ question.type }}" data-question-required="{% if question.required %}true{% else %}false{% endif %}">
     {% csrf_token %}
     {% include question_template %}
 
@@ -25,4 +26,5 @@
 
 {% block scripts %}
   {% if question_script %}<script src="{% static question_script %}"></script>{% endif %}
+  <script src="{% static 'survey/required_feedback.js' %}"></script>
 {% endblock %}

@@ -1,11 +1,16 @@
 {% load static %}
-<section class="card" id="q-{{ item.question.id }}">
+<section class="card" id="q-{{ item.question.id }}" data-preview-card="true" data-question-type="{{ item.question.type }}" data-question-required="{% if item.question.required %}true{% else %}false{% endif %}">
   <p class="progress">Question {{ step }} of {{ total }} · {{ item.question.get_type_display }}</p>
-  <h2>{{ item.question.text }}</h2>
+  <h2 class="question-text">{{ item.question.text|linebreaksbr }}</h2>
+  <ul class="messages validation-errors" hidden><li class="msg error"></li></ul>
 
   {% with question=item.question question_config=item.question_config answer_value=empty_answer_value selected_choice_ids=empty_selected_choice_ids %}
     {% include item.question_template %}
   {% endwith %}
+
+  <div class="actions">
+    <button type="button" class="btn preview-validate-btn">Check required answer</button>
+  </div>
 
   <p class="muted">Preview mode only: inputs are for demo and are not stored as participant answers.</p>
 

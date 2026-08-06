@@ -11,13 +11,14 @@
     </thead>
     <tbody>
       {% for c in question.choices.all %}
+        {% with row_required=question_config.row_required|get_item:forloop.counter0 %}
         {% with row_key=c.id|stringformat:"s" %}
         {% with point=answer_value.map_points_by_row|get_item:row_key %}
-          <tr>
+          <tr data-row-id="{{ c.id }}" data-row-required="{% if row_required %}true{% else %}false{% endif %}">
             <th scope="row">{{ c.text }}</th>
             {% for column in question_config.columns %}
               {% with text_value=answer_value.column_text_by_row|get_item:column.key|get_item:row_key %}
-                <td>
+                <td data-column-kind="{{ column.kind }}" data-column-required="{% if column.required %}true{% else %}false{% endif %}" data-column-key="{{ column.key }}">
                   {% if column.kind == 'map' %}
                     <label>
                       <input
@@ -37,10 +38,13 @@
                     <input type="hidden" id="map_col_{{ c.id }}" name="map_col_{{ c.id }}" value="{{ point.col|default_if_none:'' }}">
                   {% elif column.kind == 'short_text' %}
                     <input
+                      class="matrix-grid-text-input"
                       type="{% if column.text_mode == 'integer' %}number{% else %}text{% endif %}"
                       name="matrix_text_{{ column.key }}_{{ c.id }}"
                       value="{{ text_value|default:'' }}"
                       aria-label="{{ column.label }}: {{ c.text }}"
+                      data-row-id="{{ c.id }}"
+                      data-column-key="{{ column.key }}"
                       {% if column.text_mode == 'string' and question_config.char_limit %}maxlength="{{ question_config.char_limit }}"{% endif %}
                       {% if column.text_mode == 'integer' %}inputmode="numeric" step="1"{% endif %}
                     >
@@ -49,6 +53,7 @@
               {% endwith %}
             {% endfor %}
           </tr>
+        {% endwith %}
         {% endwith %}
         {% endwith %}
       {% endfor %}

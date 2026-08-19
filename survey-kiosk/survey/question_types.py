@@ -11,6 +11,14 @@ class SurveySchemaError(ValueError):
     pass
 
 
+def parse_non_negative_int(raw_value: str) -> int:
+    """Parse a whole number, rejecting negative values (no survey field needs them)."""
+    value = int(raw_value)
+    if value < 0:
+        raise ValueError("negative values are not allowed")
+    return value
+
+
 @dataclass(frozen=True)
 class ChoiceSpec:
     text: str
@@ -44,6 +52,7 @@ class MatrixColumnSpec:
     select_mode: str = "single"
     text_mode: str = "string"
     required: bool = False
+    rank: bool = False
 
 
 @dataclass(frozen=True)
@@ -605,9 +614,9 @@ class MatrixWithGridDefinition(QuestionTypeDefinition):
 
                 if text_mode == "integer":
                     try:
-                        values_for_column[str(choice.id)] = int(raw_value)
+                        values_for_column[str(choice.id)] = parse_non_negative_int(raw_value)
                     except ValueError:
-                        return f"Please enter a whole number for {label}: {choice.text}."
+                        return f"Please enter a whole number of 0 or greater for {label}: {choice.text}."
                 else:
                     values_for_column[str(choice.id)] = raw_value
 
@@ -830,6 +839,7 @@ class MultiMatrixDefinition(QuestionTypeDefinition):
                     "select_mode": column.select_mode,
                     "text_mode": column.text_mode,
                     "required": column.required,
+                    "rank": column.rank,
                 }
                 for column in question_spec.columns
             ],
@@ -939,13 +949,29 @@ class MultiMatrixDefinition(QuestionTypeDefinition):
                     text_mode = column.get("text_mode", "string")
                     if text_mode == "integer":
                         try:
-                            cell_values[str(choice.id)] = int(raw_value)
+                            cell_values[str(choice.id)] = parse_non_negative_int(raw_value)
                             filled_rows.add(choice.id)
                         except ValueError:
-                            return f"Please enter a whole number for {label}: {choice.text}."
+                            return f"Please enter a whole number of 0 or greater for {label}: {choice.text}."
                     else:
                         cell_values[str(choice.id)] = raw_value
                         filled_rows.add(choice.id)
+
+                if column.get("rank"):
+                    seen_ranks: dict[int, int] = {}
+                    for choice_id_str, rank_value in cell_values.items():
+                        choice_id = int(choice_id_str)
+                        if rank_value < 1:
+                            return f"Please enter a rank of 1 or greater for {label}: {labels_by_id[choice_id]}."
+                        if rank_value > len(filled_rows):
+                            return (
+                                f"Rank {rank_value} in {label} is higher than the number of rows you filled in "
+                                f"({len(filled_rows)})."
+                            )
+                        if rank_value in seen_ranks:
+                            return f"Rank {rank_value} is used more than once in {label}."
+                        seen_ranks[rank_value] = choice_id
+
                 text_cells_by_column[key] = cell_values
                 text_rows_by_column[key] = filled_rows
                 continue
@@ -1117,19 +1143,26 @@ def parse_matrix_columns(raw: dict[str, Any]) -> list[MatrixColumnSpec]:
         kind = raw_column.get("kind", "choice")
         text_mode = raw_column.get("text_mode", "string")
         required = raw_column.get("required", False)
+        rank = raw_column.get("rank", False)
         if not isinstance(kind, str) or kind not in {"choice", "short_text"}:
             raise SurveySchemaError("Column 'kind' must be 'choice' or 'short_text'.")
         if not isinstance(required, bool):
             raise SurveySchemaError("Column 'required' must be a boolean.")
+        if not isinstance(rank, bool):
+            raise SurveySchemaError("Column 'rank' must be a boolean.")
         if kind == "choice":
             if not isinstance(select_mode, str) or select_mode not in {"single", "multi"}:
                 raise SurveySchemaError("Column 'select_mode' must be 'single' or 'multi'.")
             text_mode = "string"
+            if rank:
+                raise SurveySchemaError("Column 'rank' requires kind 'short_text' with text_mode 'integer'.")
         else:
             if select_mode not in {None, "", "single"}:
                 raise SurveySchemaError("Short-text columns do not use 'select_mode'.")
             if not isinstance(text_mode, str) or text_mode not in {"string", "integer"}:
                 raise SurveySchemaError("Short-text columns require 'text_mode' of 'string' or 'integer'.")
+            if rank and text_mode != "integer":
+                raise SurveySchemaError("Column 'rank' requires kind 'short_text' with text_mode 'integer'.")
             select_mode = "single"
 
         keys_seen.add(key)
@@ -1141,6 +1174,7 @@ def parse_matrix_columns(raw: dict[str, Any]) -> list[MatrixColumnSpec]:
                 select_mode=select_mode,
                 text_mode=text_mode,
                 required=required,
+                rank=rank,
             )
         )
     return columns

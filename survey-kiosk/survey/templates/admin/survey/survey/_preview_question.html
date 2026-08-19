@@ -1,7 +1,7 @@
-{% load static %}
+{% load static survey_extras %}
 <section class="card" id="q-{{ item.question.id }}" data-preview-card="true" data-question-type="{{ item.question.type }}" data-question-required="{% if item.question.required %}true{% else %}false{% endif %}">
   <p class="progress">Question {{ step }} of {{ total }} · {{ item.question.get_type_display }}</p>
-  <h2 class="question-text">{{ item.question.text|linebreaksbr }}</h2>
+  <h2 class="question-text">{{ item.question.text|richtext }}</h2>
   <ul class="messages validation-errors" hidden><li class="msg error"></li></ul>
 
   {% with question=item.question question_config=item.question_config answer_value=empty_answer_value selected_choice_ids=empty_selected_choice_ids %}

@@ -1,11 +1,11 @@
 {% extends "survey/base.html" %}
-{% load static %}
+{% load static survey_extras %}
 {% block title %}Question {{ step }}{% endblock %}
 
 {% block content %}
 <section class="card">
   <p class="progress">Question {{ step }} of {{ total }}</p>
-  <h1 class="question-text">{{ question.text|linebreaksbr }}</h1>
+  <h1 class="question-text">{{ question.text|richtext }}</h1>
 
   {% if error %}<ul class="messages"><li class="msg error">{{ error }}</li></ul>{% endif %}
   <ul class="messages validation-errors" hidden><li class="msg error"></li></ul>

@@ -1,7 +1,8 @@
+{% load survey_extras %}
 {% for c in question.choices.all %}
   <label class="choice">
     <input type="checkbox" name="choices" value="{{ c.id }}"
            {% if c.id in selected_choice_ids %}checked{% endif %}>
-    {{ c.text }}
+    {{ c.text|richtext }}
   </label>
 {% endfor %}

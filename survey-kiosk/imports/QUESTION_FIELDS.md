@@ -17,9 +17,24 @@ This file documents the JSON schema used by files in this folder.
 |---|---|---|---|
 | type | string | Yes | Question type. One of: single, multi, multi_matrix, matrix_with_grid, grid_preference_flow, likert, short_text, image_grid. |
 | order | integer | Yes | Display order. Must be unique across all questions. |
-| text | string | Yes | Question prompt (non-empty). |
+| text | string | Yes | Question prompt (non-empty). Supports inline rich-text markers, see "Rich text markers" below. |
 | included_in_short | boolean | No | Include in short survey mode. Default: false. |
 | required | boolean | No | Whether the question requires an answer. Default: true. |
+
+## Rich text markers
+
+Question/choice/label/prompt text renders through a `richtext` filter that escapes the raw text
+and then applies a small set of inline markers (plain text otherwise, no bold/italic/size by
+default):
+
+| Marker | Renders as |
+|---|---|
+| `**bold text**` | `<strong>bold text</strong>` |
+| `*italic text*` | `<em>italic text</em>` |
+| `{{sm:text}}` / `{{md:text}}` / `{{lg:text}}` / `{{xl:text}}` | `<span class="text-{size}">text</span>` |
+
+Markers can be combined/nested (e.g. `{{lg:**bold and large**}}`). Newlines still render as
+line breaks.
 
 ## single
 
@@ -51,7 +66,8 @@ This file documents the JSON schema used by files in this folder.
 | kind | string | No | Column behavior. Values: choice or short_text. Default: choice. |
 | required | boolean | No | Whether this column is required independently. Default: false. |
 | select_mode | string | Conditional | For kind=choice only. Values: single or multi. Default: single. |
-| text_mode | string | Conditional | For kind=short_text only. Values: string or integer. Default: string. |
+| text_mode | string | Conditional | For kind=short_text only. Values: string or integer. Default: string. Integer cells never accept negative numbers. |
+| rank | boolean | No | For kind=short_text with text_mode=integer only. Marks the column as a ranking field: values must be positive, unique within the column, and no greater than the number of rows filled in for that column. Default: false. |
 
 ## likert
 
@@ -98,7 +114,7 @@ This file documents the JSON schema used by files in this folder.
 | label | string | Yes | Column label shown in UI. |
 | kind | string | Yes | Column behavior. Values: map or short_text. |
 | required | boolean | No | Whether this column is required for required rows. Default: false. |
-| text_mode | string | Conditional | For kind=short_text only. Values: string or integer. Default: string. |
+| text_mode | string | Conditional | For kind=short_text only. Values: string or integer. Default: string. Integer cells never accept negative numbers. |
 
 ## grid_preference_flow
 

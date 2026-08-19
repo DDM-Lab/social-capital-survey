@@ -1,8 +1,9 @@
+{% load survey_extras %}
 {% for c in question.choices.all %}
   <label class="choice">
     <input type="radio" name="choice" value="{{ c.id }}"
            {% if c.id in selected_choice_ids %}checked{% endif %}
            {% if question.required %}required{% endif %}>
-    {{ c.text }}
+    {{ c.text|richtext }}
   </label>
 {% endfor %}

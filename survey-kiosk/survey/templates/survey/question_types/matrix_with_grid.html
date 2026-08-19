@@ -5,7 +5,7 @@
       <tr>
         <th scope="col">Option</th>
         {% for column in question_config.columns %}
-          <th scope="col">{{ column.label }}</th>
+          <th scope="col">{{ column.label|richtext }}</th>
         {% endfor %}
       </tr>
     </thead>
@@ -15,7 +15,7 @@
         {% with row_key=c.id|stringformat:"s" %}
         {% with point=answer_value.map_points_by_row|get_item:row_key %}
           <tr data-row-id="{{ c.id }}" data-row-required="{% if row_required %}true{% else %}false{% endif %}">
-            <th scope="row">{{ c.text }}</th>
+            <th scope="row">{{ c.text|richtext }}</th>
             {% for column in question_config.columns %}
               {% with text_value=answer_value.column_text_by_row|get_item:column.key|get_item:row_key %}
                 <td data-column-kind="{{ column.kind }}" data-column-required="{% if column.required %}true{% else %}false{% endif %}" data-column-key="{{ column.key }}">
@@ -46,7 +46,7 @@
                       data-row-id="{{ c.id }}"
                       data-column-key="{{ column.key }}"
                       {% if column.text_mode == 'string' and question_config.char_limit %}maxlength="{{ question_config.char_limit }}"{% endif %}
-                      {% if column.text_mode == 'integer' %}inputmode="numeric" step="1"{% endif %}
+                      {% if column.text_mode == 'integer' %}inputmode="numeric" step="1" min="0"{% endif %}
                     >
                   {% endif %}
                 </td>

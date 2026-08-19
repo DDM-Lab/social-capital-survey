@@ -1,6 +1,6 @@
 {
   "name": "Long Questions Survey",
-  "consent_text": "Thank you for participating in this survey. This survey asks about your visit to this space today. We are interested in: \n Why you came here \n What activities you planned to do and actually did \n Who you interacted with \n How the space supported your activities and social experience. \n How the space supported your activities and social experience \n The survey should take approximately 8–12 minutes to complete. \n Please answer based only on today’s visit.",
+  "consent_text": "This survey asks about your experience with the visit to this space today. Please respond to the following questions based only on today’s visit. You will be able to get a prize after you finish the survey!",
   "active": true,
   "questions": [
    {
@@ -68,9 +68,9 @@
       ],
       "columns": [
         { "key": "planned", "label": "Planned", "kind": "choice", "select_mode": "multi", "required": true },
-        { "key": "planned_rank", "label": "Planned rank", "kind": "short_text", "text_mode":"integer", "required": true },
+        { "key": "planned_rank", "label": "Planned rank", "kind": "short_text", "text_mode":"integer", "rank": true, "required": true },
         { "key": "actual", "label": "Actual", "kind": "choice", "select_mode": "multi", "required": true },
-        { "key": "actual_rank", "label": "Actual rank", "kind": "short_text", "text_mode":"integer", "required": true }
+        { "key": "actual_rank", "label": "Actual rank", "kind": "short_text", "text_mode":"integer", "rank": true, "required": true }
       ]
     },
     {
@@ -130,8 +130,8 @@
         { "text": "Close friends", "order": 3 }
       ],
       "columns": [
-        { "key": "actually_met", "label": "Number of people actually met", "kind": "short_text", "text_mode":"string", "required": true },
-        { "key": "ran_into", "label": "Number of people ran into", "kind": "short_text", "text_mode":"string", "required": true },
+        { "key": "actually_met", "label": "Number of people actually met", "kind": "short_text", "text_mode":"integer", "required": true },
+        { "key": "ran_into", "label": "Number of people ran into", "kind": "short_text", "text_mode":"integer", "required": true },
         { "key": "resources", "label": "Did they provide you with new ideas/resources (Yes/No/Not sure)", "kind": "short_text","text_mode":"string", "required": true }
       ]
     },

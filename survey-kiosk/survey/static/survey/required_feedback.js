@@ -151,10 +151,77 @@
     return "Please tap a cell on the image.";
   }
 
+  function validateMatrixIntegerColumns(table) {
+    var integerInputs = Array.prototype.slice.call(
+      table.querySelectorAll('input.matrix-text-input[type="number"], input.matrix-grid-text-input[type="number"]')
+    );
+    if (!integerInputs.length) {
+      return null;
+    }
+
+    for (var i = 0; i < integerInputs.length; i++) {
+      var input = integerInputs[i];
+      var raw = input.value.trim();
+      if (raw === "") {
+        continue;
+      }
+      var num = Number(raw);
+      if (!isFinite(num) || num < 0) {
+        markInvalid(input);
+        return "Please enter a whole number of 0 or greater.";
+      }
+    }
+
+    var rankColumns = {};
+    integerInputs.forEach(function (input) {
+      if (input.dataset.rank !== "true") {
+        return;
+      }
+      var raw = input.value.trim();
+      if (raw === "") {
+        return;
+      }
+      var key = input.dataset.columnKey;
+      rankColumns[key] = rankColumns[key] || [];
+      rankColumns[key].push({ input: input, value: Number(raw) });
+    });
+
+    for (var columnKey in rankColumns) {
+      var entries = rankColumns[columnKey];
+      var seen = {};
+      for (var j = 0; j < entries.length; j++) {
+        var entry = entries[j];
+        if (entry.value < 1) {
+          markInvalid(entry.input);
+          return "Please enter a rank of 1 or greater.";
+        }
+        if (entry.value > entries.length) {
+          markInvalid(entry.input);
+          return (
+            "Rank " + entry.value + " is higher than the number of rows you filled in (" + entries.length + ")."
+          );
+        }
+        if (seen[entry.value]) {
+          markInvalid(entry.input);
+          markInvalid(seen[entry.value]);
+          return "Rank " + entry.value + " is used more than once.";
+        }
+        seen[entry.value] = entry.input;
+      }
+    }
+
+    return null;
+  }
+
   function validateMultiMatrix(card, required) {
     var table = card.querySelector(".matrix-table");
     if (!table) {
       return null;
+    }
+
+    var integerColumnError = validateMatrixIntegerColumns(table);
+    if (integerColumnError) {
+      return integerColumnError;
     }
 
     var requireSingleChoicePerRow = table.dataset.requireSingleChoicePerRow === "true";
@@ -265,6 +332,11 @@
     var gridWrap = card.querySelector(".matrix-grid-wrap");
     if (!table || !gridWrap) {
       return null;
+    }
+
+    var integerColumnError = validateMatrixIntegerColumns(table);
+    if (integerColumnError) {
+      return integerColumnError;
     }
 
     var rows = table.querySelectorAll("tbody tr[data-row-id]");

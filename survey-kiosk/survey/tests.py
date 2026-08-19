@@ -252,6 +252,7 @@ class JsonImportTests(TestCase):
                     "select_mode": "single",
                     "text_mode": "string",
                     "required": False,
+                    "rank": False,
                 },
                 {
                     "key": "actual",
@@ -260,6 +261,7 @@ class JsonImportTests(TestCase):
                     "select_mode": "multi",
                     "text_mode": "string",
                     "required": False,
+                    "rank": False,
                 },
             ],
         )
@@ -299,6 +301,29 @@ class JsonImportTests(TestCase):
                     ],
                     "columns": [
                         {"key": "planned", "label": "Planned", "select_mode": "invalid"},
+                    ],
+                }
+            ],
+        }
+
+        with self.assertRaises(SurveySchemaError):
+            SurveySpec.from_dict(payload)
+
+    def test_rank_column_requires_short_text_integer(self):
+        payload = {
+            "name": "Bad Rank Survey",
+            "consent_text": "Consent",
+            "active": True,
+            "questions": [
+                {
+                    "type": "multi_matrix",
+                    "order": 1,
+                    "text": "Duration planned vs actual",
+                    "choices": [
+                        {"text": "Less than 30 min", "order": 1},
+                    ],
+                    "columns": [
+                        {"key": "planned", "label": "Planned", "select_mode": "single", "rank": True},
                     ],
                 }
             ],
@@ -504,6 +529,33 @@ class MultiMatrixTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Please complete all required columns for row Less than 30 min.")
 
+    def test_require_complete_started_row_allows_untouched_rows(self):
+        self.question.config_json = {
+            "row_select_mode": "multi",
+            "require_complete_started_row": True,
+            "columns": [
+                {"key": "planned", "label": "Planned", "kind": "choice", "select_mode": "multi", "required": True},
+                {"key": "actual", "label": "Actual", "kind": "choice", "select_mode": "multi", "required": True},
+            ],
+        }
+        self.question.save(update_fields=["config_json"])
+
+        session = self._new_session()
+        response = self.client.post(
+            f"/survey/{session.id}/q/1",
+            {
+                "matrix_planned": [str(self.opt1.id)],
+                "matrix_actual": [str(self.opt1.id)],
+            },
+        )
+
+        self.assertEqual(response.status_code, 302)
+        answer = self.question.answers.get(session=session)
+        self.assertEqual(
+            answer.value_json,
+            {"columns": {"planned": [self.opt1.id], "actual": [self.opt1.id]}},
+        )
+
     def test_require_single_choice_per_row_enforces_exactly_one(self):
         self.question.config_json = {
             "row_select_mode": "single",
@@ -583,6 +635,111 @@ class MultiMatrixTests(TestCase):
             },
         )
 
+    def test_short_text_integer_column_rejects_negative_value(self):
+        self.question.config_json = {
+            "row_select_mode": "multi",
+            "columns": [
+                {"key": "count", "label": "Count", "kind": "short_text", "text_mode": "integer", "required": False},
+            ],
+        }
+        self.question.save(update_fields=["config_json"])
+
+        session = self._new_session()
+        response = self.client.post(
+            f"/survey/{session.id}/q/1",
+            {f"matrix_text_count_{self.opt1.id}": "-1"},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Please enter a whole number of 0 or greater for Count: Less than 30 min.")
+
+    def test_rank_column_rejects_zero(self):
+        self.question.config_json = {
+            "row_select_mode": "multi",
+            "columns": [
+                {"key": "rank", "label": "Rank", "kind": "short_text", "text_mode": "integer", "rank": True, "required": False},
+            ],
+        }
+        self.question.save(update_fields=["config_json"])
+
+        session = self._new_session()
+        response = self.client.post(
+            f"/survey/{session.id}/q/1",
+            {f"matrix_text_rank_{self.opt1.id}": "0"},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Please enter a rank of 1 or greater for Rank: Less than 30 min.")
+
+    def test_rank_column_rejects_duplicate_values(self):
+        self.question.config_json = {
+            "row_select_mode": "multi",
+            "columns": [
+                {"key": "rank", "label": "Rank", "kind": "short_text", "text_mode": "integer", "rank": True, "required": False},
+            ],
+        }
+        self.question.save(update_fields=["config_json"])
+
+        session = self._new_session()
+        response = self.client.post(
+            f"/survey/{session.id}/q/1",
+            {
+                f"matrix_text_rank_{self.opt1.id}": "1",
+                f"matrix_text_rank_{self.opt2.id}": "1",
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Rank 1 is used more than once in Rank.")
+
+    def test_rank_column_rejects_value_above_filled_row_count(self):
+        self.question.config_json = {
+            "row_select_mode": "multi",
+            "columns": [
+                {"key": "rank", "label": "Rank", "kind": "short_text", "text_mode": "integer", "rank": True, "required": False},
+            ],
+        }
+        self.question.save(update_fields=["config_json"])
+
+        session = self._new_session()
+        response = self.client.post(
+            f"/survey/{session.id}/q/1",
+            {f"matrix_text_rank_{self.opt1.id}": "2"},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(
+            response, "Rank 2 in Rank is higher than the number of rows you filled in (1)."
+        )
+
+    def test_rank_column_accepts_valid_ranks(self):
+        self.question.config_json = {
+            "row_select_mode": "multi",
+            "columns": [
+                {"key": "rank", "label": "Rank", "kind": "short_text", "text_mode": "integer", "rank": True, "required": False},
+            ],
+        }
+        self.question.save(update_fields=["config_json"])
+
+        session = self._new_session()
+        response = self.client.post(
+            f"/survey/{session.id}/q/1",
+            {
+                f"matrix_text_rank_{self.opt1.id}": "2",
+                f"matrix_text_rank_{self.opt2.id}": "1",
+            },
+        )
+
+        self.assertEqual(response.status_code, 302)
+        answer = self.question.answers.get(session=session)
+        self.assertEqual(
+            answer.value_json,
+            {
+                "columns": {},
+                "text_cells": {"rank": {str(self.opt1.id): 2, str(self.opt2.id): 1}},
+            },
+        )
+
 
 class MatrixWithGridTests(TestCase):
     def setUp(self):
@@ -658,6 +815,27 @@ class MatrixWithGridTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Please mark a map location for row Row 1.")
+
+    def test_short_text_integer_column_rejects_negative_value(self):
+        self.question.config_json = {
+            "grid_rows": 4,
+            "grid_cols": 6,
+            "row_required": [False, False],
+            "columns": [
+                {"key": "mark", "label": "Mark on map", "kind": "map", "required": False},
+                {"key": "count", "label": "Count", "kind": "short_text", "text_mode": "integer", "required": False},
+            ],
+        }
+        self.question.save(update_fields=["config_json"])
+
+        session = self._new_session()
+        response = self.client.post(
+            f"/survey/{session.id}/q/1",
+            {f"matrix_text_count_{self.opt1.id}": "-3"},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Please enter a whole number of 0 or greater for Count: Row 1.")
 
 
 class GridPreferenceFlowTests(TestCase):

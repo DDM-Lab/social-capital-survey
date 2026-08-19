@@ -2,6 +2,8 @@
 <div class="matrix-help-block">
   {% if question_config.require_single_choice_per_row %}
     <p class="muted matrix-help">Select exactly one option in each row.</p>
+  {% elif question_config.require_complete_started_row %}
+    {# Rows are opt-in: help text below covers the actual rule, avoid implying every row/column is mandatory. #}
   {% elif question.required %}
     <p class="muted matrix-help">Select at least one option in each column.</p>
   {% endif %}
@@ -27,7 +29,7 @@
       <tr>
         <th scope="col">Option</th>
         {% for column in question_config.columns %}
-          <th scope="col">{{ column.label }}</th>
+          <th scope="col">{{ column.label|richtext }}</th>
         {% endfor %}
       </tr>
     </thead>
@@ -36,7 +38,7 @@
         {% with row_required=question_config.row_required|get_item:forloop.counter0 %}
         {% with choice_id=c.id|stringformat:"s" %}
           <tr data-row-id="{{ c.id }}" data-row-required="{% if row_required %}true{% else %}false{% endif %}">
-            <th scope="row">{{ c.text }}</th>
+            <th scope="row">{{ c.text|richtext }}</th>
             {% for column in question_config.columns %}
               {% with selected_key=column.key|add:":"|add:choice_id text_value=answer_value.text_cells|get_item:column.key|get_item:choice_id %}
                 <td
@@ -52,8 +54,9 @@
                       aria-label="{{ column.label }}: {{ c.text }}"
                       data-row-id="{{ c.id }}"
                       data-column-key="{{ column.key }}"
+                      {% if column.rank %}data-rank="true"{% endif %}
                       {% if column.text_mode == 'string' and question_config.char_limit %}maxlength="{{ question_config.char_limit }}"{% endif %}
-                      {% if column.text_mode == 'integer' %}inputmode="numeric" step="1"{% endif %}
+                      {% if column.text_mode == 'integer' %}inputmode="numeric" step="1" min="{% if column.rank %}1{% else %}0{% endif %}"{% endif %}
                       {% if column.required %}required{% endif %}
                     >
                   {% else %}

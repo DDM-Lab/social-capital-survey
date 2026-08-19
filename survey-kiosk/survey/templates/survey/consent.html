@@ -6,7 +6,7 @@
   <h1>Before you begin</h1>
 
   <div class="consent-text">
-    {{ session.survey.consent_text|linebreaks }}
+    {{ session.survey.consent_text|richtext }}
   </div>
 
   {% if errors %}

@@ -1,0 +1,10 @@
+{% extends "survey/base.html" %}
+{% block title %}Confirmed{% endblock %}
+
+{% block content %}
+<section class="card center">
+  <h1>Mailbox confirmed ✓</h1>
+  <p>Thanks, <strong>{{ receipt.andrew_id }}</strong> — your coffee receipt is unlocked.</p>
+  <p>Return to a kiosk and enter your Andrew ID to print it.</p>
+</section>
+{% endblock %}

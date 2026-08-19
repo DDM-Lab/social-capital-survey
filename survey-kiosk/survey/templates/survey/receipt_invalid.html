@@ -1,0 +1,16 @@
+{% extends "survey/base.html" %}
+{% block title %}Link problem{% endblock %}
+
+{% block content %}
+<section class="card center">
+  {% if expired %}
+    <h1>That link has expired</h1>
+    <p>Confirmation links are only valid for a limited time. Take the survey again from a kiosk
+       to get a fresh one.</p>
+  {% else %}
+    <h1>That link isn't valid</h1>
+    <p>We couldn't find that confirmation link. Check that you used the most recent email, or
+       take the survey again from a kiosk.</p>
+  {% endif %}
+</section>
+{% endblock %}

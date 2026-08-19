@@ -15,4 +15,6 @@ urlpatterns = [
     path("survey/<uuid:session_id>/q/<int:step>", views.question, name="question"),
     path("survey/<uuid:session_id>/claim", views.claim, name="claim"),
     path("claim/verify/<str:token>", views.verify, name="verify"),
+    path("survey/<uuid:session_id>/verify-sent", views.verify_sent, name="verify_sent"),
+    path("receipt/verify/<str:token>", views.receipt_verify, name="receipt_verify"),
 ]

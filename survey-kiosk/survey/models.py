@@ -248,3 +248,40 @@ class PrizeClaim(models.Model):
 
     def __str__(self):
         return f"{self.email} ({self.status})"
+
+
+class Receipt(models.Model):
+    """Coffee-receipt grant for an identified session.
+
+    Every completed identified survey creates one; the receipt is only printable
+    after the respondent clicks the magic link emailed to their andrew mailbox
+    (verify-every-session). Mirrors PrizeClaim's verify pattern, but the prize is
+    a thermal printout rather than a pool code.
+    """
+
+    class Status(models.TextChoices):
+        PENDING = "pending", "Pending verification"
+        VERIFIED = "verified", "Verified"
+
+    session = models.OneToOneField(
+        SurveySession, on_delete=models.CASCADE, related_name="receipt"
+    )
+    andrew_id = models.CharField(max_length=64)
+    email = models.EmailField()
+    status = models.CharField(max_length=12, choices=Status.choices, default=Status.PENDING)
+    verify_token = models.CharField(max_length=64, unique=True, default=secrets.token_urlsafe)
+    verify_expires_at = models.DateTimeField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    verified_at = models.DateTimeField(null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        if not self.verify_expires_at:
+            self.verify_expires_at = timezone.now() + timedelta(hours=settings.VERIFY_TTL_HOURS)
+        super().save(*args, **kwargs)
+
+    @property
+    def verify_expired(self):
+        return timezone.now() >= self.verify_expires_at
+
+    def __str__(self):
+        return f"Receipt {self.andrew_id} ({self.status})"

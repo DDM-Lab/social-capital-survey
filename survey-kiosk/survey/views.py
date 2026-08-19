@@ -11,7 +11,7 @@ from django.db import IntegrityError, transaction
 from django.utils import timezone
 from django_ratelimit.decorators import ratelimit
 
-from .emails import send_survey_link_email, send_verify_email
+from .emails import send_receipt_verify_email, send_survey_link_email, send_verify_email
 from .forms import ClaimForm
 from .models import (
     Answer,
@@ -20,6 +20,7 @@ from .models import (
     PrizeClaim,
     PrizeCode,
     Question,
+    Receipt,
     SurveySession,
 )
 from .question_types import QUESTION_TYPES, get_answer_runtime_value, get_question_runtime_config
@@ -150,6 +151,8 @@ def _live_session_or_response(request, session_id):
     """Return (session, None) if live, else (None, rendered expired response)."""
     session = get_object_or_404(SurveySession, pk=session_id)
     if session.status == SurveySession.Status.COMPLETED:
+        if session.is_identified:
+            return session, redirect("survey:verify_sent", session_id=session.id)
         return session, redirect("survey:claim", session_id=session.id)
     if not session.is_live:
         if session.status == SurveySession.Status.ACTIVE:
@@ -220,6 +223,8 @@ def question(request, session_id, step):
                 session.status = SurveySession.Status.COMPLETED
                 session.completed_at = timezone.now()
                 session.save(update_fields=["status", "completed_at"])
+                if session.is_identified:
+                    return _grant_receipt(session)
                 return redirect("survey:claim", session_id=session.id)
             return redirect("survey:question", session_id=session.id, step=step + 1)
 
@@ -337,3 +342,41 @@ def verify(request, token):
         return render(request, "survey/verify_invalid.html", {"duplicate": True}, status=409)
 
     return render(request, "survey/prize.html", {"claim": claim})
+
+
+# --- Receipt: verify-every-session ------------------------------------------
+
+def _grant_receipt(session):
+    """Create the session's receipt (idempotently) and email the verify link."""
+    receipt, created = Receipt.objects.get_or_create(
+        session=session,
+        defaults={"andrew_id": session.andrew_id, "email": session.email},
+    )
+    if created:
+        send_receipt_verify_email(receipt)
+    return redirect("survey:verify_sent", session_id=session.id)
+
+
+def verify_sent(request, session_id):
+    """'Check your email' screen shown after an identified completion."""
+    session = get_object_or_404(SurveySession, pk=session_id)
+    receipt = getattr(session, "receipt", None)
+    if receipt is None:
+        if session.is_live:
+            return redirect("survey:channel", session_id=session.id)
+        return render(request, "survey/expired_session.html", status=410)
+    return render(request, "survey/verify_sent.html", {"session": session, "receipt": receipt})
+
+
+def receipt_verify(request, token):
+    """Magic link: prove the mailbox, marking the receipt printable."""
+    receipt = Receipt.objects.filter(verify_token=token).first()
+    if receipt is None:
+        return render(request, "survey/receipt_invalid.html", status=404)
+    if receipt.status == Receipt.Status.PENDING and receipt.verify_expired:
+        return render(request, "survey/receipt_invalid.html", {"expired": True}, status=410)
+    if receipt.status == Receipt.Status.PENDING:
+        receipt.status = Receipt.Status.VERIFIED
+        receipt.verified_at = timezone.now()
+        receipt.save(update_fields=["status", "verified_at"])
+    return render(request, "survey/receipt_verified.html", {"receipt": receipt})

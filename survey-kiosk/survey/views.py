@@ -11,7 +11,7 @@ from django.db import IntegrityError, transaction
 from django.utils import timezone
 from django_ratelimit.decorators import ratelimit
 
-from .emails import send_verify_email
+from .emails import send_survey_link_email, send_verify_email
 from .forms import ClaimForm
 from .models import (
     Answer,
@@ -53,13 +53,68 @@ def _qr_data_uri(url):
     return f"data:image/png;base64,{encoded}"
 
 
+def _entry_context(kiosk, form):
+    return {
+        "kiosk": kiosk,
+        "form": form,
+        "target_domain": settings.TARGET_DOMAIN,
+        "rotate_seconds": kiosk.effective_rotate_seconds,
+    }
+
+
 def kiosk_page(request, kiosk_id):
+    """Kiosk landing: the AndrewID entry screen (anonymous scan kept as a fallback)."""
     kiosk = get_object_or_404(Kiosk, pk=kiosk_id, active=True)
-    return render(
-        request,
-        "survey/kiosk.html",
-        {"kiosk": kiosk, "rotate_seconds": kiosk.effective_rotate_seconds},
-    )
+    return render(request, "survey/kiosk.html", _entry_context(kiosk, ClaimForm()))
+
+
+@ratelimit(key="ip", rate="30/m", method="POST", block=True)
+def enter(request, kiosk_id):
+    """Validate an AndrewID and route into the identified flow.
+
+    Reuses a still-live session for the same AndrewID rather than minting a
+    duplicate; otherwise creates a new identified session and goes to the
+    kiosk-vs-phone channel choice.
+    """
+    kiosk = get_object_or_404(Kiosk, pk=kiosk_id, active=True)
+    form = ClaimForm(request.POST or None)
+    if request.method == "POST" and form.is_valid():
+        andrew_id = form.cleaned_data["username"]  # normalized local part
+        session = SurveySession.live_for(andrew_id)
+        if session is None:
+            session = SurveySession.objects.create(
+                kiosk=kiosk, survey=kiosk.survey, andrew_id=andrew_id
+            )
+        return redirect("survey:channel", session_id=session.id)
+    status = 400 if request.method == "POST" else 200
+    return render(request, "survey/kiosk.html", _entry_context(kiosk, form), status=status)
+
+
+def channel(request, session_id):
+    """Choose to take the survey on the kiosk now, or get a link for the phone."""
+    session = get_object_or_404(SurveySession, pk=session_id)
+    if not session.is_live:
+        return render(request, "survey/expired_session.html", status=410)
+
+    if request.method == "POST":
+        choice = request.POST.get("channel")
+        if choice == "kiosk":
+            return redirect("survey:start", session_id=session.id)
+        if choice == "phone":
+            send_survey_link_email(session)
+            link = f"{settings.BASE_URL}{reverse('survey:start', args=[session.id])}"
+            return render(
+                request,
+                "survey/invite_sent.html",
+                {"session": session, "scan_url": link, "qr_data_uri": _qr_data_uri(link)},
+            )
+        return render(
+            request,
+            "survey/channel.html",
+            {"session": session, "error": "Please choose an option."},
+            status=400,
+        )
+    return render(request, "survey/channel.html", {"session": session})
 
 
 @ratelimit(key="ip", rate="120/m", block=True)

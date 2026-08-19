@@ -119,6 +119,9 @@ class SurveySession(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     kiosk = models.ForeignKey(Kiosk, on_delete=models.PROTECT, related_name="sessions")
     survey = models.ForeignKey(Survey, on_delete=models.PROTECT, related_name="sessions")
+    # Normalized AndrewID local part, captured up front on the identified entry
+    # flow. Blank for the anonymous /s/<token> fallback.
+    andrew_id = models.CharField(max_length=64, blank=True)
     length = models.CharField(max_length=10, choices=Length.choices, blank=True)
     status = models.CharField(max_length=10, choices=Status.choices, default=Status.ACTIVE)
     consented = models.BooleanField(default=False)
@@ -138,6 +141,30 @@ class SurveySession(models.Model):
     @property
     def is_live(self):
         return self.status == self.Status.ACTIVE and not self.is_expired
+
+    @property
+    def is_identified(self):
+        return bool(self.andrew_id)
+
+    @property
+    def email(self):
+        """The andrew mailbox for this respondent, or '' on the anonymous path."""
+        if not self.andrew_id:
+            return ""
+        return f"{self.andrew_id}@{settings.TARGET_DOMAIN.lower()}"
+
+    @classmethod
+    def live_for(cls, andrew_id):
+        """The most recent still-live session for an AndrewID, if any."""
+        return (
+            cls.objects.filter(
+                andrew_id=andrew_id,
+                status=cls.Status.ACTIVE,
+                expires_at__gt=timezone.now(),
+            )
+            .order_by("-created_at")
+            .first()
+        )
 
     def __str__(self):
         return f"Session {self.id} ({self.status})"

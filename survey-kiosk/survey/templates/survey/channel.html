@@ -1,0 +1,25 @@
+{% extends "survey/base.html" %}
+{% block title %}How would you like to take it?{% endblock %}
+
+{% block content %}
+<section class="card">
+  <h1>How would you like to take the survey?</h1>
+
+  {% if error %}<ul class="messages"><li class="msg error">{{ error }}</li></ul>{% endif %}
+
+  <form method="post" action="{% url 'survey:channel' session.id %}">
+    {% csrf_token %}
+    <label class="choice">
+      <input type="radio" name="channel" value="kiosk" required>
+      Take it here on the kiosk now
+    </label>
+    <label class="choice">
+      <input type="radio" name="channel" value="phone">
+      Email me a link to take it on my phone
+    </label>
+    <div class="actions">
+      <button class="btn" type="submit">Continue</button>
+    </div>
+  </form>
+</section>
+{% endblock %}

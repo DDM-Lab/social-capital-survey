@@ -125,6 +125,86 @@ class FlowTests(TestCase):
         self.assertEqual(s.status, SurveySession.Status.EXPIRED)
 
 
+@override_settings(
+    EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend",
+    RATELIMIT_ENABLE=False,
+)
+class EntryFlowTests(TestCase):
+    """New AndrewID-gated entry: enter AndrewID -> choose kiosk vs phone."""
+
+    def setUp(self):
+        self.survey, self.questions = make_survey()
+        self.kiosk = Kiosk.objects.create(name="K", survey=self.survey)
+
+    def _enter(self, andrew="jdoe"):
+        return self.client.post(f"/kiosk/{self.kiosk.id}/enter", {"username": andrew})
+
+    def test_kiosk_landing_shows_andrewid_form(self):
+        r = self.client.get(f"/kiosk/{self.kiosk.id}/")
+        self.assertEqual(r.status_code, 200)
+        # The entry form shows the domain suffix so people know what's appended.
+        self.assertContains(r, "andrew.cmu.edu")
+
+    def test_entry_creates_identified_session(self):
+        r = self._enter("jdoe")
+        self.assertEqual(r.status_code, 302)
+        self.assertEqual(SurveySession.objects.count(), 1)
+        s = SurveySession.objects.get()
+        self.assertEqual(s.andrew_id, "jdoe")
+        self.assertEqual(s.email, "jdoe@andrew.cmu.edu")
+        self.assertTrue(s.is_identified)
+        self.assertIn(f"/survey/{s.id}/channel", r.headers["Location"])
+
+    def test_andrewid_is_normalized(self):
+        self._enter("  JDoe@andrew.cmu.edu ")
+        s = SurveySession.objects.get()
+        self.assertEqual(s.andrew_id, "jdoe")
+
+    def test_invalid_andrewid_rejected(self):
+        r = self.client.post(f"/kiosk/{self.kiosk.id}/enter", {"username": "bad id!"})
+        self.assertEqual(SurveySession.objects.count(), 0)
+        self.assertContains(r, "unsupported characters", status_code=400)
+
+    def test_reentry_resumes_live_session(self):
+        self._enter("jdoe")
+        self._enter("jdoe")
+        # Re-entering the same AndrewID reuses the live session; no duplicate.
+        self.assertEqual(SurveySession.objects.count(), 1)
+
+    def test_kiosk_channel_starts_survey(self):
+        self._enter("jdoe")
+        s = SurveySession.objects.get()
+        r = self.client.post(f"/survey/{s.id}/channel", {"channel": "kiosk"})
+        self.assertEqual(r.status_code, 302)
+        self.assertIn(f"/survey/{s.id}/start", r.headers["Location"])
+
+    def test_phone_channel_emails_link_and_shows_qr(self):
+        self._enter("jdoe")
+        s = SurveySession.objects.get()
+        r = self.client.post(f"/survey/{s.id}/channel", {"channel": "phone"})
+        self.assertEqual(r.status_code, 200)
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertIn("jdoe@andrew.cmu.edu", mail.outbox[0].to)
+        # The personal survey link appears in the email and on the screen.
+        self.assertIn(f"/survey/{s.id}/start", mail.outbox[0].body)
+        self.assertContains(r, f"/survey/{s.id}/start")
+
+    def test_channel_requires_a_choice(self):
+        self._enter("jdoe")
+        s = SurveySession.objects.get()
+        r = self.client.post(f"/survey/{s.id}/channel", {})
+        self.assertEqual(r.status_code, 400)
+        self.assertEqual(len(mail.outbox), 0)
+
+    def test_anonymous_scan_still_works(self):
+        # The legacy anonymous entry is kept as a fallback and stays identity-less.
+        r = self.client.get(f"/s/{mint_kiosk_token(self.kiosk.id)}")
+        sid = r.headers["Location"].split("/")[2]
+        s = SurveySession.objects.get(pk=sid)
+        self.assertEqual(s.andrew_id, "")
+        self.assertFalse(s.is_identified)
+
+
 class AdminExportTests(TestCase):
     """Admin CSV export of all sessions, optionally filtered by date range."""
 

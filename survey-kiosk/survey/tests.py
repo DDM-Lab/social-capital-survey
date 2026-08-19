@@ -292,6 +292,89 @@ class ReceiptVerifyTests(TestCase):
         self.assertFalse(Receipt.objects.filter(session_id=sid).exists())
 
 
+@override_settings(
+    EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend",
+    RATELIMIT_ENABLE=False,
+)
+class ReceiptPrintTests(TestCase):
+    """Returning to a kiosk with a verified receipt prints it (via the preview
+    backend), subject to the configurable daily cap."""
+
+    def setUp(self):
+        self.survey, self.questions = make_survey()
+        self.kiosk = Kiosk.objects.create(name="K", survey=self.survey)
+
+    def _enter(self, andrew):
+        return self.client.post(f"/kiosk/{self.kiosk.id}/enter", {"username": andrew})
+
+    def _newest_session(self, andrew):
+        return SurveySession.objects.filter(andrew_id=andrew).order_by("-created_at").first()
+
+    def _complete(self, andrew):
+        self._enter(andrew)
+        s = self._newest_session(andrew)
+        self.client.post(f"/survey/{s.id}/channel", {"channel": "kiosk"})
+        self.client.post(f"/survey/{s.id}/start", {"length": "short", "consent": "on"})
+        self.client.post(f"/survey/{s.id}/q/1", {"choice": self.questions[0].choices.first().id})
+        self.client.post(f"/survey/{s.id}/q/2", {"text": "hi"})
+        return Receipt.objects.get(session=s)
+
+    def _verified_receipt(self, andrew="jdoe"):
+        receipt = self._complete(andrew)
+        self.client.get(f"/receipt/verify/{receipt.verify_token}")
+        receipt.refresh_from_db()
+        return receipt
+
+    def test_verified_receipt_prints_on_return(self):
+        receipt = self._verified_receipt("jdoe")
+        r = self._enter("jdoe")
+        self.assertEqual(r.status_code, 200)
+        self.assertContains(r, "printed")
+        receipt.refresh_from_db()
+        self.assertIsNotNone(receipt.printed_at)
+
+    def test_receipt_shows_andrewid(self):
+        self._verified_receipt("jdoe")
+        r = self._enter("jdoe")
+        self.assertContains(r, "jdoe")
+
+    def test_unverified_receipt_does_not_print(self):
+        receipt = self._complete("amy")  # completed but not verified
+        s = receipt.session
+        r = self._enter("amy")
+        self.assertRedirects(r, f"/survey/{s.id}/verify-sent")
+        receipt.refresh_from_db()
+        self.assertIsNone(receipt.printed_at)
+
+    @override_settings(DAILY_PRIZE_LIMIT=1)
+    def test_daily_cap_blocks_second_receipt(self):
+        r1 = self._verified_receipt("bob")
+        self._enter("bob")
+        r1.refresh_from_db()
+        self.assertIsNotNone(r1.printed_at)
+        r2 = self._verified_receipt("bob")
+        resp = self._enter("bob")
+        self.assertContains(resp, "limit")
+        r2.refresh_from_db()
+        self.assertIsNone(r2.printed_at)
+
+    @override_settings(DAILY_PRIZE_LIMIT=2)
+    def test_daily_cap_is_configurable(self):
+        r1 = self._verified_receipt("carol")
+        self._enter("carol")
+        r2 = self._verified_receipt("carol")
+        self._enter("carol")
+        self.assertIsNotNone(Receipt.objects.get(pk=r1.pk).printed_at)
+        self.assertIsNotNone(Receipt.objects.get(pk=r2.pk).printed_at)
+
+    def test_already_printed_receipt_not_reprinted(self):
+        receipt = self._verified_receipt("dave")
+        self._enter("dave")
+        printed_at = Receipt.objects.get(pk=receipt.pk).printed_at
+        self._enter("dave")  # no unprinted verified receipt remains
+        self.assertEqual(Receipt.objects.get(pk=receipt.pk).printed_at, printed_at)
+
+
 class AdminExportTests(TestCase):
     """Admin CSV export of all sessions, optionally filtered by date range."""
 

@@ -273,6 +273,7 @@ class Receipt(models.Model):
     verify_expires_at = models.DateTimeField()
     created_at = models.DateTimeField(auto_now_add=True)
     verified_at = models.DateTimeField(null=True, blank=True)
+    printed_at = models.DateTimeField(null=True, blank=True)
 
     def save(self, *args, **kwargs):
         if not self.verify_expires_at:

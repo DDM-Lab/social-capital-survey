@@ -195,4 +195,10 @@ TOKEN_TTL_SECONDS = int(env("TOKEN_TTL_SECONDS", "15"))
 SURVEY_TTL_MINUTES = int(env("SURVEY_TTL_MINUTES", "20"))
 VERIFY_TTL_HOURS = int(env("VERIFY_TTL_HOURS", "24"))
 
+# Coffee-receipt prize (identified flow).
+DAILY_PRIZE_LIMIT = int(env("DAILY_PRIZE_LIMIT", "1"))
+PRINTER_BACKEND = env("PRINTER_BACKEND", "survey.printing.PreviewBackend")
+# The day boundary for the daily cap (CMU local, not the UTC server clock).
+PRIZE_TIME_ZONE = env("PRIZE_TIME_ZONE", "America/New_York")
+
 MESSAGE_STORAGE = "django.contrib.messages.storage.session.SessionStorage"

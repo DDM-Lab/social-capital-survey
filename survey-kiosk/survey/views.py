@@ -1,5 +1,7 @@
 import base64
+from datetime import datetime, time, timedelta
 from io import BytesIO
+from zoneinfo import ZoneInfo
 
 import qrcode
 from django.conf import settings
@@ -23,6 +25,7 @@ from .models import (
     Receipt,
     SurveySession,
 )
+from .printing import get_printer
 from .question_types import QUESTION_TYPES, get_answer_runtime_value, get_question_runtime_config
 from .tokens import mint_kiosk_token, verify_kiosk_token
 
@@ -81,14 +84,68 @@ def enter(request, kiosk_id):
     form = ClaimForm(request.POST or None)
     if request.method == "POST" and form.is_valid():
         andrew_id = form.cleaned_data["username"]  # normalized local part
-        session = SurveySession.live_for(andrew_id)
-        if session is None:
-            session = SurveySession.objects.create(
-                kiosk=kiosk, survey=kiosk.survey, andrew_id=andrew_id
-            )
-        return redirect("survey:channel", session_id=session.id)
+        return _route_identified(request, kiosk, andrew_id)
     status = 400 if request.method == "POST" else 200
     return render(request, "survey/kiosk.html", _entry_context(kiosk, form), status=status)
+
+
+def _route_identified(request, kiosk, andrew_id):
+    """Decide what an AndrewID means right now: print, nudge, resume, or start."""
+    # 1) A verified, not-yet-printed receipt -> try to print it now.
+    printable = (
+        Receipt.objects.filter(
+            andrew_id=andrew_id, status=Receipt.Status.VERIFIED, printed_at__isnull=True
+        )
+        .order_by("-created_at")
+        .first()
+    )
+    if printable is not None:
+        return _print_receipt(request, printable)
+
+    # 2) A completed-but-unverified receipt -> remind them to click the email.
+    pending = (
+        Receipt.objects.filter(andrew_id=andrew_id, status=Receipt.Status.PENDING)
+        .order_by("-created_at")
+        .first()
+    )
+    if pending is not None:
+        return redirect("survey:verify_sent", session_id=pending.session_id)
+
+    # 3) A live in-progress session -> resume it; otherwise start a new one.
+    session = SurveySession.live_for(andrew_id)
+    if session is None:
+        session = SurveySession.objects.create(
+            kiosk=kiosk, survey=kiosk.survey, andrew_id=andrew_id
+        )
+    return redirect("survey:channel", session_id=session.id)
+
+
+def _printed_today(andrew_id):
+    """Count receipts already printed for this AndrewID within the local prize day."""
+    tz = ZoneInfo(settings.PRIZE_TIME_ZONE)
+    start = datetime.combine(timezone.now().astimezone(tz).date(), time.min, tzinfo=tz)
+    return Receipt.objects.filter(
+        andrew_id=andrew_id,
+        printed_at__gte=start,
+        printed_at__lt=start + timedelta(days=1),
+    ).count()
+
+
+def _print_receipt(request, receipt):
+    if _printed_today(receipt.andrew_id) >= settings.DAILY_PRIZE_LIMIT:
+        return render(
+            request,
+            "survey/receipt_printed.html",
+            {"receipt": receipt, "over_cap": True, "cap": settings.DAILY_PRIZE_LIMIT},
+        )
+    receipt_text = get_printer().print_receipt(receipt)
+    receipt.printed_at = timezone.now()
+    receipt.save(update_fields=["printed_at"])
+    return render(
+        request,
+        "survey/receipt_printed.html",
+        {"receipt": receipt, "receipt_text": receipt_text},
+    )
 
 
 def channel(request, session_id):

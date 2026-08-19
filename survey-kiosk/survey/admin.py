@@ -20,6 +20,7 @@ from .models import (
     PrizeClaim,
     PrizeCode,
     Question,
+    Receipt,
     Survey,
     SurveySession,
 )
@@ -446,6 +447,14 @@ class PrizeCodeAdmin(admin.ModelAdmin):
             "title": "Upload prize codes",
         }
         return render(request, "admin/survey/prizecode/upload.html", context)
+
+
+@admin.register(Receipt)
+class ReceiptAdmin(admin.ModelAdmin):
+    list_display = ("andrew_id", "status", "created_at", "verified_at", "printed_at")
+    list_filter = ("status",)
+    search_fields = ("andrew_id", "email")
+    readonly_fields = ("verify_token", "created_at", "verified_at", "printed_at")
 
 
 @admin.register(PrizeClaim)

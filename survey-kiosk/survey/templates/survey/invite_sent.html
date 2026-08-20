@@ -1,0 +1,15 @@
+{% extends "survey/base.html" %}
+{% block title %}Link sent{% endblock %}
+
+{% block content %}
+<section class="card center">
+  <h1>Link sent</h1>
+  <p>We emailed a survey link to <strong>{{ session.email }}</strong>.
+     Open it on your phone, or scan the code below.</p>
+
+  {% include "survey/_qr.html" %}
+
+  <p class="muted">When you finish, return to this kiosk and enter your Andrew ID to print
+     your coffee receipt.</p>
+</section>
+{% endblock %}

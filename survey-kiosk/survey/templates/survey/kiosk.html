@@ -2,14 +2,36 @@
 {% block title %}{{ kiosk.name }}{% endblock %}
 
 {% block content %}
+<section class="card">
+  <h1>Take the survey</h1>
+  <p>Enter your Andrew ID to begin. Finish the survey and confirm the link we email to
+     <strong>your&nbsp;id@{{ target_domain }}</strong> to earn a coffee.</p>
+
+  {% if form.non_field_errors %}
+    <ul class="messages">{% for e in form.non_field_errors %}<li class="msg error">{{ e }}</li>{% endfor %}</ul>
+  {% endif %}
+
+  <form method="post" action="{% url 'survey:enter' kiosk.id %}">
+    {% csrf_token %}
+    <label for="id_username">Andrew ID</label>
+    <div class="username-row">
+      <input type="text" name="username" id="id_username"
+             value="{{ form.username.value|default:'' }}" autocomplete="off"
+             autocapitalize="off" spellcheck="false" required>
+      <span class="domain-suffix">@{{ target_domain }}</span>
+    </div>
+    {% for e in form.username.errors %}<p class="msg error">{{ e }}</p>{% endfor %}
+    <button class="btn" type="submit">Continue</button>
+  </form>
+</section>
+
 <section class="kiosk">
-  <h1>Scan to take the survey</h1>
+  <p class="muted">Prefer to stay anonymous? Scan this code instead:</p>
   <div id="qr"
        hx-get="{% url 'survey:kiosk_qr' kiosk.id %}"
        hx-trigger="load, every {{ rotate_seconds }}s"
        hx-swap="innerHTML">
     <p class="muted">Loading code…</p>
   </div>
-  <p class="muted">Point your phone camera at the code. A fresh code appears every {{ rotate_seconds }} seconds.</p>
 </section>
 {% endblock %}

@@ -119,6 +119,9 @@ class SurveySession(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     kiosk = models.ForeignKey(Kiosk, on_delete=models.PROTECT, related_name="sessions")
     survey = models.ForeignKey(Survey, on_delete=models.PROTECT, related_name="sessions")
+    # Normalized AndrewID local part, captured up front on the identified entry
+    # flow. Blank for the anonymous /s/<token> fallback.
+    andrew_id = models.CharField(max_length=64, blank=True)
     length = models.CharField(max_length=10, choices=Length.choices, blank=True)
     status = models.CharField(max_length=10, choices=Status.choices, default=Status.ACTIVE)
     consented = models.BooleanField(default=False)
@@ -138,6 +141,30 @@ class SurveySession(models.Model):
     @property
     def is_live(self):
         return self.status == self.Status.ACTIVE and not self.is_expired
+
+    @property
+    def is_identified(self):
+        return bool(self.andrew_id)
+
+    @property
+    def email(self):
+        """The andrew mailbox for this respondent, or '' on the anonymous path."""
+        if not self.andrew_id:
+            return ""
+        return f"{self.andrew_id}@{settings.TARGET_DOMAIN.lower()}"
+
+    @classmethod
+    def live_for(cls, andrew_id):
+        """The most recent still-live session for an AndrewID, if any."""
+        return (
+            cls.objects.filter(
+                andrew_id=andrew_id,
+                status=cls.Status.ACTIVE,
+                expires_at__gt=timezone.now(),
+            )
+            .order_by("-created_at")
+            .first()
+        )
 
     def __str__(self):
         return f"Session {self.id} ({self.status})"
@@ -221,3 +248,41 @@ class PrizeClaim(models.Model):
 
     def __str__(self):
         return f"{self.email} ({self.status})"
+
+
+class Receipt(models.Model):
+    """Coffee-receipt grant for an identified session.
+
+    Every completed identified survey creates one; the receipt is only printable
+    after the respondent clicks the magic link emailed to their andrew mailbox
+    (verify-every-session). Mirrors PrizeClaim's verify pattern, but the prize is
+    a thermal printout rather than a pool code.
+    """
+
+    class Status(models.TextChoices):
+        PENDING = "pending", "Pending verification"
+        VERIFIED = "verified", "Verified"
+
+    session = models.OneToOneField(
+        SurveySession, on_delete=models.CASCADE, related_name="receipt"
+    )
+    andrew_id = models.CharField(max_length=64)
+    email = models.EmailField()
+    status = models.CharField(max_length=12, choices=Status.choices, default=Status.PENDING)
+    verify_token = models.CharField(max_length=64, unique=True, default=secrets.token_urlsafe)
+    verify_expires_at = models.DateTimeField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    verified_at = models.DateTimeField(null=True, blank=True)
+    printed_at = models.DateTimeField(null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        if not self.verify_expires_at:
+            self.verify_expires_at = timezone.now() + timedelta(hours=settings.VERIFY_TTL_HOURS)
+        super().save(*args, **kwargs)
+
+    @property
+    def verify_expired(self):
+        return timezone.now() >= self.verify_expires_at
+
+    def __str__(self):
+        return f"Receipt {self.andrew_id} ({self.status})"

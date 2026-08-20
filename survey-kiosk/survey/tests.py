@@ -5,7 +5,16 @@ from django.test import TestCase, override_settings
 from django.utils import timezone
 
 from .json_translate import import_survey_spec
-from .models import Choice, Kiosk, PrizeClaim, PrizeCode, Question, Survey, SurveySession
+from .models import (
+    Choice,
+    Kiosk,
+    PrizeClaim,
+    PrizeCode,
+    Question,
+    Receipt,
+    Survey,
+    SurveySession,
+)
 from .question_schema import SurveySchemaError, SurveySpec
 from .question_types import get_answer_runtime_value, get_question_runtime_config
 from .tokens import mint_kiosk_token, verify_kiosk_token
@@ -123,6 +132,247 @@ class FlowTests(TestCase):
         self.assertEqual(self.client.get(f"/survey/{sid}/start").status_code, 410)
         s.refresh_from_db()
         self.assertEqual(s.status, SurveySession.Status.EXPIRED)
+
+
+@override_settings(
+    EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend",
+    RATELIMIT_ENABLE=False,
+)
+class EntryFlowTests(TestCase):
+    """New AndrewID-gated entry: enter AndrewID -> choose kiosk vs phone."""
+
+    def setUp(self):
+        self.survey, self.questions = make_survey()
+        self.kiosk = Kiosk.objects.create(name="K", survey=self.survey)
+
+    def _enter(self, andrew="jdoe"):
+        return self.client.post(f"/kiosk/{self.kiosk.id}/enter", {"username": andrew})
+
+    def test_kiosk_landing_shows_andrewid_form(self):
+        r = self.client.get(f"/kiosk/{self.kiosk.id}/")
+        self.assertEqual(r.status_code, 200)
+        # The entry form shows the domain suffix so people know what's appended.
+        self.assertContains(r, "andrew.cmu.edu")
+
+    def test_entry_creates_identified_session(self):
+        r = self._enter("jdoe")
+        self.assertEqual(r.status_code, 302)
+        self.assertEqual(SurveySession.objects.count(), 1)
+        s = SurveySession.objects.get()
+        self.assertEqual(s.andrew_id, "jdoe")
+        self.assertEqual(s.email, "jdoe@andrew.cmu.edu")
+        self.assertTrue(s.is_identified)
+        self.assertIn(f"/survey/{s.id}/channel", r.headers["Location"])
+
+    def test_andrewid_is_normalized(self):
+        self._enter("  JDoe@andrew.cmu.edu ")
+        s = SurveySession.objects.get()
+        self.assertEqual(s.andrew_id, "jdoe")
+
+    def test_invalid_andrewid_rejected(self):
+        r = self.client.post(f"/kiosk/{self.kiosk.id}/enter", {"username": "bad id!"})
+        self.assertEqual(SurveySession.objects.count(), 0)
+        self.assertContains(r, "unsupported characters", status_code=400)
+
+    def test_reentry_resumes_live_session(self):
+        self._enter("jdoe")
+        self._enter("jdoe")
+        # Re-entering the same AndrewID reuses the live session; no duplicate.
+        self.assertEqual(SurveySession.objects.count(), 1)
+
+    def test_kiosk_channel_starts_survey(self):
+        self._enter("jdoe")
+        s = SurveySession.objects.get()
+        r = self.client.post(f"/survey/{s.id}/channel", {"channel": "kiosk"})
+        self.assertEqual(r.status_code, 302)
+        self.assertIn(f"/survey/{s.id}/start", r.headers["Location"])
+
+    def test_phone_channel_emails_link_and_shows_qr(self):
+        self._enter("jdoe")
+        s = SurveySession.objects.get()
+        r = self.client.post(f"/survey/{s.id}/channel", {"channel": "phone"})
+        self.assertEqual(r.status_code, 200)
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertIn("jdoe@andrew.cmu.edu", mail.outbox[0].to)
+        # The personal survey link appears in the email and on the screen.
+        self.assertIn(f"/survey/{s.id}/start", mail.outbox[0].body)
+        self.assertContains(r, f"/survey/{s.id}/start")
+
+    def test_channel_requires_a_choice(self):
+        self._enter("jdoe")
+        s = SurveySession.objects.get()
+        r = self.client.post(f"/survey/{s.id}/channel", {})
+        self.assertEqual(r.status_code, 400)
+        self.assertEqual(len(mail.outbox), 0)
+
+    def test_anonymous_scan_still_works(self):
+        # The legacy anonymous entry is kept as a fallback and stays identity-less.
+        r = self.client.get(f"/s/{mint_kiosk_token(self.kiosk.id)}")
+        sid = r.headers["Location"].split("/")[2]
+        s = SurveySession.objects.get(pk=sid)
+        self.assertEqual(s.andrew_id, "")
+        self.assertFalse(s.is_identified)
+
+
+@override_settings(
+    EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend",
+    RATELIMIT_ENABLE=False,
+)
+class ReceiptVerifyTests(TestCase):
+    """Verify-every-session: completing an identified survey emails a magic link
+    that must be clicked before a receipt is granted."""
+
+    def setUp(self):
+        self.survey, self.questions = make_survey()
+        self.kiosk = Kiosk.objects.create(name="K", survey=self.survey)
+
+    def _complete_identified(self, andrew="jdoe"):
+        self.client.post(f"/kiosk/{self.kiosk.id}/enter", {"username": andrew})
+        s = SurveySession.objects.get(andrew_id=andrew)
+        self.client.post(f"/survey/{s.id}/channel", {"channel": "kiosk"})
+        self.client.post(f"/survey/{s.id}/start", {"length": "short", "consent": "on"})
+        self.client.post(f"/survey/{s.id}/q/1", {"choice": self.questions[0].choices.first().id})
+        r = self.client.post(f"/survey/{s.id}/q/2", {"text": "hi"})
+        s.refresh_from_db()
+        return s, r
+
+    def test_completion_creates_receipt_and_emails_link(self):
+        s, r = self._complete_identified()
+        self.assertEqual(s.status, SurveySession.Status.COMPLETED)
+        receipt = Receipt.objects.get(session=s)
+        self.assertEqual(receipt.status, Receipt.Status.PENDING)
+        self.assertEqual(receipt.email, "jdoe@andrew.cmu.edu")
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertIn(f"/receipt/verify/{receipt.verify_token}", mail.outbox[0].body)
+        self.assertRedirects(r, f"/survey/{s.id}/verify-sent")
+
+    def test_verify_sent_screen_shows_email(self):
+        s, _ = self._complete_identified()
+        r = self.client.get(f"/survey/{s.id}/verify-sent")
+        self.assertEqual(r.status_code, 200)
+        self.assertContains(r, "jdoe@andrew.cmu.edu")
+
+    def test_magic_link_verifies_receipt(self):
+        s, _ = self._complete_identified()
+        receipt = Receipt.objects.get(session=s)
+        r = self.client.get(f"/receipt/verify/{receipt.verify_token}")
+        self.assertEqual(r.status_code, 200)
+        receipt.refresh_from_db()
+        self.assertEqual(receipt.status, Receipt.Status.VERIFIED)
+        self.assertIsNotNone(receipt.verified_at)
+
+    def test_verify_is_idempotent(self):
+        s, _ = self._complete_identified()
+        receipt = Receipt.objects.get(session=s)
+        self.client.get(f"/receipt/verify/{receipt.verify_token}")
+        first = Receipt.objects.get(pk=receipt.pk).verified_at
+        self.client.get(f"/receipt/verify/{receipt.verify_token}")
+        self.assertEqual(Receipt.objects.get(pk=receipt.pk).verified_at, first)
+
+    def test_invalid_token(self):
+        self.assertEqual(self.client.get("/receipt/verify/nope").status_code, 404)
+
+    def test_expired_token(self):
+        s, _ = self._complete_identified()
+        receipt = Receipt.objects.get(session=s)
+        receipt.verify_expires_at = timezone.now() - timedelta(seconds=1)
+        receipt.save(update_fields=["verify_expires_at"])
+        r = self.client.get(f"/receipt/verify/{receipt.verify_token}")
+        self.assertEqual(r.status_code, 410)
+        receipt.refresh_from_db()
+        self.assertEqual(receipt.status, Receipt.Status.PENDING)
+
+    def test_anonymous_completion_still_uses_claim(self):
+        r = self.client.get(f"/s/{mint_kiosk_token(self.kiosk.id)}")
+        sid = r.headers["Location"].split("/")[2]
+        self.client.post(f"/survey/{sid}/start", {"length": "short", "consent": "on"})
+        self.client.post(f"/survey/{sid}/q/1", {"choice": self.questions[0].choices.first().id})
+        r2 = self.client.post(f"/survey/{sid}/q/2", {"text": "hi"})
+        self.assertRedirects(r2, f"/survey/{sid}/claim")
+        self.assertFalse(Receipt.objects.filter(session_id=sid).exists())
+
+
+@override_settings(
+    EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend",
+    RATELIMIT_ENABLE=False,
+)
+class ReceiptPrintTests(TestCase):
+    """Returning to a kiosk with a verified receipt prints it (via the preview
+    backend), subject to the configurable daily cap."""
+
+    def setUp(self):
+        self.survey, self.questions = make_survey()
+        self.kiosk = Kiosk.objects.create(name="K", survey=self.survey)
+
+    def _enter(self, andrew):
+        return self.client.post(f"/kiosk/{self.kiosk.id}/enter", {"username": andrew})
+
+    def _newest_session(self, andrew):
+        return SurveySession.objects.filter(andrew_id=andrew).order_by("-created_at").first()
+
+    def _complete(self, andrew):
+        self._enter(andrew)
+        s = self._newest_session(andrew)
+        self.client.post(f"/survey/{s.id}/channel", {"channel": "kiosk"})
+        self.client.post(f"/survey/{s.id}/start", {"length": "short", "consent": "on"})
+        self.client.post(f"/survey/{s.id}/q/1", {"choice": self.questions[0].choices.first().id})
+        self.client.post(f"/survey/{s.id}/q/2", {"text": "hi"})
+        return Receipt.objects.get(session=s)
+
+    def _verified_receipt(self, andrew="jdoe"):
+        receipt = self._complete(andrew)
+        self.client.get(f"/receipt/verify/{receipt.verify_token}")
+        receipt.refresh_from_db()
+        return receipt
+
+    def test_verified_receipt_prints_on_return(self):
+        receipt = self._verified_receipt("jdoe")
+        r = self._enter("jdoe")
+        self.assertEqual(r.status_code, 200)
+        self.assertContains(r, "printed")
+        receipt.refresh_from_db()
+        self.assertIsNotNone(receipt.printed_at)
+
+    def test_receipt_shows_andrewid(self):
+        self._verified_receipt("jdoe")
+        r = self._enter("jdoe")
+        self.assertContains(r, "jdoe")
+
+    def test_unverified_receipt_does_not_print(self):
+        receipt = self._complete("amy")  # completed but not verified
+        s = receipt.session
+        r = self._enter("amy")
+        self.assertRedirects(r, f"/survey/{s.id}/verify-sent")
+        receipt.refresh_from_db()
+        self.assertIsNone(receipt.printed_at)
+
+    @override_settings(DAILY_PRIZE_LIMIT=1)
+    def test_daily_cap_blocks_second_receipt(self):
+        r1 = self._verified_receipt("bob")
+        self._enter("bob")
+        r1.refresh_from_db()
+        self.assertIsNotNone(r1.printed_at)
+        r2 = self._verified_receipt("bob")
+        resp = self._enter("bob")
+        self.assertContains(resp, "limit")
+        r2.refresh_from_db()
+        self.assertIsNone(r2.printed_at)
+
+    @override_settings(DAILY_PRIZE_LIMIT=2)
+    def test_daily_cap_is_configurable(self):
+        r1 = self._verified_receipt("carol")
+        self._enter("carol")
+        r2 = self._verified_receipt("carol")
+        self._enter("carol")
+        self.assertIsNotNone(Receipt.objects.get(pk=r1.pk).printed_at)
+        self.assertIsNotNone(Receipt.objects.get(pk=r2.pk).printed_at)
+
+    def test_already_printed_receipt_not_reprinted(self):
+        receipt = self._verified_receipt("dave")
+        self._enter("dave")
+        printed_at = Receipt.objects.get(pk=receipt.pk).printed_at
+        self._enter("dave")  # no unprinted verified receipt remains
+        self.assertEqual(Receipt.objects.get(pk=receipt.pk).printed_at, printed_at)
 
 
 class AdminExportTests(TestCase):

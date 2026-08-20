@@ -1,0 +1,20 @@
+{% extends "survey/base.html" %}
+{% block title %}{% if over_cap %}Daily limit reached{% else %}Receipt printed{% endif %}{% endblock %}
+
+{% block content %}
+<section class="card center">
+  {% if over_cap %}
+    <h1>Daily limit reached</h1>
+    <p>You've already collected your coffee receipt today (limit {{ cap }} per day).
+       Come back tomorrow!</p>
+  {% else %}
+    <h1>Receipt printed 🎉</h1>
+    <p>Take your printed receipt to the counter for a free coffee,
+       <strong>{{ receipt.andrew_id }}</strong>.</p>
+    {% if receipt_text %}
+      <pre class="code-box">{{ receipt_text }}</pre>
+      <p class="muted">Preview (a real printer would emit this).</p>
+    {% endif %}
+  {% endif %}
+</section>
+{% endblock %}

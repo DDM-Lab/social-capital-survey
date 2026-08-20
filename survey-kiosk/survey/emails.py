@@ -3,6 +3,42 @@ from django.core.mail import send_mail
 from django.urls import reverse
 
 
+def send_survey_link_email(session):
+    """Email a personal survey link so the respondent can take it on their phone.
+
+    The session UUID in the URL is unguessable, so it doubles as the personal link;
+    no extra token is needed. Mirrors send_verify_email's BASE_URL + reverse shape.
+    """
+    path = reverse("survey:start", args=[session.id])
+    link = f"{settings.BASE_URL}{path}"
+    subject = "Your survey link"
+    body = (
+        "Thanks for signing up!\n\n"
+        "Open this link on your phone to take the survey:\n\n"
+        f"{link}\n\n"
+        "When you finish, return to the kiosk and enter your Andrew ID to print your "
+        "coffee receipt.\n"
+    )
+    send_mail(subject, body, settings.DEFAULT_FROM_EMAIL, [session.email])
+    return link
+
+
+def send_receipt_verify_email(receipt):
+    """Email the magic link that must be clicked before a coffee receipt is granted."""
+    path = reverse("survey:receipt_verify", args=[receipt.verify_token])
+    link = f"{settings.BASE_URL}{path}"
+    subject = "Confirm your survey to claim your coffee"
+    body = (
+        "Thanks for completing the survey!\n\n"
+        "Confirm this is your mailbox to unlock your coffee receipt:\n\n"
+        f"{link}\n\n"
+        f"This link expires in {settings.VERIFY_TTL_HOURS} hours.\n"
+        "Then return to a kiosk and enter your Andrew ID to print the receipt.\n"
+    )
+    send_mail(subject, body, settings.DEFAULT_FROM_EMAIL, [receipt.email])
+    return link
+
+
 def send_verify_email(claim):
     """Email the single-use magic link that verifies the mailbox and delivers the prize."""
     path = reverse("survey:verify", args=[claim.verify_token])

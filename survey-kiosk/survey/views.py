@@ -1,5 +1,7 @@
 import base64
+from datetime import datetime, time, timedelta
 from io import BytesIO
+from zoneinfo import ZoneInfo
 
 import qrcode
 from django.conf import settings
@@ -11,7 +13,7 @@ from django.db import IntegrityError, transaction
 from django.utils import timezone
 from django_ratelimit.decorators import ratelimit
 
-from .emails import send_verify_email
+from .emails import send_receipt_verify_email, send_survey_link_email, send_verify_email
 from .forms import ClaimForm
 from .models import (
     Answer,
@@ -20,8 +22,10 @@ from .models import (
     PrizeClaim,
     PrizeCode,
     Question,
+    Receipt,
     SurveySession,
 )
+from .printing import get_printer
 from .question_types import QUESTION_TYPES, get_answer_runtime_value, get_question_runtime_config
 from .tokens import mint_kiosk_token, verify_kiosk_token
 
@@ -53,13 +57,122 @@ def _qr_data_uri(url):
     return f"data:image/png;base64,{encoded}"
 
 
+def _entry_context(kiosk, form):
+    return {
+        "kiosk": kiosk,
+        "form": form,
+        "target_domain": settings.TARGET_DOMAIN,
+        "rotate_seconds": kiosk.effective_rotate_seconds,
+    }
+
+
 def kiosk_page(request, kiosk_id):
+    """Kiosk landing: the AndrewID entry screen (anonymous scan kept as a fallback)."""
     kiosk = get_object_or_404(Kiosk, pk=kiosk_id, active=True)
+    return render(request, "survey/kiosk.html", _entry_context(kiosk, ClaimForm()))
+
+
+@ratelimit(key="ip", rate="30/m", method="POST", block=True)
+def enter(request, kiosk_id):
+    """Validate an AndrewID and route into the identified flow.
+
+    Reuses a still-live session for the same AndrewID rather than minting a
+    duplicate; otherwise creates a new identified session and goes to the
+    kiosk-vs-phone channel choice.
+    """
+    kiosk = get_object_or_404(Kiosk, pk=kiosk_id, active=True)
+    form = ClaimForm(request.POST or None)
+    if request.method == "POST" and form.is_valid():
+        andrew_id = form.cleaned_data["username"]  # normalized local part
+        return _route_identified(request, kiosk, andrew_id)
+    status = 400 if request.method == "POST" else 200
+    return render(request, "survey/kiosk.html", _entry_context(kiosk, form), status=status)
+
+
+def _route_identified(request, kiosk, andrew_id):
+    """Decide what an AndrewID means right now: print, nudge, resume, or start."""
+    # 1) A verified, not-yet-printed receipt -> try to print it now.
+    printable = (
+        Receipt.objects.filter(
+            andrew_id=andrew_id, status=Receipt.Status.VERIFIED, printed_at__isnull=True
+        )
+        .order_by("-created_at")
+        .first()
+    )
+    if printable is not None:
+        return _print_receipt(request, printable)
+
+    # 2) A completed-but-unverified receipt -> remind them to click the email.
+    pending = (
+        Receipt.objects.filter(andrew_id=andrew_id, status=Receipt.Status.PENDING)
+        .order_by("-created_at")
+        .first()
+    )
+    if pending is not None:
+        return redirect("survey:verify_sent", session_id=pending.session_id)
+
+    # 3) A live in-progress session -> resume it; otherwise start a new one.
+    session = SurveySession.live_for(andrew_id)
+    if session is None:
+        session = SurveySession.objects.create(
+            kiosk=kiosk, survey=kiosk.survey, andrew_id=andrew_id
+        )
+    return redirect("survey:channel", session_id=session.id)
+
+
+def _printed_today(andrew_id):
+    """Count receipts already printed for this AndrewID within the local prize day."""
+    tz = ZoneInfo(settings.PRIZE_TIME_ZONE)
+    start = datetime.combine(timezone.now().astimezone(tz).date(), time.min, tzinfo=tz)
+    return Receipt.objects.filter(
+        andrew_id=andrew_id,
+        printed_at__gte=start,
+        printed_at__lt=start + timedelta(days=1),
+    ).count()
+
+
+def _print_receipt(request, receipt):
+    if _printed_today(receipt.andrew_id) >= settings.DAILY_PRIZE_LIMIT:
+        return render(
+            request,
+            "survey/receipt_printed.html",
+            {"receipt": receipt, "over_cap": True, "cap": settings.DAILY_PRIZE_LIMIT},
+        )
+    receipt_text = get_printer().print_receipt(receipt)
+    receipt.printed_at = timezone.now()
+    receipt.save(update_fields=["printed_at"])
     return render(
         request,
-        "survey/kiosk.html",
-        {"kiosk": kiosk, "rotate_seconds": kiosk.effective_rotate_seconds},
+        "survey/receipt_printed.html",
+        {"receipt": receipt, "receipt_text": receipt_text},
     )
+
+
+def channel(request, session_id):
+    """Choose to take the survey on the kiosk now, or get a link for the phone."""
+    session = get_object_or_404(SurveySession, pk=session_id)
+    if not session.is_live:
+        return render(request, "survey/expired_session.html", status=410)
+
+    if request.method == "POST":
+        choice = request.POST.get("channel")
+        if choice == "kiosk":
+            return redirect("survey:start", session_id=session.id)
+        if choice == "phone":
+            send_survey_link_email(session)
+            link = f"{settings.BASE_URL}{reverse('survey:start', args=[session.id])}"
+            return render(
+                request,
+                "survey/invite_sent.html",
+                {"session": session, "scan_url": link, "qr_data_uri": _qr_data_uri(link)},
+            )
+        return render(
+            request,
+            "survey/channel.html",
+            {"session": session, "error": "Please choose an option."},
+            status=400,
+        )
+    return render(request, "survey/channel.html", {"session": session})
 
 
 @ratelimit(key="ip", rate="120/m", block=True)
@@ -95,6 +208,8 @@ def _live_session_or_response(request, session_id):
     """Return (session, None) if live, else (None, rendered expired response)."""
     session = get_object_or_404(SurveySession, pk=session_id)
     if session.status == SurveySession.Status.COMPLETED:
+        if session.is_identified:
+            return session, redirect("survey:verify_sent", session_id=session.id)
         return session, redirect("survey:claim", session_id=session.id)
     if not session.is_live:
         if session.status == SurveySession.Status.ACTIVE:
@@ -165,6 +280,8 @@ def question(request, session_id, step):
                 session.status = SurveySession.Status.COMPLETED
                 session.completed_at = timezone.now()
                 session.save(update_fields=["status", "completed_at"])
+                if session.is_identified:
+                    return _grant_receipt(session)
                 return redirect("survey:claim", session_id=session.id)
             return redirect("survey:question", session_id=session.id, step=step + 1)
 
@@ -282,3 +399,41 @@ def verify(request, token):
         return render(request, "survey/verify_invalid.html", {"duplicate": True}, status=409)
 
     return render(request, "survey/prize.html", {"claim": claim})
+
+
+# --- Receipt: verify-every-session ------------------------------------------
+
+def _grant_receipt(session):
+    """Create the session's receipt (idempotently) and email the verify link."""
+    receipt, created = Receipt.objects.get_or_create(
+        session=session,
+        defaults={"andrew_id": session.andrew_id, "email": session.email},
+    )
+    if created:
+        send_receipt_verify_email(receipt)
+    return redirect("survey:verify_sent", session_id=session.id)
+
+
+def verify_sent(request, session_id):
+    """'Check your email' screen shown after an identified completion."""
+    session = get_object_or_404(SurveySession, pk=session_id)
+    receipt = getattr(session, "receipt", None)
+    if receipt is None:
+        if session.is_live:
+            return redirect("survey:channel", session_id=session.id)
+        return render(request, "survey/expired_session.html", status=410)
+    return render(request, "survey/verify_sent.html", {"session": session, "receipt": receipt})
+
+
+def receipt_verify(request, token):
+    """Magic link: prove the mailbox, marking the receipt printable."""
+    receipt = Receipt.objects.filter(verify_token=token).first()
+    if receipt is None:
+        return render(request, "survey/receipt_invalid.html", status=404)
+    if receipt.status == Receipt.Status.PENDING and receipt.verify_expired:
+        return render(request, "survey/receipt_invalid.html", {"expired": True}, status=410)
+    if receipt.status == Receipt.Status.PENDING:
+        receipt.status = Receipt.Status.VERIFIED
+        receipt.verified_at = timezone.now()
+        receipt.save(update_fields=["status", "verified_at"])
+    return render(request, "survey/receipt_verified.html", {"receipt": receipt})

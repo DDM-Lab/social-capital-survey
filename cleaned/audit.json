@@ -1,0 +1,18 @@
+{
+  "input_records": 173,
+  "excluded": {
+    "staff": 44,
+    "no_consent": 9,
+    "same_person_same_day_later_submission": 1
+  },
+  "retained_visits": 119,
+  "retained_identified_participants": 104,
+  "quality_flags": 9,
+  "grid": {
+    "columns": 30,
+    "rows": 24,
+    "image_width": 1911,
+    "image_height": 1467
+  },
+  "time_basis": "Survey start in America/New_York; time_period from voucher fingerprintPeriod"
+}

@@ -1,0 +1,251 @@
+weekday,time_period,activity,visits_reporting,total_visits,share_visits
+Friday,Dinner,eating_drinking,1,1,1.0
+Friday,Dinner,studying_working,0,1,0.0
+Friday,Dinner,reading_relaxing,0,1,0.0
+Friday,Dinner,socializing,0,1,0.0
+Friday,Dinner,taking_break,1,1,1.0
+Friday,Dinner,club_event,0,1,0.0
+Friday,Dinner,passing_through,1,1,1.0
+Friday,Dinner,scrolling_phone,1,1,1.0
+Friday,Dinner,other,0,1,0.0
+Friday,Dinner,planned_meeting,0,1,0.0
+Friday,Late Night,eating_drinking,3,3,1.0
+Friday,Late Night,studying_working,3,3,1.0
+Friday,Late Night,reading_relaxing,1,3,0.3333333333333333
+Friday,Late Night,socializing,0,3,0.0
+Friday,Late Night,taking_break,1,3,0.3333333333333333
+Friday,Late Night,club_event,0,3,0.0
+Friday,Late Night,passing_through,0,3,0.0
+Friday,Late Night,scrolling_phone,0,3,0.0
+Friday,Late Night,other,1,3,0.3333333333333333
+Friday,Late Night,planned_meeting,0,3,0.0
+Friday,Lunch,eating_drinking,3,4,0.75
+Friday,Lunch,studying_working,2,4,0.5
+Friday,Lunch,reading_relaxing,0,4,0.0
+Friday,Lunch,socializing,0,4,0.0
+Friday,Lunch,taking_break,1,4,0.25
+Friday,Lunch,club_event,0,4,0.0
+Friday,Lunch,passing_through,1,4,0.25
+Friday,Lunch,scrolling_phone,0,4,0.0
+Friday,Lunch,other,1,4,0.25
+Friday,Lunch,planned_meeting,0,4,0.0
+Friday,Morning,eating_drinking,0,1,0.0
+Friday,Morning,studying_working,1,1,1.0
+Friday,Morning,reading_relaxing,1,1,1.0
+Friday,Morning,socializing,0,1,0.0
+Friday,Morning,taking_break,0,1,0.0
+Friday,Morning,club_event,0,1,0.0
+Friday,Morning,passing_through,0,1,0.0
+Friday,Morning,scrolling_phone,1,1,1.0
+Friday,Morning,other,0,1,0.0
+Friday,Morning,planned_meeting,0,1,0.0
+Friday,Off Hours,eating_drinking,0,1,0.0
+Friday,Off Hours,studying_working,1,1,1.0
+Friday,Off Hours,reading_relaxing,0,1,0.0
+Friday,Off Hours,socializing,0,1,0.0
+Friday,Off Hours,taking_break,0,1,0.0
+Friday,Off Hours,club_event,0,1,0.0
+Friday,Off Hours,passing_through,0,1,0.0
+Friday,Off Hours,scrolling_phone,0,1,0.0
+Friday,Off Hours,other,0,1,0.0
+Friday,Off Hours,planned_meeting,0,1,0.0
+Friday,Unknown,eating_drinking,0,2,0.0
+Friday,Unknown,studying_working,0,2,0.0
+Friday,Unknown,reading_relaxing,0,2,0.0
+Friday,Unknown,socializing,0,2,0.0
+Friday,Unknown,taking_break,0,2,0.0
+Friday,Unknown,club_event,0,2,0.0
+Friday,Unknown,passing_through,0,2,0.0
+Friday,Unknown,scrolling_phone,0,2,0.0
+Friday,Unknown,other,0,2,0.0
+Friday,Unknown,planned_meeting,0,2,0.0
+Monday,Dinner,eating_drinking,2,6,0.3333333333333333
+Monday,Dinner,studying_working,6,6,1.0
+Monday,Dinner,reading_relaxing,0,6,0.0
+Monday,Dinner,socializing,0,6,0.0
+Monday,Dinner,taking_break,0,6,0.0
+Monday,Dinner,club_event,0,6,0.0
+Monday,Dinner,passing_through,0,6,0.0
+Monday,Dinner,scrolling_phone,0,6,0.0
+Monday,Dinner,other,0,6,0.0
+Monday,Dinner,planned_meeting,0,6,0.0
+Monday,Lunch,eating_drinking,3,6,0.5
+Monday,Lunch,studying_working,5,6,0.8333333333333334
+Monday,Lunch,reading_relaxing,0,6,0.0
+Monday,Lunch,socializing,2,6,0.3333333333333333
+Monday,Lunch,taking_break,0,6,0.0
+Monday,Lunch,club_event,0,6,0.0
+Monday,Lunch,passing_through,0,6,0.0
+Monday,Lunch,scrolling_phone,3,6,0.5
+Monday,Lunch,other,0,6,0.0
+Monday,Lunch,planned_meeting,0,6,0.0
+Monday,Morning,eating_drinking,3,3,1.0
+Monday,Morning,studying_working,1,3,0.3333333333333333
+Monday,Morning,reading_relaxing,1,3,0.3333333333333333
+Monday,Morning,socializing,3,3,1.0
+Monday,Morning,taking_break,1,3,0.3333333333333333
+Monday,Morning,club_event,0,3,0.0
+Monday,Morning,passing_through,0,3,0.0
+Monday,Morning,scrolling_phone,0,3,0.0
+Monday,Morning,other,0,3,0.0
+Monday,Morning,planned_meeting,0,3,0.0
+Monday,Unknown,eating_drinking,0,2,0.0
+Monday,Unknown,studying_working,0,2,0.0
+Monday,Unknown,reading_relaxing,0,2,0.0
+Monday,Unknown,socializing,0,2,0.0
+Monday,Unknown,taking_break,0,2,0.0
+Monday,Unknown,club_event,0,2,0.0
+Monday,Unknown,passing_through,0,2,0.0
+Monday,Unknown,scrolling_phone,0,2,0.0
+Monday,Unknown,other,0,2,0.0
+Monday,Unknown,planned_meeting,0,2,0.0
+Saturday,Dinner,eating_drinking,0,1,0.0
+Saturday,Dinner,studying_working,0,1,0.0
+Saturday,Dinner,reading_relaxing,1,1,1.0
+Saturday,Dinner,socializing,0,1,0.0
+Saturday,Dinner,taking_break,1,1,1.0
+Saturday,Dinner,club_event,0,1,0.0
+Saturday,Dinner,passing_through,1,1,1.0
+Saturday,Dinner,scrolling_phone,0,1,0.0
+Saturday,Dinner,other,0,1,0.0
+Saturday,Dinner,planned_meeting,0,1,0.0
+Saturday,Lunch,eating_drinking,0,1,0.0
+Saturday,Lunch,studying_working,1,1,1.0
+Saturday,Lunch,reading_relaxing,0,1,0.0
+Saturday,Lunch,socializing,0,1,0.0
+Saturday,Lunch,taking_break,0,1,0.0
+Saturday,Lunch,club_event,0,1,0.0
+Saturday,Lunch,passing_through,0,1,0.0
+Saturday,Lunch,scrolling_phone,0,1,0.0
+Saturday,Lunch,other,0,1,0.0
+Saturday,Lunch,planned_meeting,0,1,0.0
+Sunday,Dinner,eating_drinking,2,3,0.6666666666666666
+Sunday,Dinner,studying_working,1,3,0.3333333333333333
+Sunday,Dinner,reading_relaxing,2,3,0.6666666666666666
+Sunday,Dinner,socializing,0,3,0.0
+Sunday,Dinner,taking_break,1,3,0.3333333333333333
+Sunday,Dinner,club_event,0,3,0.0
+Sunday,Dinner,passing_through,1,3,0.3333333333333333
+Sunday,Dinner,scrolling_phone,1,3,0.3333333333333333
+Sunday,Dinner,other,0,3,0.0
+Sunday,Dinner,planned_meeting,0,3,0.0
+Thursday,Dinner,eating_drinking,11,14,0.7857142857142857
+Thursday,Dinner,studying_working,9,14,0.6428571428571429
+Thursday,Dinner,reading_relaxing,0,14,0.0
+Thursday,Dinner,socializing,8,14,0.5714285714285714
+Thursday,Dinner,taking_break,3,14,0.21428571428571427
+Thursday,Dinner,club_event,0,14,0.0
+Thursday,Dinner,passing_through,1,14,0.07142857142857142
+Thursday,Dinner,scrolling_phone,3,14,0.21428571428571427
+Thursday,Dinner,other,0,14,0.0
+Thursday,Dinner,planned_meeting,1,14,0.07142857142857142
+Thursday,Late Night,eating_drinking,0,2,0.0
+Thursday,Late Night,studying_working,1,2,0.5
+Thursday,Late Night,reading_relaxing,1,2,0.5
+Thursday,Late Night,socializing,0,2,0.0
+Thursday,Late Night,taking_break,0,2,0.0
+Thursday,Late Night,club_event,0,2,0.0
+Thursday,Late Night,passing_through,1,2,0.5
+Thursday,Late Night,scrolling_phone,1,2,0.5
+Thursday,Late Night,other,0,2,0.0
+Thursday,Late Night,planned_meeting,0,2,0.0
+Thursday,Lunch,eating_drinking,9,9,1.0
+Thursday,Lunch,studying_working,5,9,0.5555555555555556
+Thursday,Lunch,reading_relaxing,1,9,0.1111111111111111
+Thursday,Lunch,socializing,3,9,0.3333333333333333
+Thursday,Lunch,taking_break,3,9,0.3333333333333333
+Thursday,Lunch,club_event,0,9,0.0
+Thursday,Lunch,passing_through,2,9,0.2222222222222222
+Thursday,Lunch,scrolling_phone,0,9,0.0
+Thursday,Lunch,other,0,9,0.0
+Thursday,Lunch,planned_meeting,1,9,0.1111111111111111
+Thursday,Unknown,eating_drinking,0,1,0.0
+Thursday,Unknown,studying_working,0,1,0.0
+Thursday,Unknown,reading_relaxing,0,1,0.0
+Thursday,Unknown,socializing,0,1,0.0
+Thursday,Unknown,taking_break,0,1,0.0
+Thursday,Unknown,club_event,0,1,0.0
+Thursday,Unknown,passing_through,0,1,0.0
+Thursday,Unknown,scrolling_phone,0,1,0.0
+Thursday,Unknown,other,0,1,0.0
+Thursday,Unknown,planned_meeting,0,1,0.0
+Tuesday,Dinner,eating_drinking,9,13,0.6923076923076923
+Tuesday,Dinner,studying_working,8,13,0.6153846153846154
+Tuesday,Dinner,reading_relaxing,3,13,0.23076923076923078
+Tuesday,Dinner,socializing,2,13,0.15384615384615385
+Tuesday,Dinner,taking_break,3,13,0.23076923076923078
+Tuesday,Dinner,club_event,2,13,0.15384615384615385
+Tuesday,Dinner,passing_through,0,13,0.0
+Tuesday,Dinner,scrolling_phone,0,13,0.0
+Tuesday,Dinner,other,1,13,0.07692307692307693
+Tuesday,Dinner,planned_meeting,1,13,0.07692307692307693
+Tuesday,Late Night,eating_drinking,1,1,1.0
+Tuesday,Late Night,studying_working,1,1,1.0
+Tuesday,Late Night,reading_relaxing,0,1,0.0
+Tuesday,Late Night,socializing,1,1,1.0
+Tuesday,Late Night,taking_break,0,1,0.0
+Tuesday,Late Night,club_event,0,1,0.0
+Tuesday,Late Night,passing_through,0,1,0.0
+Tuesday,Late Night,scrolling_phone,0,1,0.0
+Tuesday,Late Night,other,0,1,0.0
+Tuesday,Late Night,planned_meeting,0,1,0.0
+Tuesday,Lunch,eating_drinking,11,19,0.5789473684210527
+Tuesday,Lunch,studying_working,13,19,0.6842105263157895
+Tuesday,Lunch,reading_relaxing,1,19,0.05263157894736842
+Tuesday,Lunch,socializing,4,19,0.21052631578947367
+Tuesday,Lunch,taking_break,5,19,0.2631578947368421
+Tuesday,Lunch,club_event,0,19,0.0
+Tuesday,Lunch,passing_through,5,19,0.2631578947368421
+Tuesday,Lunch,scrolling_phone,2,19,0.10526315789473684
+Tuesday,Lunch,other,0,19,0.0
+Tuesday,Lunch,planned_meeting,0,19,0.0
+Tuesday,Morning,eating_drinking,3,5,0.6
+Tuesday,Morning,studying_working,4,5,0.8
+Tuesday,Morning,reading_relaxing,1,5,0.2
+Tuesday,Morning,socializing,0,5,0.0
+Tuesday,Morning,taking_break,0,5,0.0
+Tuesday,Morning,club_event,0,5,0.0
+Tuesday,Morning,passing_through,2,5,0.4
+Tuesday,Morning,scrolling_phone,0,5,0.0
+Tuesday,Morning,other,0,5,0.0
+Tuesday,Morning,planned_meeting,0,5,0.0
+Wednesday,Dinner,eating_drinking,1,8,0.125
+Wednesday,Dinner,studying_working,8,8,1.0
+Wednesday,Dinner,reading_relaxing,0,8,0.0
+Wednesday,Dinner,socializing,1,8,0.125
+Wednesday,Dinner,taking_break,0,8,0.0
+Wednesday,Dinner,club_event,0,8,0.0
+Wednesday,Dinner,passing_through,0,8,0.0
+Wednesday,Dinner,scrolling_phone,0,8,0.0
+Wednesday,Dinner,other,1,8,0.125
+Wednesday,Dinner,planned_meeting,1,8,0.125
+Wednesday,Late Night,eating_drinking,2,2,1.0
+Wednesday,Late Night,studying_working,2,2,1.0
+Wednesday,Late Night,reading_relaxing,0,2,0.0
+Wednesday,Late Night,socializing,0,2,0.0
+Wednesday,Late Night,taking_break,0,2,0.0
+Wednesday,Late Night,club_event,0,2,0.0
+Wednesday,Late Night,passing_through,0,2,0.0
+Wednesday,Late Night,scrolling_phone,1,2,0.5
+Wednesday,Late Night,other,0,2,0.0
+Wednesday,Late Night,planned_meeting,0,2,0.0
+Wednesday,Lunch,eating_drinking,9,10,0.9
+Wednesday,Lunch,studying_working,7,10,0.7
+Wednesday,Lunch,reading_relaxing,0,10,0.0
+Wednesday,Lunch,socializing,3,10,0.3
+Wednesday,Lunch,taking_break,1,10,0.1
+Wednesday,Lunch,club_event,0,10,0.0
+Wednesday,Lunch,passing_through,1,10,0.1
+Wednesday,Lunch,scrolling_phone,2,10,0.2
+Wednesday,Lunch,other,0,10,0.0
+Wednesday,Lunch,planned_meeting,0,10,0.0
+Wednesday,Morning,eating_drinking,1,1,1.0
+Wednesday,Morning,studying_working,0,1,0.0
+Wednesday,Morning,reading_relaxing,0,1,0.0
+Wednesday,Morning,socializing,0,1,0.0
+Wednesday,Morning,taking_break,0,1,0.0
+Wednesday,Morning,club_event,0,1,0.0
+Wednesday,Morning,passing_through,0,1,0.0
+Wednesday,Morning,scrolling_phone,0,1,0.0
+Wednesday,Morning,other,0,1,0.0
+Wednesday,Morning,planned_meeting,0,1,0.0

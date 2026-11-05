@@ -1,0 +1,55 @@
+group,activity,count,total_activity_selections,total_visits,visits_answering_activity,percent_activity_selections,percent_visits
+Morning,eating_drinking,28,90,41,41,31.11111111111111,68.29268292682927
+Morning,studying_working,24,90,41,41,26.666666666666668,58.53658536585366
+Morning,reading_relaxing,7,90,41,41,7.777777777777778,17.073170731707318
+Morning,socializing,14,90,41,41,15.555555555555555,34.146341463414636
+Morning,taking_break,7,90,41,41,7.777777777777778,17.073170731707318
+Morning,club_event,0,90,41,41,0.0,0.0
+Morning,passing_through,5,90,41,41,5.555555555555555,12.195121951219512
+Morning,scrolling_phone,5,90,41,41,5.555555555555555,12.195121951219512
+Morning,other,0,90,41,41,0.0,0.0
+Lunch,eating_drinking,96,301,144,144,31.893687707641195,66.66666666666667
+Lunch,studying_working,88,301,144,144,29.235880398671096,61.111111111111114
+Lunch,reading_relaxing,11,301,144,144,3.654485049833887,7.638888888888889
+Lunch,socializing,32,301,144,144,10.631229235880399,22.22222222222222
+Lunch,taking_break,31,301,144,144,10.299003322259136,21.52777777777778
+Lunch,club_event,3,301,144,144,0.9966777408637874,2.0833333333333335
+Lunch,passing_through,21,301,144,144,6.976744186046512,14.583333333333334
+Lunch,scrolling_phone,15,301,144,144,4.983388704318937,10.416666666666666
+Lunch,other,4,301,144,144,1.3289036544850499,2.7777777777777777
+Dinner,eating_drinking,71,250,117,117,28.4,60.68376068376068
+Dinner,studying_working,63,250,117,117,25.2,53.84615384615385
+Dinner,reading_relaxing,22,250,117,117,8.8,18.803418803418804
+Dinner,socializing,26,250,117,117,10.4,22.22222222222222
+Dinner,taking_break,26,250,117,117,10.4,22.22222222222222
+Dinner,club_event,3,250,117,117,1.2,2.5641025641025643
+Dinner,passing_through,14,250,117,117,5.6,11.965811965811966
+Dinner,scrolling_phone,14,250,117,117,5.6,11.965811965811966
+Dinner,other,11,250,117,117,4.4,9.401709401709402
+Late Night,eating_drinking,12,62,23,23,19.35483870967742,52.17391304347826
+Late Night,studying_working,20,62,23,23,32.25806451612903,86.95652173913044
+Late Night,reading_relaxing,3,62,23,23,4.838709677419355,13.043478260869565
+Late Night,socializing,9,62,23,23,14.516129032258064,39.130434782608695
+Late Night,taking_break,3,62,23,23,4.838709677419355,13.043478260869565
+Late Night,club_event,3,62,23,23,4.838709677419355,13.043478260869565
+Late Night,passing_through,2,62,23,23,3.225806451612903,8.695652173913043
+Late Night,scrolling_phone,9,62,23,23,14.516129032258064,39.130434782608695
+Late Night,other,1,62,23,23,1.6129032258064515,4.3478260869565215
+Off Hours,eating_drinking,0,1,1,1,0.0,0.0
+Off Hours,studying_working,1,1,1,1,100.0,100.0
+Off Hours,reading_relaxing,0,1,1,1,0.0,0.0
+Off Hours,socializing,0,1,1,1,0.0,0.0
+Off Hours,taking_break,0,1,1,1,0.0,0.0
+Off Hours,club_event,0,1,1,1,0.0,0.0
+Off Hours,passing_through,0,1,1,1,0.0,0.0
+Off Hours,scrolling_phone,0,1,1,1,0.0,0.0
+Off Hours,other,0,1,1,1,0.0,0.0
+Unknown,eating_drinking,0,0,7,0,,0.0
+Unknown,studying_working,0,0,7,0,,0.0
+Unknown,reading_relaxing,0,0,7,0,,0.0
+Unknown,socializing,0,0,7,0,,0.0
+Unknown,taking_break,0,0,7,0,,0.0
+Unknown,club_event,0,0,7,0,,0.0
+Unknown,passing_through,0,0,7,0,,0.0
+Unknown,scrolling_phone,0,0,7,0,,0.0
+Unknown,other,0,0,7,0,,0.0

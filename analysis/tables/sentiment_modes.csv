@@ -1,0 +1,31 @@
+group,statement,modal_ratings,modal_labels,modal_count_each,valid_n,percent_valid_each,missing_n,invalid_n,total_visits
+Overall,physical_comfort,4,Agree,145,321,45.17133956386293,7,5,333
+Overall,distraction,3,Neutral,118,318,37.106918238993714,7,8,333
+Overall,stress,2,Disagree,113,322,35.09316770186335,7,4,333
+Overall,safety,5,Strongly Agree,157,326,48.15950920245399,7,0,333
+Overall,social_comfort,4,Agree,130,325,40.0,7,1,333
+Monday,physical_comfort,4,Agree,25,47,53.191489361702125,2,1,50
+Monday,distraction,3,Neutral,16,47,34.04255319148936,2,1,50
+Monday,stress,2,Disagree,15,47,31.914893617021278,2,1,50
+Monday,safety,5,Strongly Agree,23,48,47.916666666666664,2,0,50
+Monday,social_comfort,4,Agree,20,47,42.5531914893617,2,1,50
+Tuesday,physical_comfort,5,Strongly Agree,34,74,45.945945945945944,1,3,78
+Tuesday,distraction,3,Neutral,30,73,41.0958904109589,1,4,78
+Tuesday,stress,2,Disagree,30,76,39.473684210526315,1,1,78
+Tuesday,safety,5,Strongly Agree,35,77,45.45454545454545,1,0,78
+Tuesday,social_comfort,4,Agree,32,77,41.55844155844156,1,0,78
+Wednesday,physical_comfort,4,Agree,32,61,52.459016393442624,0,1,62
+Wednesday,distraction,3,Neutral,23,59,38.983050847457626,0,3,62
+Wednesday,stress,2,Disagree,20,60,33.333333333333336,0,2,62
+Wednesday,safety,5,Strongly Agree,28,62,45.16129032258065,0,0,62
+Wednesday,social_comfort,4,Agree,30,62,48.38709677419355,0,0,62
+Thursday,physical_comfort,4,Agree,28,63,44.44444444444444,1,0,64
+Thursday,distraction,3,Neutral,26,63,41.26984126984127,1,0,64
+Thursday,stress,2,Disagree,25,63,39.682539682539684,1,0,64
+Thursday,safety,5,Strongly Agree,32,63,50.79365079365079,1,0,64
+Thursday,social_comfort,5,Strongly Agree,27,63,42.857142857142854,1,0,64
+Friday,physical_comfort,4,Agree,21,44,47.72727272727273,3,0,47
+Friday,distraction,2,Disagree,17,44,38.63636363636363,3,0,47
+Friday,stress,2,Disagree,12,44,27.272727272727273,3,0,47
+Friday,safety,4; 5,Agree / Strongly Agree,21,44,47.72727272727273,3,0,47
+Friday,social_comfort,5,Strongly Agree,18,44,40.90909090909091,3,0,47

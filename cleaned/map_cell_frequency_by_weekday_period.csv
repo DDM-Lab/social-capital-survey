@@ -1,9 +1,182 @@
 weekday,time_period,activity,column,row,visits_selecting_cell
+Friday,Dinner,eating_drinking,4,2,1
+Friday,Dinner,eating_drinking,4,5,1
+Friday,Dinner,eating_drinking,4,8,1
+Friday,Dinner,eating_drinking,4,9,1
+Friday,Dinner,eating_drinking,5,6,1
+Friday,Dinner,eating_drinking,5,8,1
+Friday,Dinner,eating_drinking,5,9,1
+Friday,Dinner,eating_drinking,6,5,1
+Friday,Dinner,eating_drinking,6,10,1
+Friday,Dinner,eating_drinking,7,5,1
+Friday,Dinner,eating_drinking,7,7,1
+Friday,Dinner,eating_drinking,7,9,1
+Friday,Dinner,eating_drinking,7,10,1
+Friday,Dinner,eating_drinking,8,5,1
+Friday,Dinner,eating_drinking,8,7,1
+Friday,Dinner,eating_drinking,8,8,1
+Friday,Dinner,eating_drinking,8,10,1
+Friday,Dinner,eating_drinking,9,9,1
+Friday,Dinner,eating_drinking,10,7,1
+Friday,Dinner,eating_drinking,10,10,1
+Friday,Dinner,eating_drinking,11,8,1
+Friday,Dinner,eating_drinking,12,9,1
+Friday,Dinner,eating_drinking,13,9,1
+Friday,Dinner,eating_drinking,15,9,1
+Friday,Dinner,eating_drinking,15,10,1
+Friday,Dinner,eating_drinking,16,9,1
+Friday,Dinner,eating_drinking,18,9,1
+Friday,Dinner,eating_drinking,19,9,1
+Friday,Dinner,eating_drinking,21,6,1
+Friday,Dinner,eating_drinking,21,7,1
+Friday,Dinner,eating_drinking,21,8,1
+Friday,Dinner,eating_drinking,22,2,1
+Friday,Dinner,eating_drinking,22,3,1
+Friday,Dinner,eating_drinking,22,4,1
+Friday,Dinner,eating_drinking,22,5,1
+Friday,Dinner,eating_drinking,22,6,1
+Friday,Dinner,eating_drinking,22,8,1
+Friday,Dinner,eating_drinking,23,2,1
+Friday,Dinner,eating_drinking,23,3,1
+Friday,Dinner,eating_drinking,23,4,1
+Friday,Dinner,eating_drinking,23,8,1
+Friday,Dinner,eating_drinking,24,2,1
+Friday,Dinner,eating_drinking,24,4,1
+Friday,Dinner,eating_drinking,24,5,1
+Friday,Dinner,eating_drinking,24,6,1
+Friday,Dinner,eating_drinking,24,8,1
+Friday,Dinner,eating_drinking,25,2,1
+Friday,Dinner,eating_drinking,25,3,1
+Friday,Dinner,eating_drinking,25,4,1
+Friday,Dinner,eating_drinking,25,5,1
+Friday,Dinner,eating_drinking,25,6,1
+Friday,Dinner,eating_drinking,25,7,1
+Friday,Dinner,eating_drinking,25,8,1
+Friday,Dinner,eating_drinking,26,2,1
+Friday,Dinner,eating_drinking,26,3,1
+Friday,Dinner,eating_drinking,26,4,1
+Friday,Dinner,eating_drinking,26,6,1
+Friday,Dinner,eating_drinking,26,8,1
+Friday,Dinner,eating_drinking,26,10,1
+Friday,Dinner,eating_drinking,27,4,1
+Friday,Dinner,eating_drinking,27,5,1
+Friday,Dinner,eating_drinking,27,9,1
+Friday,Dinner,eating_drinking,28,3,1
+Friday,Dinner,eating_drinking,28,4,1
+Friday,Dinner,eating_drinking,28,5,1
+Friday,Dinner,eating_drinking,28,6,2
+Friday,Dinner,eating_drinking,28,7,1
+Friday,Dinner,eating_drinking,28,8,1
+Friday,Dinner,eating_drinking,29,2,1
+Friday,Dinner,eating_drinking,29,3,1
+Friday,Dinner,eating_drinking,29,4,2
+Friday,Dinner,eating_drinking,29,5,1
+Friday,Dinner,eating_drinking,29,6,1
+Friday,Dinner,eating_drinking,29,7,1
+Friday,Dinner,eating_drinking,29,8,1
+Friday,Dinner,eating_drinking,29,9,1
+Friday,Dinner,other,2,12,1
+Friday,Dinner,other,2,13,1
+Friday,Dinner,other,8,12,1
+Friday,Dinner,other,8,15,1
+Friday,Dinner,other,9,10,1
+Friday,Dinner,other,9,13,1
+Friday,Dinner,other,9,15,1
+Friday,Dinner,other,10,10,1
+Friday,Dinner,other,10,11,1
+Friday,Dinner,other,10,14,1
+Friday,Dinner,other,10,15,1
+Friday,Dinner,other,11,10,1
+Friday,Dinner,other,11,11,1
+Friday,Dinner,other,11,13,1
+Friday,Dinner,other,12,5,1
+Friday,Dinner,other,12,11,1
+Friday,Dinner,other,12,13,1
+Friday,Dinner,other,12,14,1
+Friday,Dinner,other,12,15,1
+Friday,Dinner,other,13,12,1
+Friday,Dinner,other,13,14,1
+Friday,Dinner,other,14,5,1
+Friday,Dinner,other,14,11,1
+Friday,Dinner,other,15,4,1
+Friday,Dinner,other,15,9,1
+Friday,Dinner,other,15,14,1
+Friday,Dinner,other,16,3,1
+Friday,Dinner,other,16,7,1
+Friday,Dinner,other,16,8,1
+Friday,Dinner,other,16,11,1
+Friday,Dinner,other,16,14,1
+Friday,Dinner,other,17,4,1
+Friday,Dinner,other,17,10,1
+Friday,Dinner,other,18,1,1
+Friday,Dinner,other,18,5,1
+Friday,Dinner,other,18,9,1
+Friday,Dinner,other,19,5,1
+Friday,Dinner,other,20,9,1
+Friday,Dinner,other,20,13,1
+Friday,Dinner,other,21,3,1
+Friday,Dinner,other,21,12,1
+Friday,Dinner,other,21,16,1
+Friday,Dinner,other,22,14,1
+Friday,Dinner,other,23,11,1
+Friday,Dinner,other,23,14,1
+Friday,Dinner,other,23,16,1
+Friday,Dinner,other,23,17,1
+Friday,Dinner,other,24,11,1
+Friday,Dinner,other,24,14,1
+Friday,Dinner,other,25,11,1
+Friday,Dinner,other,25,12,1
+Friday,Dinner,other,25,16,1
+Friday,Dinner,other,26,13,1
+Friday,Dinner,reading_relaxing,13,12,1
+Friday,Dinner,reading_relaxing,15,20,1
+Friday,Dinner,reading_relaxing,26,5,1
+Friday,Dinner,reading_relaxing,26,6,1
+Friday,Dinner,reading_relaxing,26,7,1
+Friday,Dinner,reading_relaxing,26,8,1
+Friday,Dinner,reading_relaxing,27,5,1
+Friday,Dinner,reading_relaxing,27,6,1
+Friday,Dinner,reading_relaxing,27,7,1
+Friday,Dinner,reading_relaxing,27,8,1
+Friday,Dinner,reading_relaxing,28,6,1
+Friday,Dinner,reading_relaxing,28,7,1
+Friday,Dinner,reading_relaxing,28,8,1
+Friday,Dinner,scrolling_phone,25,6,1
+Friday,Dinner,socializing,21,6,1
+Friday,Dinner,socializing,21,7,1
+Friday,Dinner,socializing,21,8,1
+Friday,Dinner,socializing,21,9,1
+Friday,Dinner,socializing,28,5,1
+Friday,Dinner,socializing,28,6,1
+Friday,Dinner,socializing,29,4,1
+Friday,Dinner,socializing,29,5,1
+Friday,Dinner,socializing,29,6,1
+Friday,Dinner,socializing,29,7,1
+Friday,Dinner,socializing,29,8,1
+Friday,Dinner,studying_working,1,14,1
+Friday,Dinner,studying_working,2,11,1
+Friday,Dinner,studying_working,10,2,1
+Friday,Dinner,studying_working,10,15,1
+Friday,Dinner,studying_working,16,20,1
+Friday,Dinner,studying_working,18,13,1
+Friday,Dinner,studying_working,19,11,1
+Friday,Dinner,studying_working,21,13,1
+Friday,Dinner,studying_working,22,6,1
+Friday,Dinner,studying_working,22,8,1
+Friday,Dinner,studying_working,22,13,1
+Friday,Dinner,studying_working,23,13,1
+Friday,Dinner,studying_working,24,13,1
+Friday,Dinner,taking_break,22,8,1
+Friday,Dinner,taking_break,22,13,1
 Friday,Dinner,taking_break,23,3,1
 Friday,Dinner,taking_break,24,3,1
+Friday,Dinner,taking_break,24,8,1
+Friday,Dinner,taking_break,24,13,1
 Friday,Dinner,taking_break,25,3,1
 Friday,Dinner,taking_break,25,5,1
 Friday,Dinner,taking_break,26,3,1
+Friday,Dinner,taking_break,26,6,1
+Friday,Dinner,taking_break,26,8,1
 Friday,Dinner,taking_break,27,2,1
 Friday,Dinner,taking_break,27,3,1
 Friday,Dinner,taking_break,27,4,1
@@ -24,6 +197,8 @@ Friday,Late Night,eating_drinking,16,5,1
 Friday,Late Night,eating_drinking,16,6,1
 Friday,Late Night,eating_drinking,19,2,1
 Friday,Late Night,eating_drinking,19,3,1
+Friday,Late Night,eating_drinking,25,3,1
+Friday,Late Night,eating_drinking,26,3,1
 Friday,Late Night,other,20,12,1
 Friday,Late Night,reading_relaxing,16,16,1
 Friday,Late Night,reading_relaxing,16,17,1
@@ -67,33 +242,206 @@ Friday,Late Night,taking_break,22,14,1
 Friday,Late Night,taking_break,22,16,1
 Friday,Late Night,taking_break,22,18,1
 Friday,Lunch,eating_drinking,2,2,1
+Friday,Lunch,eating_drinking,8,9,1
+Friday,Lunch,eating_drinking,9,9,1
+Friday,Lunch,eating_drinking,13,2,1
 Friday,Lunch,eating_drinking,15,17,1
 Friday,Lunch,eating_drinking,15,18,1
+Friday,Lunch,eating_drinking,16,3,1
+Friday,Lunch,eating_drinking,16,4,1
 Friday,Lunch,eating_drinking,16,17,1
 Friday,Lunch,eating_drinking,16,18,1
-Friday,Lunch,eating_drinking,27,5,1
-Friday,Lunch,eating_drinking,27,6,1
-Friday,Lunch,eating_drinking,27,7,1
+Friday,Lunch,eating_drinking,17,3,1
+Friday,Lunch,eating_drinking,20,6,1
+Friday,Lunch,eating_drinking,25,6,1
+Friday,Lunch,eating_drinking,26,4,1
+Friday,Lunch,eating_drinking,26,5,1
+Friday,Lunch,eating_drinking,26,6,1
+Friday,Lunch,eating_drinking,26,7,2
+Friday,Lunch,eating_drinking,27,4,1
+Friday,Lunch,eating_drinking,27,5,2
+Friday,Lunch,eating_drinking,27,6,2
+Friday,Lunch,eating_drinking,27,7,2
+Friday,Lunch,eating_drinking,28,7,1
+Friday,Lunch,eating_drinking,28,8,1
+Friday,Lunch,eating_drinking,28,9,1
+Friday,Lunch,eating_drinking,29,5,1
+Friday,Lunch,reading_relaxing,5,14,1
+Friday,Lunch,reading_relaxing,5,15,1
+Friday,Lunch,reading_relaxing,5,16,1
+Friday,Lunch,reading_relaxing,29,5,1
+Friday,Lunch,socializing,12,11,1
+Friday,Lunch,socializing,12,12,1
+Friday,Lunch,socializing,13,11,1
+Friday,Lunch,socializing,13,12,1
+Friday,Lunch,socializing,14,10,1
+Friday,Lunch,socializing,14,11,1
+Friday,Lunch,socializing,14,12,1
+Friday,Lunch,socializing,20,5,1
+Friday,Lunch,socializing,27,7,1
+Friday,Lunch,studying_working,11,2,1
+Friday,Lunch,studying_working,11,11,1
+Friday,Lunch,studying_working,11,12,1
+Friday,Lunch,studying_working,12,11,1
+Friday,Lunch,studying_working,12,12,1
+Friday,Lunch,studying_working,13,11,1
+Friday,Lunch,studying_working,13,12,1
+Friday,Lunch,studying_working,13,13,1
+Friday,Lunch,studying_working,14,6,1
+Friday,Lunch,studying_working,14,11,1
+Friday,Lunch,studying_working,14,12,1
+Friday,Lunch,studying_working,14,13,1
+Friday,Lunch,studying_working,15,1,1
 Friday,Lunch,studying_working,15,17,1
 Friday,Lunch,studying_working,15,18,1
+Friday,Lunch,studying_working,16,3,1
 Friday,Lunch,studying_working,16,17,1
 Friday,Lunch,studying_working,16,18,1
+Friday,Lunch,studying_working,17,3,1
+Friday,Lunch,studying_working,19,17,1
+Friday,Lunch,studying_working,20,6,1
+Friday,Lunch,studying_working,20,16,1
 Friday,Lunch,studying_working,22,3,1
 Friday,Lunch,studying_working,23,3,1
 Friday,Lunch,studying_working,24,3,1
 Friday,Lunch,studying_working,24,7,1
 Friday,Lunch,studying_working,25,4,1
 Friday,Lunch,studying_working,26,3,1
+Friday,Lunch,studying_working,26,8,1
+Friday,Lunch,studying_working,27,5,1
+Friday,Lunch,studying_working,27,6,1
+Friday,Lunch,studying_working,27,9,1
+Friday,Lunch,studying_working,28,4,1
+Friday,Lunch,studying_working,28,5,1
+Friday,Lunch,studying_working,28,6,1
+Friday,Lunch,studying_working,28,7,2
+Friday,Lunch,studying_working,28,8,2
+Friday,Lunch,studying_working,28,9,1
+Friday,Lunch,studying_working,29,6,1
+Friday,Lunch,taking_break,5,14,1
+Friday,Lunch,taking_break,5,15,1
+Friday,Lunch,taking_break,5,16,1
+Friday,Lunch,taking_break,15,4,1
+Friday,Lunch,taking_break,29,5,1
 Friday,Lunch,taking_break,29,7,1
 Friday,Lunch,taking_break,29,8,1
 Friday,Lunch,taking_break,29,9,1
+Friday,Morning,eating_drinking,11,11,1
+Friday,Morning,eating_drinking,11,12,1
+Friday,Morning,eating_drinking,12,11,1
+Friday,Morning,eating_drinking,12,12,1
+Friday,Morning,eating_drinking,13,11,1
+Friday,Morning,eating_drinking,13,12,1
+Friday,Morning,eating_drinking,14,11,1
+Friday,Morning,eating_drinking,14,12,1
+Friday,Morning,eating_drinking,16,13,1
+Friday,Morning,eating_drinking,17,8,2
+Friday,Morning,eating_drinking,17,12,1
+Friday,Morning,eating_drinking,18,12,1
+Friday,Morning,eating_drinking,19,12,1
+Friday,Morning,eating_drinking,19,13,1
+Friday,Morning,eating_drinking,19,14,1
+Friday,Morning,eating_drinking,21,13,1
+Friday,Morning,eating_drinking,22,12,1
+Friday,Morning,eating_drinking,22,13,1
+Friday,Morning,eating_drinking,22,14,1
+Friday,Morning,eating_drinking,27,8,1
+Friday,Morning,eating_drinking,27,10,1
+Friday,Morning,eating_drinking,28,3,1
+Friday,Morning,eating_drinking,28,5,1
+Friday,Morning,eating_drinking,28,6,1
+Friday,Morning,eating_drinking,28,8,1
 Friday,Morning,reading_relaxing,17,13,1
+Friday,Morning,scrolling_phone,17,8,1
 Friday,Morning,scrolling_phone,17,13,1
-Friday,Morning,studying_working,17,13,1
+Friday,Morning,socializing,12,11,1
+Friday,Morning,socializing,13,11,1
+Friday,Morning,socializing,13,12,1
+Friday,Morning,socializing,14,10,1
+Friday,Morning,socializing,14,12,1
+Friday,Morning,socializing,17,8,1
+Friday,Morning,studying_working,15,13,1
+Friday,Morning,studying_working,16,12,1
+Friday,Morning,studying_working,16,13,1
+Friday,Morning,studying_working,16,14,1
+Friday,Morning,studying_working,17,8,2
+Friday,Morning,studying_working,17,13,2
+Friday,Morning,studying_working,17,14,1
+Friday,Morning,studying_working,18,12,1
+Friday,Morning,studying_working,18,13,1
+Friday,Morning,studying_working,19,13,1
+Friday,Morning,studying_working,20,12,1
+Friday,Morning,studying_working,20,13,1
+Friday,Morning,studying_working,21,12,1
+Friday,Morning,studying_working,21,13,1
+Monday,Dinner,eating_drinking,5,13,1
+Monday,Dinner,eating_drinking,5,14,1
+Monday,Dinner,eating_drinking,5,15,1
+Monday,Dinner,eating_drinking,5,16,1
 Monday,Dinner,eating_drinking,5,23,1
+Monday,Dinner,eating_drinking,6,13,1
+Monday,Dinner,eating_drinking,7,14,1
+Monday,Dinner,eating_drinking,8,22,1
+Monday,Dinner,eating_drinking,14,23,1
 Monday,Dinner,eating_drinking,15,2,1
 Monday,Dinner,eating_drinking,16,2,1
+Monday,Dinner,eating_drinking,19,16,1
+Monday,Dinner,eating_drinking,21,4,1
+Monday,Dinner,eating_drinking,21,12,1
+Monday,Dinner,eating_drinking,22,2,1
+Monday,Dinner,eating_drinking,22,3,1
+Monday,Dinner,eating_drinking,22,4,1
+Monday,Dinner,eating_drinking,22,6,1
+Monday,Dinner,eating_drinking,22,7,1
+Monday,Dinner,eating_drinking,23,4,2
+Monday,Dinner,eating_drinking,24,4,1
+Monday,Dinner,eating_drinking,25,2,1
+Monday,Dinner,eating_drinking,25,3,2
+Monday,Dinner,eating_drinking,25,6,1
+Monday,Dinner,eating_drinking,25,21,1
+Monday,Dinner,eating_drinking,26,2,1
+Monday,Dinner,eating_drinking,27,3,1
+Monday,Dinner,eating_drinking,27,4,1
+Monday,Dinner,eating_drinking,27,5,1
+Monday,Dinner,eating_drinking,27,7,1
+Monday,Dinner,eating_drinking,27,8,1
+Monday,Dinner,eating_drinking,28,4,1
+Monday,Dinner,eating_drinking,28,5,1
+Monday,Dinner,eating_drinking,28,6,1
+Monday,Dinner,eating_drinking,28,7,1
+Monday,Dinner,eating_drinking,28,8,1
+Monday,Dinner,eating_drinking,28,10,1
+Monday,Dinner,eating_drinking,29,4,2
+Monday,Dinner,eating_drinking,29,5,1
+Monday,Dinner,eating_drinking,29,6,1
+Monday,Dinner,eating_drinking,29,7,1
+Monday,Dinner,eating_drinking,29,8,2
+Monday,Dinner,eating_drinking,29,9,1
+Monday,Dinner,eating_drinking,30,22,1
+Monday,Dinner,other,22,2,1
+Monday,Dinner,reading_relaxing,5,13,1
+Monday,Dinner,reading_relaxing,5,14,1
+Monday,Dinner,reading_relaxing,5,15,1
+Monday,Dinner,reading_relaxing,5,16,1
+Monday,Dinner,reading_relaxing,19,17,1
+Monday,Dinner,scrolling_phone,4,14,1
+Monday,Dinner,scrolling_phone,5,13,1
+Monday,Dinner,scrolling_phone,5,14,1
+Monday,Dinner,scrolling_phone,5,15,1
+Monday,Dinner,scrolling_phone,5,16,1
+Monday,Dinner,socializing,1,13,1
+Monday,Dinner,socializing,4,9,1
+Monday,Dinner,socializing,4,10,1
+Monday,Dinner,socializing,4,17,1
+Monday,Dinner,socializing,10,18,1
+Monday,Dinner,socializing,11,5,1
+Monday,Dinner,socializing,19,15,1
+Monday,Dinner,socializing,20,10,1
+Monday,Dinner,socializing,23,17,1
+Monday,Dinner,socializing,26,17,1
+Monday,Dinner,studying_working,1,13,1
 Monday,Dinner,studying_working,3,22,1
+Monday,Dinner,studying_working,18,1,1
 Monday,Dinner,studying_working,19,2,1
 Monday,Dinner,studying_working,19,17,1
 Monday,Dinner,studying_working,20,16,1
@@ -106,32 +454,91 @@ Monday,Dinner,studying_working,22,9,1
 Monday,Dinner,studying_working,22,10,1
 Monday,Dinner,studying_working,23,2,1
 Monday,Dinner,studying_working,23,3,1
+Monday,Dinner,studying_working,23,19,1
 Monday,Dinner,studying_working,24,3,1
 Monday,Dinner,studying_working,25,4,1
 Monday,Dinner,studying_working,26,3,1
 Monday,Dinner,studying_working,26,4,1
 Monday,Dinner,studying_working,27,4,1
 Monday,Dinner,studying_working,27,6,1
+Monday,Dinner,taking_break,5,13,1
+Monday,Dinner,taking_break,5,14,1
+Monday,Dinner,taking_break,5,15,1
+Monday,Dinner,taking_break,5,16,1
+Monday,Late Night,eating_drinking,22,2,1
+Monday,Late Night,eating_drinking,23,2,1
+Monday,Late Night,socializing,16,5,1
+Monday,Late Night,socializing,17,6,1
+Monday,Late Night,socializing,18,6,1
+Monday,Late Night,socializing,18,7,1
+Monday,Late Night,studying_working,10,13,1
+Monday,Late Night,studying_working,10,14,1
+Monday,Late Night,studying_working,11,13,1
+Monday,Late Night,studying_working,11,14,1
+Monday,Late Night,studying_working,12,13,1
+Monday,Late Night,studying_working,12,14,1
+Monday,Late Night,studying_working,12,15,1
+Monday,Late Night,studying_working,15,2,1
+Monday,Late Night,studying_working,16,2,1
+Monday,Late Night,studying_working,20,2,1
+Monday,Late Night,studying_working,21,2,1
+Monday,Late Night,studying_working,21,3,1
+Monday,Lunch,eating_drinking,2,22,1
+Monday,Lunch,eating_drinking,3,2,1
+Monday,Lunch,eating_drinking,11,1,1
+Monday,Lunch,eating_drinking,14,13,1
+Monday,Lunch,eating_drinking,15,17,1
 Monday,Lunch,eating_drinking,18,7,1
 Monday,Lunch,eating_drinking,20,2,1
 Monday,Lunch,eating_drinking,25,2,1
+Monday,Lunch,eating_drinking,26,2,1
+Monday,Lunch,eating_drinking,28,4,2
+Monday,Lunch,eating_drinking,28,5,2
+Monday,Lunch,eating_drinking,28,6,1
+Monday,Lunch,scrolling_phone,14,15,1
 Monday,Lunch,scrolling_phone,19,3,1
 Monday,Lunch,scrolling_phone,19,4,1
 Monday,Lunch,scrolling_phone,20,3,1
 Monday,Lunch,scrolling_phone,20,4,1
 Monday,Lunch,scrolling_phone,30,24,1
+Monday,Lunch,socializing,7,9,1
+Monday,Lunch,socializing,14,13,1
+Monday,Lunch,socializing,19,3,1
+Monday,Lunch,socializing,19,4,1
 Monday,Lunch,socializing,19,8,1
+Monday,Lunch,socializing,20,3,1
+Monday,Lunch,socializing,20,4,1
 Monday,Lunch,socializing,20,7,1
+Monday,Lunch,socializing,21,5,1
+Monday,Lunch,socializing,21,6,1
+Monday,Lunch,socializing,22,5,1
+Monday,Lunch,socializing,22,6,1
+Monday,Lunch,socializing,24,6,1
+Monday,Lunch,studying_working,12,1,1
+Monday,Lunch,studying_working,14,17,1
+Monday,Lunch,studying_working,15,2,1
 Monday,Lunch,studying_working,15,17,1
+Monday,Lunch,studying_working,16,3,1
+Monday,Lunch,studying_working,17,3,1
+Monday,Lunch,studying_working,19,1,1
 Monday,Lunch,studying_working,19,3,1
 Monday,Lunch,studying_working,19,4,1
 Monday,Lunch,studying_working,20,3,1
 Monday,Lunch,studying_working,20,4,1
 Monday,Lunch,studying_working,20,6,1
+Monday,Lunch,studying_working,22,13,1
 Monday,Lunch,studying_working,23,2,1
 Monday,Lunch,studying_working,25,1,1
+Monday,Lunch,studying_working,26,2,1
+Monday,Lunch,studying_working,29,4,1
+Monday,Lunch,taking_break,17,2,1
+Monday,Lunch,taking_break,17,3,1
+Monday,Lunch,taking_break,29,4,1
+Monday,Lunch,taking_break,29,5,1
+Monday,Lunch,taking_break,29,6,1
 Monday,Morning,eating_drinking,16,6,1
 Monday,Morning,eating_drinking,16,7,1
+Monday,Morning,eating_drinking,20,6,1
 Monday,Morning,eating_drinking,21,7,1
 Monday,Morning,eating_drinking,24,6,1
 Monday,Morning,eating_drinking,27,8,1
@@ -140,6 +547,7 @@ Monday,Morning,reading_relaxing,14,11,1
 Monday,Morning,reading_relaxing,15,11,1
 Monday,Morning,reading_relaxing,18,16,1
 Monday,Morning,reading_relaxing,20,17,1
+Monday,Morning,scrolling_phone,28,6,1
 Monday,Morning,socializing,7,10,1
 Monday,Morning,socializing,8,8,1
 Monday,Morning,socializing,8,9,1
@@ -148,8 +556,10 @@ Monday,Morning,socializing,9,10,1
 Monday,Morning,socializing,15,7,1
 Monday,Morning,socializing,16,6,1
 Monday,Morning,socializing,18,6,1
+Monday,Morning,socializing,19,7,1
 Monday,Morning,socializing,19,9,1
 Monday,Morning,socializing,20,4,1
+Monday,Morning,socializing,20,6,1
 Monday,Morning,socializing,20,9,1
 Monday,Morning,socializing,21,6,1
 Monday,Morning,socializing,21,7,1
@@ -167,72 +577,292 @@ Monday,Morning,studying_working,16,5,1
 Monday,Morning,studying_working,16,6,1
 Monday,Morning,studying_working,16,7,1
 Monday,Morning,studying_working,17,6,1
+Monday,Morning,taking_break,16,18,1
 Monday,Morning,taking_break,18,16,1
 Monday,Morning,taking_break,19,16,1
 Monday,Morning,taking_break,21,16,1
 Monday,Morning,taking_break,24,6,1
 Monday,Morning,taking_break,27,5,1
+Saturday,Dinner,eating_drinking,14,2,1
+Saturday,Dinner,eating_drinking,14,3,1
+Saturday,Dinner,eating_drinking,14,4,1
+Saturday,Dinner,eating_drinking,15,3,1
+Saturday,Dinner,eating_drinking,15,4,1
+Saturday,Dinner,eating_drinking,16,3,1
+Saturday,Dinner,eating_drinking,16,4,1
+Saturday,Dinner,eating_drinking,16,5,1
+Saturday,Dinner,eating_drinking,17,3,1
+Saturday,Dinner,eating_drinking,17,6,1
+Saturday,Dinner,eating_drinking,18,5,1
+Saturday,Dinner,eating_drinking,19,2,1
+Saturday,Dinner,eating_drinking,19,3,1
+Saturday,Dinner,eating_drinking,19,4,1
+Saturday,Dinner,eating_drinking,19,5,1
+Saturday,Dinner,eating_drinking,20,3,1
+Saturday,Dinner,eating_drinking,20,5,1
+Saturday,Dinner,eating_drinking,21,4,1
+Saturday,Dinner,eating_drinking,23,2,1
+Saturday,Dinner,eating_drinking,23,3,1
+Saturday,Dinner,eating_drinking,25,3,1
+Saturday,Dinner,eating_drinking,25,4,1
 Saturday,Dinner,reading_relaxing,19,17,1
 Saturday,Dinner,reading_relaxing,20,16,1
+Saturday,Dinner,scrolling_phone,18,2,1
+Saturday,Dinner,socializing,15,4,1
+Saturday,Dinner,socializing,18,3,1
+Saturday,Dinner,socializing,20,4,1
+Saturday,Dinner,socializing,22,3,1
+Saturday,Dinner,socializing,24,4,1
+Saturday,Dinner,studying_working,16,3,1
+Saturday,Dinner,studying_working,18,2,1
+Saturday,Dinner,studying_working,21,14,1
+Saturday,Dinner,studying_working,23,15,1
 Saturday,Dinner,taking_break,15,3,1
-Saturday,Dinner,taking_break,16,3,1
-Saturday,Dinner,taking_break,17,3,1
+Saturday,Dinner,taking_break,16,3,2
+Saturday,Dinner,taking_break,17,3,2
+Saturday,Dinner,taking_break,18,3,1
+Saturday,Dinner,taking_break,19,3,1
+Saturday,Dinner,taking_break,19,4,1
+Saturday,Dinner,taking_break,20,3,1
+Saturday,Dinner,taking_break,20,4,1
+Saturday,Dinner,taking_break,21,3,1
+Saturday,Dinner,taking_break,22,3,1
+Saturday,Dinner,taking_break,23,3,1
+Saturday,Dinner,taking_break,24,3,1
+Saturday,Late Night,reading_relaxing,8,20,1
+Saturday,Late Night,scrolling_phone,12,15,1
+Saturday,Late Night,scrolling_phone,13,19,1
+Saturday,Late Night,studying_working,16,20,1
+Saturday,Lunch,eating_drinking,14,3,1
+Saturday,Lunch,eating_drinking,14,4,1
+Saturday,Lunch,eating_drinking,15,3,1
+Saturday,Lunch,eating_drinking,15,4,1
+Saturday,Lunch,eating_drinking,18,5,1
+Saturday,Lunch,eating_drinking,28,6,1
+Saturday,Lunch,eating_drinking,28,7,1
+Saturday,Lunch,eating_drinking,28,8,1
+Saturday,Lunch,eating_drinking,29,7,1
+Saturday,Lunch,eating_drinking,29,8,1
+Saturday,Lunch,other,2,11,1
+Saturday,Lunch,reading_relaxing,19,5,1
+Saturday,Lunch,socializing,14,3,2
+Saturday,Lunch,socializing,14,4,1
+Saturday,Lunch,socializing,15,3,1
+Saturday,Lunch,socializing,15,4,1
 Saturday,Lunch,studying_working,10,11,1
 Saturday,Lunch,studying_working,11,10,1
 Saturday,Lunch,studying_working,11,11,1
+Saturday,Lunch,studying_working,12,5,1
 Saturday,Lunch,studying_working,12,10,1
 Saturday,Lunch,studying_working,12,11,1
+Saturday,Lunch,studying_working,13,3,1
+Saturday,Lunch,studying_working,14,3,1
+Saturday,Lunch,studying_working,14,4,2
+Saturday,Lunch,studying_working,15,3,1
+Saturday,Lunch,studying_working,15,4,1
+Saturday,Lunch,studying_working,15,5,1
+Saturday,Lunch,studying_working,16,5,1
+Saturday,Lunch,studying_working,16,17,1
+Saturday,Lunch,studying_working,19,2,1
+Saturday,Lunch,studying_working,19,5,1
+Saturday,Morning,eating_drinking,16,6,1
+Saturday,Morning,socializing,16,5,1
+Saturday,Morning,socializing,16,6,1
+Saturday,Morning,socializing,17,5,1
+Saturday,Morning,socializing,17,6,1
+Saturday,Morning,socializing,18,7,1
+Saturday,Morning,studying_working,16,5,1
+Saturday,Morning,studying_working,16,6,1
+Saturday,Morning,studying_working,17,5,1
+Saturday,Morning,studying_working,17,6,1
+Saturday,Morning,studying_working,17,7,1
+Sunday,Dinner,eating_drinking,2,2,1
 Sunday,Dinner,eating_drinking,2,9,1
 Sunday,Dinner,eating_drinking,2,10,1
+Sunday,Dinner,eating_drinking,3,2,1
+Sunday,Dinner,eating_drinking,3,3,1
+Sunday,Dinner,eating_drinking,3,4,1
+Sunday,Dinner,eating_drinking,3,5,1
+Sunday,Dinner,eating_drinking,3,6,1
+Sunday,Dinner,eating_drinking,3,7,1
+Sunday,Dinner,eating_drinking,3,8,1
+Sunday,Dinner,eating_drinking,3,9,1
+Sunday,Dinner,eating_drinking,4,9,1
+Sunday,Dinner,eating_drinking,5,9,1
+Sunday,Dinner,eating_drinking,6,9,1
+Sunday,Dinner,eating_drinking,6,10,1
+Sunday,Dinner,eating_drinking,7,9,1
 Sunday,Dinner,eating_drinking,7,14,1
-Sunday,Dinner,eating_drinking,9,10,1
+Sunday,Dinner,eating_drinking,8,9,1
+Sunday,Dinner,eating_drinking,9,9,1
+Sunday,Dinner,eating_drinking,9,10,2
+Sunday,Dinner,eating_drinking,10,9,1
+Sunday,Dinner,eating_drinking,11,9,1
 Sunday,Dinner,eating_drinking,11,16,1
+Sunday,Dinner,eating_drinking,12,9,1
 Sunday,Dinner,eating_drinking,13,8,1
+Sunday,Dinner,eating_drinking,13,9,1
+Sunday,Dinner,eating_drinking,14,9,1
+Sunday,Dinner,eating_drinking,15,9,1
+Sunday,Dinner,eating_drinking,16,9,1
+Sunday,Dinner,eating_drinking,17,9,1
 Sunday,Dinner,eating_drinking,17,18,1
+Sunday,Dinner,eating_drinking,18,9,1
+Sunday,Dinner,eating_drinking,18,10,1
+Sunday,Dinner,eating_drinking,19,9,1
+Sunday,Dinner,eating_drinking,19,17,1
+Sunday,Dinner,eating_drinking,20,9,1
+Sunday,Dinner,eating_drinking,20,16,1
+Sunday,Dinner,eating_drinking,20,17,1
+Sunday,Dinner,eating_drinking,21,3,1
+Sunday,Dinner,eating_drinking,21,4,1
+Sunday,Dinner,eating_drinking,21,5,1
+Sunday,Dinner,eating_drinking,21,6,1
+Sunday,Dinner,eating_drinking,21,7,1
+Sunday,Dinner,eating_drinking,21,8,1
+Sunday,Dinner,eating_drinking,21,16,1
+Sunday,Dinner,eating_drinking,22,3,1
+Sunday,Dinner,eating_drinking,23,3,1
+Sunday,Dinner,eating_drinking,24,3,1
+Sunday,Dinner,eating_drinking,25,3,1
+Sunday,Dinner,eating_drinking,26,3,1
+Sunday,Dinner,eating_drinking,27,3,1
+Sunday,Dinner,eating_drinking,27,4,1
+Sunday,Dinner,eating_drinking,27,5,1
+Sunday,Dinner,eating_drinking,29,7,1
+Sunday,Dinner,other,2,11,1
+Sunday,Dinner,other,2,14,1
+Sunday,Dinner,other,3,2,1
+Sunday,Dinner,other,10,9,1
+Sunday,Dinner,other,10,10,1
+Sunday,Dinner,other,11,9,1
+Sunday,Dinner,other,11,10,1
 Sunday,Dinner,reading_relaxing,13,11,2
+Sunday,Dinner,reading_relaxing,19,17,1
 Sunday,Dinner,scrolling_phone,16,19,1
+Sunday,Dinner,socializing,13,14,1
+Sunday,Dinner,socializing,19,8,1
+Sunday,Dinner,socializing,19,16,1
+Sunday,Dinner,socializing,19,17,1
+Sunday,Dinner,socializing,20,11,1
+Sunday,Dinner,studying_working,13,13,1
+Sunday,Dinner,studying_working,14,13,1
 Sunday,Dinner,studying_working,18,21,1
+Sunday,Dinner,studying_working,19,17,1
+Sunday,Dinner,studying_working,20,16,1
+Sunday,Dinner,studying_working,20,17,1
+Sunday,Dinner,studying_working,21,16,1
+Sunday,Dinner,taking_break,4,15,1
+Sunday,Dinner,taking_break,5,14,1
+Sunday,Dinner,taking_break,5,15,1
+Sunday,Dinner,taking_break,5,16,1
+Sunday,Dinner,taking_break,18,20,1
 Sunday,Dinner,taking_break,20,6,1
+Sunday,Dinner,taking_break,27,4,1
+Sunday,Dinner,taking_break,27,5,1
+Sunday,Lunch,eating_drinking,10,13,1
+Sunday,Lunch,eating_drinking,11,12,1
+Sunday,Lunch,eating_drinking,11,14,1
+Sunday,Lunch,eating_drinking,12,12,1
+Sunday,Lunch,eating_drinking,13,11,1
+Sunday,Lunch,eating_drinking,13,12,1
+Sunday,Lunch,eating_drinking,13,13,1
+Sunday,Lunch,eating_drinking,13,14,1
+Sunday,Lunch,eating_drinking,14,12,1
+Sunday,Lunch,eating_drinking,14,13,2
+Sunday,Lunch,eating_drinking,15,12,1
+Sunday,Lunch,eating_drinking,19,3,1
+Sunday,Lunch,eating_drinking,20,6,2
+Sunday,Lunch,eating_drinking,21,2,1
+Sunday,Lunch,eating_drinking,22,6,1
+Sunday,Lunch,eating_drinking,22,7,1
+Sunday,Lunch,eating_drinking,22,8,1
+Sunday,Lunch,eating_drinking,22,9,1
+Sunday,Lunch,eating_drinking,24,6,1
+Sunday,Lunch,eating_drinking,26,6,1
+Sunday,Lunch,eating_drinking,27,5,1
+Sunday,Lunch,scrolling_phone,14,12,1
+Sunday,Lunch,scrolling_phone,14,13,1
+Sunday,Lunch,studying_working,14,12,1
+Sunday,Lunch,studying_working,14,13,1
+Sunday,Lunch,studying_working,19,7,1
+Sunday,Lunch,studying_working,22,2,1
+Sunday,Lunch,studying_working,28,3,1
+Sunday,Lunch,studying_working,28,4,1
+Sunday,Lunch,studying_working,28,5,1
+Sunday,Lunch,studying_working,28,6,1
+Sunday,Lunch,studying_working,28,7,1
+Sunday,Lunch,studying_working,28,9,1
+Sunday,Lunch,taking_break,11,12,1
+Sunday,Lunch,taking_break,12,12,1
+Sunday,Lunch,taking_break,12,13,1
+Sunday,Lunch,taking_break,12,14,1
+Sunday,Lunch,taking_break,13,11,1
+Sunday,Lunch,taking_break,13,12,1
+Sunday,Lunch,taking_break,14,12,1
+Sunday,Lunch,taking_break,14,13,1
+Sunday,Lunch,taking_break,19,4,1
+Thursday,Dinner,eating_drinking,7,11,1
 Thursday,Dinner,eating_drinking,13,12,1
 Thursday,Dinner,eating_drinking,13,13,1
+Thursday,Dinner,eating_drinking,14,5,1
+Thursday,Dinner,eating_drinking,14,6,1
+Thursday,Dinner,eating_drinking,14,7,1
 Thursday,Dinner,eating_drinking,14,8,1
 Thursday,Dinner,eating_drinking,14,13,1
 Thursday,Dinner,eating_drinking,15,16,1
 Thursday,Dinner,eating_drinking,16,6,1
 Thursday,Dinner,eating_drinking,16,17,1
+Thursday,Dinner,eating_drinking,16,21,1
 Thursday,Dinner,eating_drinking,18,4,1
 Thursday,Dinner,eating_drinking,18,8,1
+Thursday,Dinner,eating_drinking,18,16,1
+Thursday,Dinner,eating_drinking,19,1,1
+Thursday,Dinner,eating_drinking,19,2,1
 Thursday,Dinner,eating_drinking,19,5,2
 Thursday,Dinner,eating_drinking,19,7,3
 Thursday,Dinner,eating_drinking,19,8,1
-Thursday,Dinner,eating_drinking,20,5,1
+Thursday,Dinner,eating_drinking,19,16,1
+Thursday,Dinner,eating_drinking,20,1,1
+Thursday,Dinner,eating_drinking,20,3,1
+Thursday,Dinner,eating_drinking,20,5,2
 Thursday,Dinner,eating_drinking,20,6,4
 Thursday,Dinner,eating_drinking,20,7,1
+Thursday,Dinner,eating_drinking,21,1,1
+Thursday,Dinner,eating_drinking,21,3,1
 Thursday,Dinner,eating_drinking,21,4,1
 Thursday,Dinner,eating_drinking,21,5,1
 Thursday,Dinner,eating_drinking,21,7,2
+Thursday,Dinner,eating_drinking,21,16,1
+Thursday,Dinner,eating_drinking,22,1,1
+Thursday,Dinner,eating_drinking,22,3,1
 Thursday,Dinner,eating_drinking,22,5,2
 Thursday,Dinner,eating_drinking,22,6,1
 Thursday,Dinner,eating_drinking,22,7,2
 Thursday,Dinner,eating_drinking,22,8,1
 Thursday,Dinner,eating_drinking,22,9,1
-Thursday,Dinner,eating_drinking,23,3,1
+Thursday,Dinner,eating_drinking,23,3,2
 Thursday,Dinner,eating_drinking,23,4,1
 Thursday,Dinner,eating_drinking,23,5,2
 Thursday,Dinner,eating_drinking,23,10,1
 Thursday,Dinner,eating_drinking,23,11,1
+Thursday,Dinner,eating_drinking,24,3,1
 Thursday,Dinner,eating_drinking,24,5,1
 Thursday,Dinner,eating_drinking,24,6,2
 Thursday,Dinner,eating_drinking,24,7,1
 Thursday,Dinner,eating_drinking,24,8,1
+Thursday,Dinner,eating_drinking,25,3,1
 Thursday,Dinner,eating_drinking,25,4,1
 Thursday,Dinner,eating_drinking,25,5,1
 Thursday,Dinner,eating_drinking,25,8,2
 Thursday,Dinner,eating_drinking,25,14,1
+Thursday,Dinner,eating_drinking,26,3,1
 Thursday,Dinner,eating_drinking,26,5,1
 Thursday,Dinner,eating_drinking,26,6,1
 Thursday,Dinner,eating_drinking,26,8,1
-Thursday,Dinner,eating_drinking,27,5,1
+Thursday,Dinner,eating_drinking,27,3,1
+Thursday,Dinner,eating_drinking,27,4,1
+Thursday,Dinner,eating_drinking,27,5,2
 Thursday,Dinner,eating_drinking,27,8,1
 Thursday,Dinner,eating_drinking,28,3,1
 Thursday,Dinner,eating_drinking,28,5,1
@@ -243,7 +873,12 @@ Thursday,Dinner,eating_drinking,29,6,1
 Thursday,Dinner,eating_drinking,29,8,1
 Thursday,Dinner,eating_drinking,29,9,1
 Thursday,Dinner,eating_drinking,29,10,1
+Thursday,Dinner,other,2,23,1
 Thursday,Dinner,planned_meeting,21,1,1
+Thursday,Dinner,reading_relaxing,13,7,1
+Thursday,Dinner,reading_relaxing,24,2,1
+Thursday,Dinner,scrolling_phone,15,3,1
+Thursday,Dinner,scrolling_phone,17,23,1
 Thursday,Dinner,scrolling_phone,20,6,1
 Thursday,Dinner,scrolling_phone,21,1,1
 Thursday,Dinner,scrolling_phone,28,9,1
@@ -257,6 +892,7 @@ Thursday,Dinner,socializing,5,17,1
 Thursday,Dinner,socializing,5,18,1
 Thursday,Dinner,socializing,5,19,1
 Thursday,Dinner,socializing,5,20,1
+Thursday,Dinner,socializing,7,9,1
 Thursday,Dinner,socializing,16,6,1
 Thursday,Dinner,socializing,17,4,1
 Thursday,Dinner,socializing,17,5,1
@@ -285,6 +921,7 @@ Thursday,Dinner,socializing,23,6,1
 Thursday,Dinner,socializing,23,8,1
 Thursday,Dinner,socializing,23,11,1
 Thursday,Dinner,socializing,23,14,1
+Thursday,Dinner,socializing,24,2,1
 Thursday,Dinner,socializing,25,4,1
 Thursday,Dinner,socializing,26,4,1
 Thursday,Dinner,socializing,27,5,1
@@ -295,6 +932,8 @@ Thursday,Dinner,studying_working,12,7,1
 Thursday,Dinner,studying_working,13,11,1
 Thursday,Dinner,studying_working,13,12,1
 Thursday,Dinner,studying_working,14,3,1
+Thursday,Dinner,studying_working,14,5,1
+Thursday,Dinner,studying_working,14,6,1
 Thursday,Dinner,studying_working,14,12,1
 Thursday,Dinner,studying_working,14,20,1
 Thursday,Dinner,studying_working,15,1,1
@@ -303,15 +942,25 @@ Thursday,Dinner,studying_working,15,19,1
 Thursday,Dinner,studying_working,16,17,1
 Thursday,Dinner,studying_working,16,19,1
 Thursday,Dinner,studying_working,17,19,1
+Thursday,Dinner,studying_working,18,11,1
 Thursday,Dinner,studying_working,18,17,1
 Thursday,Dinner,studying_working,18,20,1
+Thursday,Dinner,studying_working,18,22,1
+Thursday,Dinner,studying_working,19,11,1
+Thursday,Dinner,studying_working,19,15,1
 Thursday,Dinner,studying_working,19,16,1
 Thursday,Dinner,studying_working,19,19,1
+Thursday,Dinner,studying_working,20,11,1
+Thursday,Dinner,studying_working,20,12,1
+Thursday,Dinner,studying_working,20,15,1
+Thursday,Dinner,studying_working,20,16,1
 Thursday,Dinner,studying_working,21,1,1
 Thursday,Dinner,studying_working,22,5,1
 Thursday,Dinner,studying_working,22,6,1
 Thursday,Dinner,studying_working,22,7,1
+Thursday,Dinner,studying_working,22,15,1
 Thursday,Dinner,studying_working,23,4,1
+Thursday,Dinner,studying_working,24,2,1
 Thursday,Dinner,studying_working,25,5,1
 Thursday,Dinner,studying_working,26,4,1
 Thursday,Dinner,studying_working,27,4,1
@@ -322,6 +971,15 @@ Thursday,Dinner,studying_working,28,6,1
 Thursday,Dinner,studying_working,28,8,1
 Thursday,Dinner,taking_break,3,10,1
 Thursday,Dinner,taking_break,3,11,1
+Thursday,Dinner,taking_break,4,21,1
+Thursday,Dinner,taking_break,5,10,1
+Thursday,Dinner,taking_break,5,20,1
+Thursday,Dinner,taking_break,5,21,1
+Thursday,Dinner,taking_break,5,22,1
+Thursday,Dinner,taking_break,6,10,1
+Thursday,Dinner,taking_break,7,9,1
+Thursday,Dinner,taking_break,7,10,1
+Thursday,Dinner,taking_break,9,11,1
 Thursday,Dinner,taking_break,14,8,1
 Thursday,Dinner,taking_break,14,12,1
 Thursday,Dinner,taking_break,15,5,1
@@ -331,7 +989,14 @@ Thursday,Dinner,taking_break,17,6,1
 Thursday,Dinner,taking_break,18,7,1
 Thursday,Dinner,taking_break,19,7,1
 Thursday,Dinner,taking_break,21,1,1
-Thursday,Dinner,taking_break,27,3,1
+Thursday,Dinner,taking_break,27,3,2
+Thursday,Dinner,taking_break,27,4,1
+Thursday,Dinner,taking_break,27,5,1
+Thursday,Dinner,taking_break,27,6,1
+Thursday,Late Night,eating_drinking,19,6,1
+Thursday,Late Night,eating_drinking,19,7,1
+Thursday,Late Night,eating_drinking,20,6,1
+Thursday,Late Night,eating_drinking,20,7,1
 Thursday,Late Night,reading_relaxing,17,14,1
 Thursday,Late Night,reading_relaxing,18,15,1
 Thursday,Late Night,reading_relaxing,19,15,1
@@ -339,10 +1004,14 @@ Thursday,Late Night,reading_relaxing,19,16,1
 Thursday,Late Night,reading_relaxing,20,16,1
 Thursday,Late Night,reading_relaxing,20,18,1
 Thursday,Late Night,scrolling_phone,18,16,1
+Thursday,Late Night,scrolling_phone,19,6,1
 Thursday,Late Night,scrolling_phone,19,15,1
 Thursday,Late Night,scrolling_phone,19,17,1
 Thursday,Late Night,scrolling_phone,19,18,1
+Thursday,Late Night,scrolling_phone,20,7,1
 Thursday,Late Night,scrolling_phone,20,16,1
+Thursday,Late Night,scrolling_phone,22,11,1
+Thursday,Late Night,socializing,20,6,1
 Thursday,Late Night,studying_working,15,3,1
 Thursday,Late Night,studying_working,17,2,1
 Thursday,Late Night,studying_working,17,3,1
@@ -352,6 +1021,7 @@ Thursday,Late Night,studying_working,19,16,1
 Thursday,Late Night,studying_working,19,18,1
 Thursday,Late Night,studying_working,19,19,1
 Thursday,Late Night,studying_working,21,3,1
+Thursday,Late Night,studying_working,22,11,1
 Thursday,Late Night,studying_working,22,16,1
 Thursday,Late Night,studying_working,23,3,1
 Thursday,Late Night,studying_working,23,17,1
@@ -362,36 +1032,150 @@ Thursday,Late Night,studying_working,28,11,1
 Thursday,Late Night,studying_working,28,13,1
 Thursday,Late Night,studying_working,28,14,1
 Thursday,Late Night,studying_working,28,15,1
-Thursday,Lunch,eating_drinking,17,1,1
-Thursday,Lunch,eating_drinking,18,1,1
-Thursday,Lunch,eating_drinking,19,1,1
+Thursday,Lunch,eating_drinking,13,1,1
+Thursday,Lunch,eating_drinking,13,11,1
+Thursday,Lunch,eating_drinking,13,12,1
+Thursday,Lunch,eating_drinking,13,13,1
+Thursday,Lunch,eating_drinking,14,1,1
+Thursday,Lunch,eating_drinking,14,3,1
+Thursday,Lunch,eating_drinking,14,5,1
+Thursday,Lunch,eating_drinking,14,11,1
+Thursday,Lunch,eating_drinking,14,12,1
+Thursday,Lunch,eating_drinking,14,13,1
+Thursday,Lunch,eating_drinking,15,1,1
+Thursday,Lunch,eating_drinking,15,4,1
+Thursday,Lunch,eating_drinking,15,7,1
+Thursday,Lunch,eating_drinking,16,1,1
+Thursday,Lunch,eating_drinking,16,2,1
+Thursday,Lunch,eating_drinking,16,3,1
+Thursday,Lunch,eating_drinking,16,6,1
+Thursday,Lunch,eating_drinking,17,1,2
+Thursday,Lunch,eating_drinking,17,2,1
+Thursday,Lunch,eating_drinking,17,3,1
+Thursday,Lunch,eating_drinking,17,6,1
+Thursday,Lunch,eating_drinking,17,7,1
+Thursday,Lunch,eating_drinking,17,8,1
+Thursday,Lunch,eating_drinking,17,9,1
+Thursday,Lunch,eating_drinking,17,18,1
+Thursday,Lunch,eating_drinking,18,1,2
+Thursday,Lunch,eating_drinking,18,3,1
+Thursday,Lunch,eating_drinking,18,5,1
+Thursday,Lunch,eating_drinking,18,6,1
+Thursday,Lunch,eating_drinking,18,7,1
+Thursday,Lunch,eating_drinking,18,8,1
+Thursday,Lunch,eating_drinking,18,9,1
+Thursday,Lunch,eating_drinking,18,19,1
+Thursday,Lunch,eating_drinking,19,1,2
 Thursday,Lunch,eating_drinking,19,2,1
-Thursday,Lunch,eating_drinking,19,13,1
+Thursday,Lunch,eating_drinking,19,3,1
+Thursday,Lunch,eating_drinking,19,5,1
+Thursday,Lunch,eating_drinking,19,6,2
+Thursday,Lunch,eating_drinking,19,7,1
+Thursday,Lunch,eating_drinking,19,8,2
+Thursday,Lunch,eating_drinking,19,9,1
+Thursday,Lunch,eating_drinking,19,13,2
 Thursday,Lunch,eating_drinking,20,1,1
-Thursday,Lunch,eating_drinking,24,5,1
-Thursday,Lunch,eating_drinking,24,6,1
-Thursday,Lunch,eating_drinking,24,7,1
-Thursday,Lunch,eating_drinking,25,5,1
-Thursday,Lunch,eating_drinking,25,6,1
-Thursday,Lunch,eating_drinking,25,7,1
-Thursday,Lunch,eating_drinking,27,5,1
-Thursday,Lunch,eating_drinking,28,4,1
-Thursday,Lunch,eating_drinking,28,5,1
+Thursday,Lunch,eating_drinking,20,3,2
+Thursday,Lunch,eating_drinking,20,4,1
+Thursday,Lunch,eating_drinking,20,5,1
+Thursday,Lunch,eating_drinking,20,6,3
+Thursday,Lunch,eating_drinking,20,7,2
+Thursday,Lunch,eating_drinking,20,8,2
+Thursday,Lunch,eating_drinking,20,9,1
+Thursday,Lunch,eating_drinking,20,13,1
+Thursday,Lunch,eating_drinking,21,1,1
+Thursday,Lunch,eating_drinking,21,2,2
+Thursday,Lunch,eating_drinking,21,4,2
+Thursday,Lunch,eating_drinking,21,5,1
+Thursday,Lunch,eating_drinking,21,6,1
+Thursday,Lunch,eating_drinking,21,7,1
+Thursday,Lunch,eating_drinking,21,8,2
+Thursday,Lunch,eating_drinking,22,2,1
+Thursday,Lunch,eating_drinking,22,4,1
+Thursday,Lunch,eating_drinking,22,5,2
+Thursday,Lunch,eating_drinking,22,6,1
+Thursday,Lunch,eating_drinking,22,7,1
+Thursday,Lunch,eating_drinking,22,8,1
+Thursday,Lunch,eating_drinking,23,1,1
+Thursday,Lunch,eating_drinking,23,2,1
+Thursday,Lunch,eating_drinking,23,4,1
+Thursday,Lunch,eating_drinking,23,5,1
+Thursday,Lunch,eating_drinking,23,6,1
+Thursday,Lunch,eating_drinking,23,7,1
+Thursday,Lunch,eating_drinking,23,8,1
+Thursday,Lunch,eating_drinking,24,2,2
+Thursday,Lunch,eating_drinking,24,3,1
+Thursday,Lunch,eating_drinking,24,4,1
+Thursday,Lunch,eating_drinking,24,5,2
+Thursday,Lunch,eating_drinking,24,6,2
+Thursday,Lunch,eating_drinking,24,7,2
+Thursday,Lunch,eating_drinking,24,8,1
+Thursday,Lunch,eating_drinking,25,1,1
+Thursday,Lunch,eating_drinking,25,2,2
+Thursday,Lunch,eating_drinking,25,3,1
+Thursday,Lunch,eating_drinking,25,4,1
+Thursday,Lunch,eating_drinking,25,5,2
+Thursday,Lunch,eating_drinking,25,6,2
+Thursday,Lunch,eating_drinking,25,7,2
+Thursday,Lunch,eating_drinking,25,8,1
+Thursday,Lunch,eating_drinking,26,2,2
+Thursday,Lunch,eating_drinking,26,4,1
+Thursday,Lunch,eating_drinking,27,1,1
+Thursday,Lunch,eating_drinking,27,2,1
+Thursday,Lunch,eating_drinking,27,3,1
+Thursday,Lunch,eating_drinking,27,5,2
+Thursday,Lunch,eating_drinking,28,2,1
+Thursday,Lunch,eating_drinking,28,3,1
+Thursday,Lunch,eating_drinking,28,4,2
+Thursday,Lunch,eating_drinking,28,5,2
 Thursday,Lunch,eating_drinking,28,6,1
 Thursday,Lunch,eating_drinking,28,7,1
 Thursday,Lunch,eating_drinking,28,8,1
+Thursday,Lunch,other,10,13,1
 Thursday,Lunch,planned_meeting,24,5,1
 Thursday,Lunch,planned_meeting,24,6,1
 Thursday,Lunch,planned_meeting,24,7,1
 Thursday,Lunch,planned_meeting,25,5,1
 Thursday,Lunch,planned_meeting,25,6,1
 Thursday,Lunch,planned_meeting,25,7,1
+Thursday,Lunch,reading_relaxing,16,16,1
+Thursday,Lunch,reading_relaxing,16,17,1
+Thursday,Lunch,reading_relaxing,16,18,1
+Thursday,Lunch,reading_relaxing,17,18,1
+Thursday,Lunch,reading_relaxing,18,15,1
+Thursday,Lunch,reading_relaxing,18,16,1
 Thursday,Lunch,reading_relaxing,19,14,1
+Thursday,Lunch,reading_relaxing,19,17,1
+Thursday,Lunch,reading_relaxing,20,16,1
+Thursday,Lunch,scrolling_phone,20,13,1
+Thursday,Lunch,socializing,16,5,1
+Thursday,Lunch,socializing,16,6,1
+Thursday,Lunch,socializing,16,7,1
+Thursday,Lunch,socializing,16,8,1
+Thursday,Lunch,socializing,17,5,1
+Thursday,Lunch,socializing,17,6,1
+Thursday,Lunch,socializing,17,7,1
+Thursday,Lunch,socializing,17,8,1
+Thursday,Lunch,socializing,18,5,1
+Thursday,Lunch,socializing,18,6,1
+Thursday,Lunch,socializing,18,7,1
+Thursday,Lunch,socializing,18,8,1
 Thursday,Lunch,socializing,18,11,1
 Thursday,Lunch,socializing,18,17,1
+Thursday,Lunch,socializing,19,5,1
+Thursday,Lunch,socializing,19,6,1
+Thursday,Lunch,socializing,19,7,1
+Thursday,Lunch,socializing,19,8,1
 Thursday,Lunch,socializing,19,12,1
 Thursday,Lunch,socializing,19,14,1
+Thursday,Lunch,socializing,20,5,1
+Thursday,Lunch,socializing,20,6,1
+Thursday,Lunch,socializing,20,7,1
+Thursday,Lunch,socializing,20,8,2
+Thursday,Lunch,socializing,20,9,1
+Thursday,Lunch,socializing,20,10,1
 Thursday,Lunch,socializing,20,16,1
+Thursday,Lunch,socializing,21,9,1
 Thursday,Lunch,socializing,24,3,1
 Thursday,Lunch,socializing,24,5,1
 Thursday,Lunch,socializing,24,6,1
@@ -399,23 +1183,112 @@ Thursday,Lunch,socializing,24,7,1
 Thursday,Lunch,socializing,25,5,1
 Thursday,Lunch,socializing,25,6,1
 Thursday,Lunch,socializing,25,7,1
+Thursday,Lunch,socializing,28,2,1
+Thursday,Lunch,socializing,28,3,1
+Thursday,Lunch,socializing,28,4,1
+Thursday,Lunch,socializing,28,5,1
+Thursday,Lunch,socializing,28,6,1
 Thursday,Lunch,studying_working,4,19,1
+Thursday,Lunch,studying_working,13,12,1
+Thursday,Lunch,studying_working,13,13,1
+Thursday,Lunch,studying_working,13,14,1
+Thursday,Lunch,studying_working,14,12,2
+Thursday,Lunch,studying_working,14,13,1
+Thursday,Lunch,studying_working,15,1,1
+Thursday,Lunch,studying_working,15,2,1
+Thursday,Lunch,studying_working,15,3,1
 Thursday,Lunch,studying_working,17,1,1
-Thursday,Lunch,studying_working,18,1,1
-Thursday,Lunch,studying_working,19,1,1
-Thursday,Lunch,studying_working,19,2,1
+Thursday,Lunch,studying_working,17,2,1
+Thursday,Lunch,studying_working,17,3,1
+Thursday,Lunch,studying_working,17,5,1
+Thursday,Lunch,studying_working,17,6,1
+Thursday,Lunch,studying_working,17,7,1
+Thursday,Lunch,studying_working,17,8,1
+Thursday,Lunch,studying_working,18,1,2
+Thursday,Lunch,studying_working,18,2,2
+Thursday,Lunch,studying_working,18,3,1
+Thursday,Lunch,studying_working,18,5,1
+Thursday,Lunch,studying_working,18,6,1
+Thursday,Lunch,studying_working,18,7,1
+Thursday,Lunch,studying_working,18,8,1
+Thursday,Lunch,studying_working,18,15,1
+Thursday,Lunch,studying_working,18,16,1
+Thursday,Lunch,studying_working,19,1,2
+Thursday,Lunch,studying_working,19,2,2
+Thursday,Lunch,studying_working,19,3,1
+Thursday,Lunch,studying_working,19,5,1
+Thursday,Lunch,studying_working,19,6,1
+Thursday,Lunch,studying_working,19,7,1
+Thursday,Lunch,studying_working,19,8,1
 Thursday,Lunch,studying_working,19,14,1
-Thursday,Lunch,studying_working,20,1,1
+Thursday,Lunch,studying_working,19,17,1
+Thursday,Lunch,studying_working,20,1,2
+Thursday,Lunch,studying_working,20,2,2
+Thursday,Lunch,studying_working,20,5,1
+Thursday,Lunch,studying_working,20,6,1
+Thursday,Lunch,studying_working,20,7,1
+Thursday,Lunch,studying_working,20,8,1
+Thursday,Lunch,studying_working,20,16,1
+Thursday,Lunch,studying_working,21,2,2
+Thursday,Lunch,studying_working,22,2,1
+Thursday,Lunch,studying_working,22,13,1
+Thursday,Lunch,studying_working,23,1,1
+Thursday,Lunch,studying_working,23,2,2
+Thursday,Lunch,studying_working,24,1,1
+Thursday,Lunch,studying_working,24,2,2
+Thursday,Lunch,studying_working,24,3,1
+Thursday,Lunch,studying_working,25,1,1
+Thursday,Lunch,studying_working,25,2,2
+Thursday,Lunch,studying_working,26,2,1
+Thursday,Lunch,studying_working,26,4,1
+Thursday,Lunch,studying_working,27,2,1
+Thursday,Lunch,studying_working,27,3,1
 Thursday,Lunch,studying_working,28,8,1
+Thursday,Lunch,taking_break,15,16,1
+Thursday,Lunch,taking_break,15,17,1
+Thursday,Lunch,taking_break,16,16,1
+Thursday,Lunch,taking_break,16,17,1
+Thursday,Lunch,taking_break,16,18,1
 Thursday,Lunch,taking_break,18,1,1
+Thursday,Lunch,taking_break,18,2,1
 Thursday,Lunch,taking_break,19,1,1
 Thursday,Lunch,taking_break,19,2,1
 Thursday,Lunch,taking_break,20,1,1
 Thursday,Lunch,taking_break,20,5,1
+Thursday,Lunch,taking_break,20,6,1
 Thursday,Lunch,taking_break,26,6,1
 Thursday,Lunch,taking_break,27,5,1
 Thursday,Lunch,taking_break,27,6,1
 Thursday,Lunch,taking_break,27,7,1
+Thursday,Morning,eating_drinking,18,3,1
+Thursday,Morning,eating_drinking,18,7,1
+Thursday,Morning,eating_drinking,19,16,1
+Thursday,Morning,eating_drinking,24,1,1
+Thursday,Morning,eating_drinking,24,2,1
+Thursday,Morning,eating_drinking,27,7,1
+Thursday,Morning,eating_drinking,29,7,1
+Thursday,Morning,reading_relaxing,14,13,1
+Thursday,Morning,reading_relaxing,15,12,1
+Thursday,Morning,reading_relaxing,19,16,1
+Thursday,Morning,reading_relaxing,22,1,1
+Thursday,Morning,scrolling_phone,19,17,1
+Thursday,Morning,scrolling_phone,20,17,1
+Thursday,Morning,socializing,14,13,1
+Thursday,Morning,socializing,18,7,1
+Thursday,Morning,studying_working,14,13,1
+Thursday,Morning,studying_working,18,6,1
+Thursday,Morning,studying_working,18,11,1
+Thursday,Morning,studying_working,19,11,1
+Thursday,Morning,studying_working,19,16,2
+Thursday,Morning,studying_working,19,17,1
+Thursday,Morning,studying_working,20,1,1
+Thursday,Morning,taking_break,19,2,1
+Thursday,Morning,taking_break,19,3,1
+Thursday,Morning,taking_break,24,19,1
+Thursday,Morning,taking_break,27,7,1
+Thursday,Morning,taking_break,27,8,1
+Thursday,Morning,taking_break,28,6,1
+Thursday,Morning,taking_break,28,8,1
 Tuesday,Dinner,club_event,7,20,1
 Tuesday,Dinner,club_event,7,21,1
 Tuesday,Dinner,club_event,7,23,1
@@ -453,11 +1326,40 @@ Tuesday,Dinner,club_event,19,23,1
 Tuesday,Dinner,eating_drinking,6,4,1
 Tuesday,Dinner,eating_drinking,7,11,1
 Tuesday,Dinner,eating_drinking,10,23,1
+Tuesday,Dinner,eating_drinking,13,1,1
+Tuesday,Dinner,eating_drinking,13,3,1
+Tuesday,Dinner,eating_drinking,14,2,1
+Tuesday,Dinner,eating_drinking,14,3,2
+Tuesday,Dinner,eating_drinking,14,5,1
+Tuesday,Dinner,eating_drinking,14,6,1
+Tuesday,Dinner,eating_drinking,14,7,1
+Tuesday,Dinner,eating_drinking,15,3,1
+Tuesday,Dinner,eating_drinking,15,7,1
 Tuesday,Dinner,eating_drinking,15,21,1
+Tuesday,Dinner,eating_drinking,16,1,1
+Tuesday,Dinner,eating_drinking,16,2,1
+Tuesday,Dinner,eating_drinking,16,3,1
+Tuesday,Dinner,eating_drinking,16,5,1
+Tuesday,Dinner,eating_drinking,16,7,1
+Tuesday,Dinner,eating_drinking,16,8,1
 Tuesday,Dinner,eating_drinking,16,10,1
 Tuesday,Dinner,eating_drinking,16,13,1
+Tuesday,Dinner,eating_drinking,17,2,1
+Tuesday,Dinner,eating_drinking,17,3,1
+Tuesday,Dinner,eating_drinking,17,5,1
+Tuesday,Dinner,eating_drinking,17,6,1
+Tuesday,Dinner,eating_drinking,17,7,1
+Tuesday,Dinner,eating_drinking,17,9,1
+Tuesday,Dinner,eating_drinking,17,10,1
 Tuesday,Dinner,eating_drinking,17,15,1
 Tuesday,Dinner,eating_drinking,17,16,1
+Tuesday,Dinner,eating_drinking,18,2,1
+Tuesday,Dinner,eating_drinking,18,3,1
+Tuesday,Dinner,eating_drinking,18,4,1
+Tuesday,Dinner,eating_drinking,18,5,1
+Tuesday,Dinner,eating_drinking,18,6,1
+Tuesday,Dinner,eating_drinking,18,7,1
+Tuesday,Dinner,eating_drinking,18,8,2
 Tuesday,Dinner,eating_drinking,18,12,1
 Tuesday,Dinner,eating_drinking,18,13,1
 Tuesday,Dinner,eating_drinking,18,15,1
@@ -465,24 +1367,57 @@ Tuesday,Dinner,eating_drinking,18,16,1
 Tuesday,Dinner,eating_drinking,18,17,1
 Tuesday,Dinner,eating_drinking,18,18,1
 Tuesday,Dinner,eating_drinking,18,19,1
-Tuesday,Dinner,eating_drinking,19,6,1
+Tuesday,Dinner,eating_drinking,19,1,1
+Tuesday,Dinner,eating_drinking,19,4,2
+Tuesday,Dinner,eating_drinking,19,5,1
+Tuesday,Dinner,eating_drinking,19,6,2
+Tuesday,Dinner,eating_drinking,19,9,1
 Tuesday,Dinner,eating_drinking,19,12,1
 Tuesday,Dinner,eating_drinking,19,16,1
 Tuesday,Dinner,eating_drinking,19,17,1
+Tuesday,Dinner,eating_drinking,20,4,1
+Tuesday,Dinner,eating_drinking,20,5,2
+Tuesday,Dinner,eating_drinking,20,7,1
 Tuesday,Dinner,eating_drinking,20,15,1
 Tuesday,Dinner,eating_drinking,20,16,1
 Tuesday,Dinner,eating_drinking,20,17,2
+Tuesday,Dinner,eating_drinking,21,1,1
+Tuesday,Dinner,eating_drinking,21,2,1
+Tuesday,Dinner,eating_drinking,21,4,1
+Tuesday,Dinner,eating_drinking,21,7,1
+Tuesday,Dinner,eating_drinking,21,9,1
 Tuesday,Dinner,eating_drinking,21,15,1
 Tuesday,Dinner,eating_drinking,21,16,1
 Tuesday,Dinner,eating_drinking,21,17,1
 Tuesday,Dinner,eating_drinking,21,18,1
-Tuesday,Dinner,eating_drinking,23,3,1
+Tuesday,Dinner,eating_drinking,22,1,1
+Tuesday,Dinner,eating_drinking,22,4,1
+Tuesday,Dinner,eating_drinking,23,3,3
 Tuesday,Dinner,eating_drinking,23,17,1
 Tuesday,Dinner,eating_drinking,23,18,1
-Tuesday,Dinner,eating_drinking,24,3,1
+Tuesday,Dinner,eating_drinking,24,2,1
+Tuesday,Dinner,eating_drinking,24,3,3
+Tuesday,Dinner,eating_drinking,24,4,1
+Tuesday,Dinner,eating_drinking,25,1,1
+Tuesday,Dinner,eating_drinking,25,3,1
 Tuesday,Dinner,eating_drinking,25,11,1
+Tuesday,Dinner,eating_drinking,26,2,2
+Tuesday,Dinner,eating_drinking,26,3,1
 Tuesday,Dinner,eating_drinking,26,5,1
 Tuesday,Dinner,eating_drinking,26,6,1
+Tuesday,Dinner,eating_drinking,27,2,1
+Tuesday,Dinner,eating_drinking,27,4,1
+Tuesday,Dinner,eating_drinking,27,5,1
+Tuesday,Dinner,eating_drinking,27,6,1
+Tuesday,Dinner,eating_drinking,28,4,2
+Tuesday,Dinner,eating_drinking,28,5,1
+Tuesday,Dinner,eating_drinking,28,6,1
+Tuesday,Dinner,eating_drinking,28,7,2
+Tuesday,Dinner,eating_drinking,28,8,2
+Tuesday,Dinner,eating_drinking,28,9,1
+Tuesday,Dinner,eating_drinking,29,4,1
+Tuesday,Dinner,eating_drinking,29,7,1
+Tuesday,Dinner,eating_drinking,29,8,1
 Tuesday,Dinner,other,2,7,1
 Tuesday,Dinner,other,3,7,1
 Tuesday,Dinner,other,3,8,1
@@ -510,38 +1445,140 @@ Tuesday,Dinner,planned_meeting,14,5,1
 Tuesday,Dinner,planned_meeting,14,6,1
 Tuesday,Dinner,planned_meeting,15,6,1
 Tuesday,Dinner,reading_relaxing,15,17,1
+Tuesday,Dinner,reading_relaxing,16,13,1
+Tuesday,Dinner,reading_relaxing,16,14,1
+Tuesday,Dinner,reading_relaxing,17,13,1
+Tuesday,Dinner,reading_relaxing,17,14,1
+Tuesday,Dinner,reading_relaxing,18,13,1
 Tuesday,Dinner,reading_relaxing,18,14,1
 Tuesday,Dinner,reading_relaxing,19,15,1
 Tuesday,Dinner,reading_relaxing,20,16,1
 Tuesday,Dinner,reading_relaxing,22,12,1
 Tuesday,Dinner,reading_relaxing,22,13,1
+Tuesday,Dinner,reading_relaxing,22,14,1
 Tuesday,Dinner,reading_relaxing,23,3,1
 Tuesday,Dinner,reading_relaxing,24,3,1
+Tuesday,Dinner,reading_relaxing,26,2,1
+Tuesday,Dinner,reading_relaxing,27,2,1
 Tuesday,Dinner,reading_relaxing,28,7,1
+Tuesday,Dinner,reading_relaxing,29,6,1
+Tuesday,Dinner,reading_relaxing,29,7,1
+Tuesday,Dinner,reading_relaxing,29,8,1
+Tuesday,Dinner,reading_relaxing,29,9,1
+Tuesday,Dinner,socializing,14,4,1
+Tuesday,Dinner,socializing,15,4,1
+Tuesday,Dinner,socializing,15,5,1
+Tuesday,Dinner,socializing,15,6,1
+Tuesday,Dinner,socializing,15,8,1
+Tuesday,Dinner,socializing,16,4,1
+Tuesday,Dinner,socializing,16,5,1
+Tuesday,Dinner,socializing,16,6,1
+Tuesday,Dinner,socializing,16,8,1
+Tuesday,Dinner,socializing,16,9,1
+Tuesday,Dinner,socializing,17,4,1
+Tuesday,Dinner,socializing,17,5,1
+Tuesday,Dinner,socializing,17,6,1
+Tuesday,Dinner,socializing,17,8,1
+Tuesday,Dinner,socializing,17,9,1
+Tuesday,Dinner,socializing,18,5,1
+Tuesday,Dinner,socializing,18,8,1
+Tuesday,Dinner,socializing,18,9,1
+Tuesday,Dinner,socializing,19,4,1
+Tuesday,Dinner,socializing,19,5,1
+Tuesday,Dinner,socializing,19,6,1
+Tuesday,Dinner,socializing,19,7,1
+Tuesday,Dinner,socializing,19,9,1
+Tuesday,Dinner,socializing,19,14,1
+Tuesday,Dinner,socializing,19,20,1
+Tuesday,Dinner,socializing,20,8,1
+Tuesday,Dinner,socializing,20,9,1
 Tuesday,Dinner,socializing,20,14,1
 Tuesday,Dinner,socializing,20,15,1
+Tuesday,Dinner,socializing,20,16,1
 Tuesday,Dinner,socializing,20,17,1
+Tuesday,Dinner,socializing,21,6,1
+Tuesday,Dinner,socializing,21,17,1
 Tuesday,Dinner,socializing,22,14,1
 Tuesday,Dinner,socializing,22,15,1
+Tuesday,Dinner,socializing,22,17,1
+Tuesday,Dinner,socializing,23,17,1
+Tuesday,Dinner,socializing,23,18,1
 Tuesday,Dinner,socializing,24,3,1
 Tuesday,Dinner,socializing,25,3,1
-Tuesday,Dinner,studying_working,13,5,1
-Tuesday,Dinner,studying_working,14,5,1
-Tuesday,Dinner,studying_working,14,6,1
-Tuesday,Dinner,studying_working,15,6,1
+Tuesday,Dinner,studying_working,7,14,1
+Tuesday,Dinner,studying_working,7,16,1
+Tuesday,Dinner,studying_working,7,18,1
+Tuesday,Dinner,studying_working,7,19,1
+Tuesday,Dinner,studying_working,7,22,1
+Tuesday,Dinner,studying_working,8,22,1
+Tuesday,Dinner,studying_working,9,14,1
+Tuesday,Dinner,studying_working,9,18,1
+Tuesday,Dinner,studying_working,9,21,1
+Tuesday,Dinner,studying_working,10,15,1
+Tuesday,Dinner,studying_working,10,16,1
+Tuesday,Dinner,studying_working,10,20,1
+Tuesday,Dinner,studying_working,11,18,1
+Tuesday,Dinner,studying_working,11,24,1
+Tuesday,Dinner,studying_working,12,18,1
+Tuesday,Dinner,studying_working,12,19,1
+Tuesday,Dinner,studying_working,12,20,1
+Tuesday,Dinner,studying_working,12,22,1
+Tuesday,Dinner,studying_working,12,23,1
+Tuesday,Dinner,studying_working,12,24,1
+Tuesday,Dinner,studying_working,13,5,2
+Tuesday,Dinner,studying_working,13,22,1
+Tuesday,Dinner,studying_working,14,3,1
+Tuesday,Dinner,studying_working,14,4,2
+Tuesday,Dinner,studying_working,14,5,3
+Tuesday,Dinner,studying_working,14,6,2
+Tuesday,Dinner,studying_working,14,20,1
+Tuesday,Dinner,studying_working,14,23,1
+Tuesday,Dinner,studying_working,15,3,1
+Tuesday,Dinner,studying_working,15,4,1
+Tuesday,Dinner,studying_working,15,5,2
+Tuesday,Dinner,studying_working,15,6,2
+Tuesday,Dinner,studying_working,15,7,1
 Tuesday,Dinner,studying_working,15,17,1
+Tuesday,Dinner,studying_working,15,20,1
+Tuesday,Dinner,studying_working,15,23,1
+Tuesday,Dinner,studying_working,16,2,1
+Tuesday,Dinner,studying_working,16,3,1
+Tuesday,Dinner,studying_working,16,4,1
+Tuesday,Dinner,studying_working,16,5,1
+Tuesday,Dinner,studying_working,16,6,2
+Tuesday,Dinner,studying_working,16,7,1
+Tuesday,Dinner,studying_working,16,8,2
+Tuesday,Dinner,studying_working,16,22,1
+Tuesday,Dinner,studying_working,17,3,1
+Tuesday,Dinner,studying_working,17,4,1
 Tuesday,Dinner,studying_working,17,16,1
 Tuesday,Dinner,studying_working,17,17,2
+Tuesday,Dinner,studying_working,17,23,1
 Tuesday,Dinner,studying_working,18,2,1
+Tuesday,Dinner,studying_working,18,3,1
+Tuesday,Dinner,studying_working,18,4,1
+Tuesday,Dinner,studying_working,18,5,1
+Tuesday,Dinner,studying_working,18,9,1
 Tuesday,Dinner,studying_working,18,15,1
 Tuesday,Dinner,studying_working,18,16,1
 Tuesday,Dinner,studying_working,18,17,1
 Tuesday,Dinner,studying_working,18,18,1
+Tuesday,Dinner,studying_working,18,22,1
+Tuesday,Dinner,studying_working,19,2,1
+Tuesday,Dinner,studying_working,19,3,1
+Tuesday,Dinner,studying_working,19,6,1
+Tuesday,Dinner,studying_working,19,8,2
 Tuesday,Dinner,studying_working,19,14,1
 Tuesday,Dinner,studying_working,19,15,1
 Tuesday,Dinner,studying_working,19,16,2
 Tuesday,Dinner,studying_working,19,17,1
 Tuesday,Dinner,studying_working,19,18,1
+Tuesday,Dinner,studying_working,20,3,1
+Tuesday,Dinner,studying_working,20,4,1
+Tuesday,Dinner,studying_working,20,6,1
+Tuesday,Dinner,studying_working,20,7,1
+Tuesday,Dinner,studying_working,20,8,1
+Tuesday,Dinner,studying_working,20,9,1
 Tuesday,Dinner,studying_working,20,16,2
 Tuesday,Dinner,studying_working,20,17,1
 Tuesday,Dinner,studying_working,20,18,1
@@ -551,15 +1588,101 @@ Tuesday,Dinner,studying_working,22,16,2
 Tuesday,Dinner,studying_working,22,17,1
 Tuesday,Dinner,studying_working,23,3,1
 Tuesday,Dinner,studying_working,24,3,1
+Tuesday,Dinner,studying_working,28,4,1
+Tuesday,Dinner,taking_break,7,16,1
+Tuesday,Dinner,taking_break,7,22,1
+Tuesday,Dinner,taking_break,8,13,1
+Tuesday,Dinner,taking_break,8,15,1
+Tuesday,Dinner,taking_break,8,16,1
+Tuesday,Dinner,taking_break,8,18,1
+Tuesday,Dinner,taking_break,8,19,1
+Tuesday,Dinner,taking_break,8,20,1
+Tuesday,Dinner,taking_break,8,22,1
+Tuesday,Dinner,taking_break,10,17,1
+Tuesday,Dinner,taking_break,10,22,1
+Tuesday,Dinner,taking_break,11,17,1
+Tuesday,Dinner,taking_break,11,20,1
+Tuesday,Dinner,taking_break,11,22,1
+Tuesday,Dinner,taking_break,13,6,1
+Tuesday,Dinner,taking_break,13,20,1
+Tuesday,Dinner,taking_break,13,22,1
+Tuesday,Dinner,taking_break,14,5,1
+Tuesday,Dinner,taking_break,14,22,1
+Tuesday,Dinner,taking_break,15,4,1
+Tuesday,Dinner,taking_break,15,7,1
+Tuesday,Dinner,taking_break,15,20,1
+Tuesday,Dinner,taking_break,16,5,1
+Tuesday,Dinner,taking_break,16,6,1
+Tuesday,Dinner,taking_break,16,7,1
+Tuesday,Dinner,taking_break,16,8,1
+Tuesday,Dinner,taking_break,16,22,1
+Tuesday,Dinner,taking_break,17,3,1
+Tuesday,Dinner,taking_break,17,4,2
+Tuesday,Dinner,taking_break,17,5,2
+Tuesday,Dinner,taking_break,17,6,2
+Tuesday,Dinner,taking_break,17,7,1
+Tuesday,Dinner,taking_break,17,8,1
+Tuesday,Dinner,taking_break,17,9,1
+Tuesday,Dinner,taking_break,17,22,1
+Tuesday,Dinner,taking_break,18,4,1
+Tuesday,Dinner,taking_break,18,5,1
+Tuesday,Dinner,taking_break,18,6,1
+Tuesday,Dinner,taking_break,18,7,2
+Tuesday,Dinner,taking_break,18,8,1
+Tuesday,Dinner,taking_break,18,15,1
 Tuesday,Dinner,taking_break,18,17,1
+Tuesday,Dinner,taking_break,19,4,1
+Tuesday,Dinner,taking_break,19,5,2
+Tuesday,Dinner,taking_break,19,6,1
+Tuesday,Dinner,taking_break,19,16,1
+Tuesday,Dinner,taking_break,20,7,1
 Tuesday,Dinner,taking_break,27,6,1
 Tuesday,Dinner,taking_break,27,7,1
 Tuesday,Dinner,taking_break,27,8,1
 Tuesday,Dinner,taking_break,28,6,1
 Tuesday,Dinner,taking_break,28,7,1
 Tuesday,Dinner,taking_break,28,8,1
+Tuesday,Dinner,taking_break,29,6,1
+Tuesday,Dinner,taking_break,29,7,1
+Tuesday,Dinner,taking_break,29,8,1
+Tuesday,Dinner,taking_break,29,9,1
 Tuesday,Dinner,taking_break,30,11,1
 Tuesday,Dinner,taking_break,30,12,1
+Tuesday,Late Night,club_event,6,13,1
+Tuesday,Late Night,club_event,6,14,1
+Tuesday,Late Night,club_event,6,15,1
+Tuesday,Late Night,club_event,6,16,1
+Tuesday,Late Night,club_event,6,20,1
+Tuesday,Late Night,club_event,6,23,1
+Tuesday,Late Night,club_event,7,13,1
+Tuesday,Late Night,club_event,7,14,1
+Tuesday,Late Night,club_event,7,15,1
+Tuesday,Late Night,club_event,7,16,1
+Tuesday,Late Night,club_event,7,22,1
+Tuesday,Late Night,club_event,8,13,1
+Tuesday,Late Night,club_event,8,14,1
+Tuesday,Late Night,club_event,8,15,1
+Tuesday,Late Night,club_event,8,16,1
+Tuesday,Late Night,club_event,8,21,1
+Tuesday,Late Night,club_event,8,22,1
+Tuesday,Late Night,club_event,9,13,1
+Tuesday,Late Night,club_event,9,14,1
+Tuesday,Late Night,club_event,9,15,1
+Tuesday,Late Night,club_event,9,16,1
+Tuesday,Late Night,club_event,10,20,1
+Tuesday,Late Night,club_event,10,21,1
+Tuesday,Late Night,club_event,10,23,1
+Tuesday,Late Night,club_event,11,22,1
+Tuesday,Late Night,club_event,11,24,1
+Tuesday,Late Night,club_event,13,20,1
+Tuesday,Late Night,club_event,13,23,1
+Tuesday,Late Night,club_event,15,21,1
+Tuesday,Late Night,club_event,15,22,1
+Tuesday,Late Night,club_event,15,23,1
+Tuesday,Late Night,eating_drinking,14,6,1
+Tuesday,Late Night,eating_drinking,14,7,1
+Tuesday,Late Night,eating_drinking,15,6,1
+Tuesday,Late Night,eating_drinking,15,7,1
 Tuesday,Late Night,eating_drinking,16,6,1
 Tuesday,Late Night,eating_drinking,16,8,1
 Tuesday,Late Night,eating_drinking,17,5,1
@@ -572,65 +1695,170 @@ Tuesday,Late Night,eating_drinking,19,6,1
 Tuesday,Late Night,eating_drinking,19,8,1
 Tuesday,Late Night,eating_drinking,20,4,1
 Tuesday,Late Night,eating_drinking,20,8,1
+Tuesday,Late Night,scrolling_phone,6,20,1
+Tuesday,Late Night,scrolling_phone,10,22,1
+Tuesday,Late Night,scrolling_phone,11,19,1
+Tuesday,Late Night,scrolling_phone,14,6,1
+Tuesday,Late Night,scrolling_phone,14,7,1
+Tuesday,Late Night,scrolling_phone,15,6,1
+Tuesday,Late Night,scrolling_phone,15,7,1
+Tuesday,Late Night,socializing,6,13,1
+Tuesday,Late Night,socializing,6,14,1
+Tuesday,Late Night,socializing,6,15,1
+Tuesday,Late Night,socializing,6,16,1
+Tuesday,Late Night,socializing,7,13,1
+Tuesday,Late Night,socializing,7,14,1
+Tuesday,Late Night,socializing,7,15,1
+Tuesday,Late Night,socializing,7,16,1
 Tuesday,Late Night,socializing,8,9,1
 Tuesday,Late Night,socializing,8,10,1
+Tuesday,Late Night,socializing,8,13,1
+Tuesday,Late Night,socializing,8,14,1
+Tuesday,Late Night,socializing,8,15,1
+Tuesday,Late Night,socializing,8,16,1
 Tuesday,Late Night,socializing,9,10,1
+Tuesday,Late Night,socializing,9,13,1
+Tuesday,Late Night,socializing,9,14,1
+Tuesday,Late Night,socializing,9,15,1
+Tuesday,Late Night,socializing,9,16,1
 Tuesday,Late Night,socializing,10,9,1
 Tuesday,Late Night,socializing,10,10,1
+Tuesday,Late Night,socializing,10,20,1
 Tuesday,Late Night,socializing,11,9,1
 Tuesday,Late Night,socializing,11,10,1
+Tuesday,Late Night,socializing,11,23,1
 Tuesday,Late Night,socializing,12,10,1
 Tuesday,Late Night,socializing,13,9,1
 Tuesday,Late Night,socializing,13,10,1
 Tuesday,Late Night,socializing,13,11,1
+Tuesday,Late Night,socializing,13,21,1
 Tuesday,Late Night,socializing,14,12,1
 Tuesday,Late Night,socializing,14,13,1
+Tuesday,Late Night,socializing,16,21,1
+Tuesday,Late Night,socializing,18,3,1
+Tuesday,Late Night,socializing,18,4,1
+Tuesday,Late Night,socializing,18,22,1
+Tuesday,Late Night,studying_working,6,13,1
+Tuesday,Late Night,studying_working,6,14,1
+Tuesday,Late Night,studying_working,6,15,1
+Tuesday,Late Night,studying_working,6,16,1
+Tuesday,Late Night,studying_working,7,13,1
+Tuesday,Late Night,studying_working,7,14,1
+Tuesday,Late Night,studying_working,7,15,1
+Tuesday,Late Night,studying_working,7,16,1
 Tuesday,Late Night,studying_working,8,1,1
 Tuesday,Late Night,studying_working,9,1,1
 Tuesday,Late Night,studying_working,11,1,1
 Tuesday,Late Night,studying_working,12,1,1
 Tuesday,Late Night,studying_working,14,1,1
+Tuesday,Late Night,studying_working,14,6,1
+Tuesday,Late Night,studying_working,14,7,1
 Tuesday,Late Night,studying_working,15,1,1
+Tuesday,Late Night,studying_working,15,6,1
+Tuesday,Late Night,studying_working,15,7,1
 Tuesday,Late Night,studying_working,16,1,1
 Tuesday,Late Night,studying_working,18,1,1
+Tuesday,Late Night,studying_working,18,2,1
+Tuesday,Late Night,studying_working,18,3,1
+Tuesday,Late Night,studying_working,18,4,1
 Tuesday,Late Night,studying_working,19,2,1
 Tuesday,Late Night,studying_working,20,1,1
+Tuesday,Late Night,studying_working,20,4,1
+Tuesday,Late Night,studying_working,20,5,1
+Tuesday,Late Night,studying_working,20,6,1
 Tuesday,Late Night,studying_working,23,1,1
 Tuesday,Late Night,studying_working,24,1,1
 Tuesday,Late Night,studying_working,26,1,1
 Tuesday,Late Night,studying_working,27,1,1
 Tuesday,Late Night,studying_working,28,1,1
+Tuesday,Lunch,eating_drinking,9,10,1
+Tuesday,Lunch,eating_drinking,10,5,1
+Tuesday,Lunch,eating_drinking,12,11,1
+Tuesday,Lunch,eating_drinking,13,8,1
+Tuesday,Lunch,eating_drinking,14,10,1
 Tuesday,Lunch,eating_drinking,14,11,1
 Tuesday,Lunch,eating_drinking,14,12,1
+Tuesday,Lunch,eating_drinking,15,16,1
 Tuesday,Lunch,eating_drinking,16,2,1
-Tuesday,Lunch,eating_drinking,16,3,1
-Tuesday,Lunch,eating_drinking,17,2,1
+Tuesday,Lunch,eating_drinking,16,3,2
+Tuesday,Lunch,eating_drinking,16,16,1
+Tuesday,Lunch,eating_drinking,16,17,1
+Tuesday,Lunch,eating_drinking,17,2,2
 Tuesday,Lunch,eating_drinking,17,3,1
 Tuesday,Lunch,eating_drinking,17,8,1
+Tuesday,Lunch,eating_drinking,18,2,1
+Tuesday,Lunch,eating_drinking,18,3,1
+Tuesday,Lunch,eating_drinking,18,6,1
+Tuesday,Lunch,eating_drinking,18,7,1
+Tuesday,Lunch,eating_drinking,18,11,1
+Tuesday,Lunch,eating_drinking,18,16,1
+Tuesday,Lunch,eating_drinking,19,8,1
+Tuesday,Lunch,eating_drinking,19,11,1
 Tuesday,Lunch,eating_drinking,19,16,1
+Tuesday,Lunch,eating_drinking,19,17,1
+Tuesday,Lunch,eating_drinking,20,2,2
+Tuesday,Lunch,eating_drinking,20,3,1
 Tuesday,Lunch,eating_drinking,20,4,1
-Tuesday,Lunch,eating_drinking,20,12,1
-Tuesday,Lunch,eating_drinking,20,16,1
+Tuesday,Lunch,eating_drinking,20,6,1
+Tuesday,Lunch,eating_drinking,20,8,1
+Tuesday,Lunch,eating_drinking,20,11,1
+Tuesday,Lunch,eating_drinking,20,12,2
+Tuesday,Lunch,eating_drinking,20,16,2
+Tuesday,Lunch,eating_drinking,21,2,1
+Tuesday,Lunch,eating_drinking,21,12,1
+Tuesday,Lunch,eating_drinking,22,2,1
+Tuesday,Lunch,eating_drinking,22,3,1
 Tuesday,Lunch,eating_drinking,22,4,1
+Tuesday,Lunch,eating_drinking,22,12,1
+Tuesday,Lunch,eating_drinking,22,24,1
+Tuesday,Lunch,eating_drinking,23,2,3
+Tuesday,Lunch,eating_drinking,23,3,1
 Tuesday,Lunch,eating_drinking,23,4,1
+Tuesday,Lunch,eating_drinking,23,12,1
+Tuesday,Lunch,eating_drinking,24,2,1
 Tuesday,Lunch,eating_drinking,24,4,1
+Tuesday,Lunch,eating_drinking,24,6,1
 Tuesday,Lunch,eating_drinking,24,7,1
+Tuesday,Lunch,eating_drinking,24,12,1
+Tuesday,Lunch,eating_drinking,25,1,1
 Tuesday,Lunch,eating_drinking,25,4,1
+Tuesday,Lunch,eating_drinking,26,2,1
 Tuesday,Lunch,eating_drinking,26,4,1
+Tuesday,Lunch,eating_drinking,27,4,1
+Tuesday,Lunch,eating_drinking,27,5,1
 Tuesday,Lunch,eating_drinking,27,6,1
-Tuesday,Lunch,eating_drinking,27,7,1
+Tuesday,Lunch,eating_drinking,27,7,2
 Tuesday,Lunch,eating_drinking,27,8,1
 Tuesday,Lunch,eating_drinking,27,9,1
+Tuesday,Lunch,eating_drinking,28,2,1
+Tuesday,Lunch,eating_drinking,28,4,2
 Tuesday,Lunch,eating_drinking,28,7,1
 Tuesday,Lunch,eating_drinking,28,8,1
+Tuesday,Lunch,eating_drinking,29,3,1
 Tuesday,Lunch,eating_drinking,29,4,1
-Tuesday,Lunch,eating_drinking,29,5,1
+Tuesday,Lunch,eating_drinking,29,5,2
+Tuesday,Lunch,eating_drinking,29,8,1
+Tuesday,Lunch,eating_drinking,29,9,1
+Tuesday,Lunch,eating_drinking,30,7,1
+Tuesday,Lunch,other,2,9,1
+Tuesday,Lunch,other,2,10,1
+Tuesday,Lunch,other,3,9,1
+Tuesday,Lunch,other,3,10,1
 Tuesday,Lunch,reading_relaxing,16,6,1
 Tuesday,Lunch,reading_relaxing,17,5,1
+Tuesday,Lunch,reading_relaxing,18,16,1
 Tuesday,Lunch,reading_relaxing,19,4,1
+Tuesday,Lunch,reading_relaxing,19,17,1
+Tuesday,Lunch,reading_relaxing,20,16,1
+Tuesday,Lunch,scrolling_phone,15,20,1
+Tuesday,Lunch,scrolling_phone,19,8,1
+Tuesday,Lunch,scrolling_phone,20,6,1
 Tuesday,Lunch,scrolling_phone,20,13,1
 Tuesday,Lunch,scrolling_phone,21,13,1
 Tuesday,Lunch,scrolling_phone,22,13,1
+Tuesday,Lunch,socializing,15,13,1
+Tuesday,Lunch,socializing,16,6,1
+Tuesday,Lunch,socializing,18,4,1
 Tuesday,Lunch,socializing,18,17,1
 Tuesday,Lunch,socializing,20,3,1
 Tuesday,Lunch,socializing,20,17,1
@@ -665,60 +1893,309 @@ Tuesday,Lunch,studying_working,12,11,1
 Tuesday,Lunch,studying_working,12,13,1
 Tuesday,Lunch,studying_working,12,20,1
 Tuesday,Lunch,studying_working,12,22,1
+Tuesday,Lunch,studying_working,13,12,1
 Tuesday,Lunch,studying_working,14,11,1
 Tuesday,Lunch,studying_working,14,12,1
 Tuesday,Lunch,studying_working,16,1,1
-Tuesday,Lunch,studying_working,16,2,1
+Tuesday,Lunch,studying_working,16,2,2
+Tuesday,Lunch,studying_working,16,5,1
+Tuesday,Lunch,studying_working,16,7,1
 Tuesday,Lunch,studying_working,17,1,1
-Tuesday,Lunch,studying_working,17,2,1
+Tuesday,Lunch,studying_working,17,2,2
+Tuesday,Lunch,studying_working,17,7,1
 Tuesday,Lunch,studying_working,17,8,1
+Tuesday,Lunch,studying_working,18,2,1
+Tuesday,Lunch,studying_working,18,11,1
+Tuesday,Lunch,studying_working,18,16,1
+Tuesday,Lunch,studying_working,19,2,1
+Tuesday,Lunch,studying_working,19,11,1
+Tuesday,Lunch,studying_working,19,12,1
 Tuesday,Lunch,studying_working,19,16,2
-Tuesday,Lunch,studying_working,20,16,3
+Tuesday,Lunch,studying_working,19,17,1
+Tuesday,Lunch,studying_working,20,1,1
+Tuesday,Lunch,studying_working,20,2,1
+Tuesday,Lunch,studying_working,20,12,1
+Tuesday,Lunch,studying_working,20,16,4
+Tuesday,Lunch,studying_working,20,17,1
+Tuesday,Lunch,studying_working,21,2,1
+Tuesday,Lunch,studying_working,21,11,1
+Tuesday,Lunch,studying_working,21,15,1
 Tuesday,Lunch,studying_working,21,17,1
-Tuesday,Lunch,studying_working,24,2,1
+Tuesday,Lunch,studying_working,22,2,1
+Tuesday,Lunch,studying_working,22,12,1
+Tuesday,Lunch,studying_working,23,1,1
+Tuesday,Lunch,studying_working,23,2,1
+Tuesday,Lunch,studying_working,23,13,1
+Tuesday,Lunch,studying_working,24,2,3
 Tuesday,Lunch,studying_working,24,5,1
+Tuesday,Lunch,studying_working,25,2,1
+Tuesday,Lunch,studying_working,26,2,1
 Tuesday,Lunch,studying_working,28,6,1
+Tuesday,Lunch,taking_break,2,9,1
+Tuesday,Lunch,taking_break,2,10,1
+Tuesday,Lunch,taking_break,2,11,1
+Tuesday,Lunch,taking_break,2,12,1
+Tuesday,Lunch,taking_break,2,13,1
+Tuesday,Lunch,taking_break,2,14,1
+Tuesday,Lunch,taking_break,3,9,1
+Tuesday,Lunch,taking_break,3,10,1
+Tuesday,Lunch,taking_break,3,11,1
+Tuesday,Lunch,taking_break,3,12,1
+Tuesday,Lunch,taking_break,3,13,1
+Tuesday,Lunch,taking_break,4,9,1
+Tuesday,Lunch,taking_break,4,10,1
+Tuesday,Lunch,taking_break,4,11,1
+Tuesday,Lunch,taking_break,4,12,1
+Tuesday,Lunch,taking_break,4,13,1
+Tuesday,Lunch,taking_break,7,9,1
+Tuesday,Lunch,taking_break,11,21,1
+Tuesday,Lunch,taking_break,12,11,1
+Tuesday,Lunch,taking_break,15,7,1
+Tuesday,Lunch,taking_break,17,1,1
+Tuesday,Lunch,taking_break,17,10,1
+Tuesday,Lunch,taking_break,17,14,1
+Tuesday,Lunch,taking_break,18,5,1
+Tuesday,Lunch,taking_break,20,6,1
+Tuesday,Lunch,taking_break,20,7,1
 Tuesday,Lunch,taking_break,22,2,1
+Tuesday,Lunch,taking_break,22,4,1
+Tuesday,Lunch,taking_break,22,6,1
+Tuesday,Lunch,taking_break,22,14,1
+Tuesday,Lunch,taking_break,23,1,1
 Tuesday,Lunch,taking_break,23,2,1
+Tuesday,Lunch,taking_break,23,3,1
 Tuesday,Lunch,taking_break,24,2,1
+Tuesday,Lunch,taking_break,25,2,1
 Tuesday,Lunch,taking_break,25,3,1
 Tuesday,Lunch,taking_break,25,4,1
-Tuesday,Lunch,taking_break,26,3,1
+Tuesday,Lunch,taking_break,26,3,2
 Tuesday,Lunch,taking_break,26,4,1
-Tuesday,Lunch,taking_break,29,6,1
+Tuesday,Lunch,taking_break,27,1,1
+Tuesday,Lunch,taking_break,27,7,1
+Tuesday,Lunch,taking_break,28,4,1
+Tuesday,Lunch,taking_break,28,10,1
+Tuesday,Lunch,taking_break,29,6,2
 Tuesday,Lunch,taking_break,29,7,1
 Tuesday,Lunch,taking_break,29,8,1
+Tuesday,Lunch,taking_break,30,1,1
+Tuesday,Lunch,taking_break,30,4,1
+Tuesday,Lunch,taking_break,30,5,1
+Tuesday,Lunch,taking_break,30,9,1
+Tuesday,Lunch,taking_break,30,15,1
+Tuesday,Lunch,taking_break,30,19,1
+Tuesday,Lunch,taking_break,30,20,1
+Tuesday,Lunch,taking_break,30,22,1
+Tuesday,Morning,eating_drinking,6,3,1
+Tuesday,Morning,eating_drinking,9,13,1
 Tuesday,Morning,eating_drinking,13,12,1
+Tuesday,Morning,eating_drinking,15,3,1
+Tuesday,Morning,eating_drinking,15,15,1
+Tuesday,Morning,eating_drinking,15,20,1
+Tuesday,Morning,eating_drinking,16,3,1
+Tuesday,Morning,eating_drinking,17,3,1
+Tuesday,Morning,eating_drinking,18,3,1
+Tuesday,Morning,eating_drinking,18,4,1
+Tuesday,Morning,eating_drinking,18,7,1
+Tuesday,Morning,eating_drinking,18,8,1
+Tuesday,Morning,eating_drinking,19,3,1
+Tuesday,Morning,eating_drinking,19,4,1
+Tuesday,Morning,eating_drinking,19,5,1
+Tuesday,Morning,eating_drinking,19,6,1
+Tuesday,Morning,eating_drinking,19,7,1
+Tuesday,Morning,eating_drinking,19,8,1
+Tuesday,Morning,eating_drinking,19,9,1
+Tuesday,Morning,eating_drinking,19,18,1
+Tuesday,Morning,eating_drinking,19,19,1
+Tuesday,Morning,eating_drinking,20,3,1
+Tuesday,Morning,eating_drinking,20,4,1
+Tuesday,Morning,eating_drinking,20,5,1
+Tuesday,Morning,eating_drinking,20,6,1
+Tuesday,Morning,eating_drinking,20,7,1
+Tuesday,Morning,eating_drinking,20,8,1
+Tuesday,Morning,eating_drinking,20,18,1
+Tuesday,Morning,eating_drinking,20,19,1
 Tuesday,Morning,eating_drinking,21,2,1
-Tuesday,Morning,eating_drinking,22,2,1
+Tuesday,Morning,eating_drinking,21,18,1
+Tuesday,Morning,eating_drinking,21,19,1
+Tuesday,Morning,eating_drinking,21,20,1
+Tuesday,Morning,eating_drinking,22,2,2
+Tuesday,Morning,eating_drinking,22,18,1
+Tuesday,Morning,eating_drinking,22,20,1
+Tuesday,Morning,eating_drinking,23,2,1
+Tuesday,Morning,eating_drinking,23,16,1
+Tuesday,Morning,eating_drinking,23,17,2
+Tuesday,Morning,eating_drinking,23,18,1
+Tuesday,Morning,eating_drinking,24,5,1
+Tuesday,Morning,eating_drinking,24,16,1
+Tuesday,Morning,eating_drinking,24,17,1
+Tuesday,Morning,eating_drinking,24,20,1
+Tuesday,Morning,eating_drinking,24,21,1
 Tuesday,Morning,reading_relaxing,2,12,1
+Tuesday,Morning,scrolling_phone,10,14,1
+Tuesday,Morning,scrolling_phone,16,10,1
+Tuesday,Morning,scrolling_phone,27,10,1
+Tuesday,Morning,studying_working,8,16,1
+Tuesday,Morning,studying_working,11,2,1
 Tuesday,Morning,studying_working,13,11,1
+Tuesday,Morning,studying_working,14,16,1
+Tuesday,Morning,studying_working,15,9,1
+Tuesday,Morning,studying_working,16,21,1
+Tuesday,Morning,studying_working,17,7,1
 Tuesday,Morning,studying_working,17,13,1
 Tuesday,Morning,studying_working,18,2,1
 Tuesday,Morning,studying_working,18,13,1
 Tuesday,Morning,studying_working,19,2,1
 Tuesday,Morning,studying_working,19,13,1
+Tuesday,Morning,studying_working,19,19,1
+Tuesday,Morning,studying_working,20,10,1
 Tuesday,Morning,studying_working,20,13,1
+Tuesday,Morning,studying_working,20,18,1
+Tuesday,Morning,studying_working,21,2,1
+Tuesday,Morning,studying_working,21,6,1
+Tuesday,Morning,studying_working,21,16,1
+Tuesday,Morning,studying_working,21,17,2
+Tuesday,Morning,studying_working,21,18,1
+Tuesday,Morning,studying_working,21,19,1
+Tuesday,Morning,studying_working,21,20,1
+Tuesday,Morning,studying_working,22,2,1
+Tuesday,Morning,studying_working,22,15,2
+Tuesday,Morning,studying_working,22,16,1
+Tuesday,Morning,studying_working,22,17,1
+Tuesday,Morning,studying_working,22,19,1
+Tuesday,Morning,studying_working,22,20,1
 Tuesday,Morning,studying_working,23,3,1
+Tuesday,Morning,studying_working,23,15,1
+Tuesday,Morning,studying_working,23,17,1
+Tuesday,Morning,studying_working,23,18,1
 Tuesday,Morning,studying_working,24,3,1
+Tuesday,Morning,studying_working,24,4,1
+Tuesday,Morning,studying_working,24,14,2
+Tuesday,Morning,studying_working,24,16,1
 Tuesday,Morning,studying_working,25,3,1
-Wednesday,Dinner,eating_drinking,23,2,1
+Wednesday,Dinner,club_event,7,15,1
+Wednesday,Dinner,club_event,13,18,1
+Wednesday,Dinner,club_event,17,7,1
+Wednesday,Dinner,club_event,24,19,1
+Wednesday,Dinner,eating_drinking,1,13,1
+Wednesday,Dinner,eating_drinking,3,1,1
+Wednesday,Dinner,eating_drinking,10,9,1
+Wednesday,Dinner,eating_drinking,12,2,1
+Wednesday,Dinner,eating_drinking,14,22,1
+Wednesday,Dinner,eating_drinking,15,3,1
+Wednesday,Dinner,eating_drinking,15,16,1
+Wednesday,Dinner,eating_drinking,15,21,1
+Wednesday,Dinner,eating_drinking,17,4,1
+Wednesday,Dinner,eating_drinking,18,16,1
+Wednesday,Dinner,eating_drinking,19,5,1
+Wednesday,Dinner,eating_drinking,19,15,1
+Wednesday,Dinner,eating_drinking,21,3,1
+Wednesday,Dinner,eating_drinking,21,4,1
+Wednesday,Dinner,eating_drinking,21,5,1
+Wednesday,Dinner,eating_drinking,21,7,1
+Wednesday,Dinner,eating_drinking,21,8,1
+Wednesday,Dinner,eating_drinking,21,14,1
+Wednesday,Dinner,eating_drinking,22,3,2
+Wednesday,Dinner,eating_drinking,22,7,1
+Wednesday,Dinner,eating_drinking,22,8,1
+Wednesday,Dinner,eating_drinking,22,21,1
+Wednesday,Dinner,eating_drinking,23,2,2
+Wednesday,Dinner,eating_drinking,23,3,1
+Wednesday,Dinner,eating_drinking,23,6,1
+Wednesday,Dinner,eating_drinking,24,3,1
+Wednesday,Dinner,eating_drinking,24,5,1
+Wednesday,Dinner,eating_drinking,24,7,1
+Wednesday,Dinner,eating_drinking,25,4,1
+Wednesday,Dinner,eating_drinking,25,5,1
+Wednesday,Dinner,eating_drinking,26,5,2
+Wednesday,Dinner,eating_drinking,26,6,1
+Wednesday,Dinner,eating_drinking,26,7,1
+Wednesday,Dinner,eating_drinking,26,18,1
+Wednesday,Dinner,eating_drinking,27,2,1
+Wednesday,Dinner,eating_drinking,27,4,1
+Wednesday,Dinner,eating_drinking,27,5,1
+Wednesday,Dinner,eating_drinking,27,6,1
+Wednesday,Dinner,eating_drinking,27,8,1
+Wednesday,Dinner,eating_drinking,28,3,1
+Wednesday,Dinner,eating_drinking,28,7,1
+Wednesday,Dinner,other,2,12,1
+Wednesday,Dinner,other,2,14,1
+Wednesday,Dinner,other,5,23,1
+Wednesday,Dinner,other,10,8,1
+Wednesday,Dinner,other,10,9,1
 Wednesday,Dinner,other,14,15,1
 Wednesday,Dinner,other,14,16,1
 Wednesday,Dinner,planned_meeting,14,12,1
+Wednesday,Dinner,reading_relaxing,7,15,1
+Wednesday,Dinner,reading_relaxing,8,15,1
+Wednesday,Dinner,reading_relaxing,8,19,1
+Wednesday,Dinner,reading_relaxing,9,16,1
+Wednesday,Dinner,reading_relaxing,10,21,1
+Wednesday,Dinner,reading_relaxing,11,11,1
+Wednesday,Dinner,reading_relaxing,11,14,1
+Wednesday,Dinner,reading_relaxing,11,22,1
+Wednesday,Dinner,reading_relaxing,12,11,1
+Wednesday,Dinner,reading_relaxing,12,15,1
+Wednesday,Dinner,reading_relaxing,12,21,1
+Wednesday,Dinner,reading_relaxing,13,10,1
+Wednesday,Dinner,reading_relaxing,13,21,1
+Wednesday,Dinner,reading_relaxing,14,3,1
+Wednesday,Dinner,reading_relaxing,14,12,1
+Wednesday,Dinner,reading_relaxing,14,13,1
+Wednesday,Dinner,reading_relaxing,14,16,1
+Wednesday,Dinner,reading_relaxing,15,21,1
+Wednesday,Dinner,reading_relaxing,16,14,1
+Wednesday,Dinner,reading_relaxing,23,9,1
+Wednesday,Dinner,scrolling_phone,15,4,1
+Wednesday,Dinner,scrolling_phone,16,3,1
+Wednesday,Dinner,scrolling_phone,16,16,1
+Wednesday,Dinner,scrolling_phone,18,4,1
+Wednesday,Dinner,scrolling_phone,18,5,1
+Wednesday,Dinner,scrolling_phone,19,8,1
+Wednesday,Dinner,scrolling_phone,28,5,1
 Wednesday,Dinner,socializing,16,12,1
+Wednesday,Dinner,socializing,16,15,1
+Wednesday,Dinner,socializing,16,21,1
+Wednesday,Dinner,socializing,17,5,1
+Wednesday,Dinner,socializing,18,7,1
+Wednesday,Dinner,socializing,19,3,1
+Wednesday,Dinner,socializing,19,4,1
 Wednesday,Dinner,socializing,21,13,1
+Wednesday,Dinner,studying_working,7,14,1
+Wednesday,Dinner,studying_working,9,12,1
+Wednesday,Dinner,studying_working,11,14,1
+Wednesday,Dinner,studying_working,13,14,1
+Wednesday,Dinner,studying_working,14,6,1
 Wednesday,Dinner,studying_working,14,13,1
 Wednesday,Dinner,studying_working,14,14,1
+Wednesday,Dinner,studying_working,16,3,1
 Wednesday,Dinner,studying_working,18,2,1
+Wednesday,Dinner,studying_working,18,14,1
 Wednesday,Dinner,studying_working,19,2,2
+Wednesday,Dinner,studying_working,19,3,1
 Wednesday,Dinner,studying_working,21,1,1
 Wednesday,Dinner,studying_working,22,1,1
 Wednesday,Dinner,studying_working,22,13,1
 Wednesday,Dinner,studying_working,23,1,1
-Wednesday,Dinner,studying_working,23,2,1
+Wednesday,Dinner,studying_working,23,2,2
+Wednesday,Dinner,studying_working,23,3,1
 Wednesday,Dinner,studying_working,24,1,1
-Wednesday,Dinner,studying_working,25,3,1
+Wednesday,Dinner,studying_working,24,2,1
+Wednesday,Dinner,studying_working,24,3,1
+Wednesday,Dinner,studying_working,25,2,1
+Wednesday,Dinner,studying_working,25,3,2
+Wednesday,Dinner,studying_working,26,2,1
+Wednesday,Dinner,studying_working,26,3,1
+Wednesday,Dinner,studying_working,27,2,1
+Wednesday,Dinner,studying_working,27,3,1
+Wednesday,Dinner,studying_working,28,8,1
+Wednesday,Dinner,studying_working,29,6,1
+Wednesday,Dinner,studying_working,29,7,1
+Wednesday,Dinner,taking_break,4,4,1
+Wednesday,Dinner,taking_break,5,3,1
+Wednesday,Dinner,taking_break,8,3,1
+Wednesday,Dinner,taking_break,11,1,1
+Wednesday,Dinner,taking_break,15,9,1
+Wednesday,Late Night,club_event,20,10,1
 Wednesday,Late Night,eating_drinking,4,14,1
 Wednesday,Late Night,eating_drinking,6,7,1
 Wednesday,Late Night,eating_drinking,6,20,1
@@ -726,7 +2203,9 @@ Wednesday,Late Night,eating_drinking,9,22,1
 Wednesday,Late Night,eating_drinking,13,4,1
 Wednesday,Late Night,eating_drinking,15,22,1
 Wednesday,Late Night,eating_drinking,19,22,1
+Wednesday,Late Night,eating_drinking,21,3,1
 Wednesday,Late Night,eating_drinking,23,21,1
+Wednesday,Late Night,eating_drinking,24,5,1
 Wednesday,Late Night,eating_drinking,24,6,1
 Wednesday,Late Night,eating_drinking,25,20,1
 Wednesday,Late Night,eating_drinking,26,16,1
@@ -756,16 +2235,24 @@ Wednesday,Late Night,scrolling_phone,16,10,1
 Wednesday,Late Night,scrolling_phone,17,3,1
 Wednesday,Late Night,scrolling_phone,17,9,1
 Wednesday,Late Night,scrolling_phone,18,4,1
+Wednesday,Late Night,scrolling_phone,19,1,1
 Wednesday,Late Night,scrolling_phone,19,3,1
 Wednesday,Late Night,scrolling_phone,20,4,1
 Wednesday,Late Night,scrolling_phone,20,6,1
 Wednesday,Late Night,scrolling_phone,20,7,1
 Wednesday,Late Night,scrolling_phone,20,8,1
+Wednesday,Late Night,scrolling_phone,21,3,1
+Wednesday,Late Night,socializing,14,5,1
+Wednesday,Late Night,socializing,17,1,1
+Wednesday,Late Night,studying_working,14,5,1
 Wednesday,Late Night,studying_working,15,3,1
 Wednesday,Late Night,studying_working,16,3,1
+Wednesday,Late Night,studying_working,17,1,1
 Wednesday,Late Night,studying_working,17,3,1
 Wednesday,Late Night,studying_working,18,3,1
 Wednesday,Late Night,studying_working,19,3,1
+Wednesday,Late Night,studying_working,21,3,1
+Wednesday,Late Night,studying_working,25,7,1
 Wednesday,Late Night,studying_working,29,2,1
 Wednesday,Late Night,studying_working,29,3,1
 Wednesday,Late Night,studying_working,29,4,1
@@ -773,6 +2260,15 @@ Wednesday,Late Night,studying_working,29,5,1
 Wednesday,Late Night,studying_working,29,6,1
 Wednesday,Late Night,studying_working,29,7,1
 Wednesday,Late Night,studying_working,29,8,1
+Wednesday,Late Night,taking_break,4,4,1
+Wednesday,Late Night,taking_break,20,10,1
+Wednesday,Late Night,taking_break,21,3,1
+Wednesday,Lunch,club_event,13,9,1
+Wednesday,Lunch,club_event,15,5,1
+Wednesday,Lunch,club_event,21,13,1
+Wednesday,Lunch,club_event,21,15,1
+Wednesday,Lunch,club_event,22,14,1
+Wednesday,Lunch,club_event,23,12,1
 Wednesday,Lunch,eating_drinking,1,9,1
 Wednesday,Lunch,eating_drinking,1,10,1
 Wednesday,Lunch,eating_drinking,1,11,1
@@ -789,23 +2285,31 @@ Wednesday,Lunch,eating_drinking,7,5,1
 Wednesday,Lunch,eating_drinking,7,6,1
 Wednesday,Lunch,eating_drinking,7,7,1
 Wednesday,Lunch,eating_drinking,7,8,1
+Wednesday,Lunch,eating_drinking,7,12,1
 Wednesday,Lunch,eating_drinking,8,8,1
 Wednesday,Lunch,eating_drinking,8,11,1
 Wednesday,Lunch,eating_drinking,9,8,1
+Wednesday,Lunch,eating_drinking,9,9,1
 Wednesday,Lunch,eating_drinking,10,9,1
+Wednesday,Lunch,eating_drinking,10,16,1
 Wednesday,Lunch,eating_drinking,11,9,1
 Wednesday,Lunch,eating_drinking,12,9,1
 Wednesday,Lunch,eating_drinking,13,9,1
 Wednesday,Lunch,eating_drinking,14,2,1
+Wednesday,Lunch,eating_drinking,14,4,1
 Wednesday,Lunch,eating_drinking,14,5,1
 Wednesday,Lunch,eating_drinking,14,6,1
 Wednesday,Lunch,eating_drinking,14,7,1
 Wednesday,Lunch,eating_drinking,14,8,1
 Wednesday,Lunch,eating_drinking,14,9,1
+Wednesday,Lunch,eating_drinking,14,14,1
 Wednesday,Lunch,eating_drinking,15,2,1
+Wednesday,Lunch,eating_drinking,15,7,1
 Wednesday,Lunch,eating_drinking,15,9,1
 Wednesday,Lunch,eating_drinking,15,17,1
 Wednesday,Lunch,eating_drinking,16,2,1
+Wednesday,Lunch,eating_drinking,16,5,1
+Wednesday,Lunch,eating_drinking,16,8,1
 Wednesday,Lunch,eating_drinking,16,9,1
 Wednesday,Lunch,eating_drinking,16,17,1
 Wednesday,Lunch,eating_drinking,16,18,1
@@ -816,6 +2320,7 @@ Wednesday,Lunch,eating_drinking,17,17,1
 Wednesday,Lunch,eating_drinking,17,18,1
 Wednesday,Lunch,eating_drinking,17,19,1
 Wednesday,Lunch,eating_drinking,18,1,1
+Wednesday,Lunch,eating_drinking,18,6,1
 Wednesday,Lunch,eating_drinking,18,9,1
 Wednesday,Lunch,eating_drinking,18,19,1
 Wednesday,Lunch,eating_drinking,18,20,1
@@ -823,15 +2328,21 @@ Wednesday,Lunch,eating_drinking,19,9,1
 Wednesday,Lunch,eating_drinking,19,20,1
 Wednesday,Lunch,eating_drinking,19,21,1
 Wednesday,Lunch,eating_drinking,20,9,1
-Wednesday,Lunch,eating_drinking,21,3,1
+Wednesday,Lunch,eating_drinking,20,12,1
+Wednesday,Lunch,eating_drinking,20,14,1
+Wednesday,Lunch,eating_drinking,21,3,2
 Wednesday,Lunch,eating_drinking,21,4,1
 Wednesday,Lunch,eating_drinking,21,5,1
 Wednesday,Lunch,eating_drinking,21,6,1
 Wednesday,Lunch,eating_drinking,21,7,1
 Wednesday,Lunch,eating_drinking,21,8,1
 Wednesday,Lunch,eating_drinking,21,9,1
+Wednesday,Lunch,eating_drinking,21,14,1
+Wednesday,Lunch,eating_drinking,21,15,1
 Wednesday,Lunch,eating_drinking,22,3,1
 Wednesday,Lunch,eating_drinking,22,16,1
+Wednesday,Lunch,eating_drinking,22,17,1
+Wednesday,Lunch,eating_drinking,22,18,1
 Wednesday,Lunch,eating_drinking,22,19,1
 Wednesday,Lunch,eating_drinking,23,3,1
 Wednesday,Lunch,eating_drinking,23,13,1
@@ -840,8 +2351,10 @@ Wednesday,Lunch,eating_drinking,24,15,1
 Wednesday,Lunch,eating_drinking,24,17,1
 Wednesday,Lunch,eating_drinking,24,19,1
 Wednesday,Lunch,eating_drinking,25,3,1
-Wednesday,Lunch,eating_drinking,26,3,1
+Wednesday,Lunch,eating_drinking,26,3,2
 Wednesday,Lunch,eating_drinking,26,4,1
+Wednesday,Lunch,eating_drinking,26,6,1
+Wednesday,Lunch,eating_drinking,26,7,1
 Wednesday,Lunch,eating_drinking,27,3,1
 Wednesday,Lunch,eating_drinking,27,4,1
 Wednesday,Lunch,eating_drinking,27,5,2
@@ -849,20 +2362,48 @@ Wednesday,Lunch,eating_drinking,27,6,2
 Wednesday,Lunch,eating_drinking,27,7,2
 Wednesday,Lunch,eating_drinking,27,8,1
 Wednesday,Lunch,eating_drinking,27,9,1
+Wednesday,Lunch,eating_drinking,28,5,1
+Wednesday,Lunch,eating_drinking,28,6,1
+Wednesday,Lunch,eating_drinking,28,7,1
+Wednesday,Lunch,eating_drinking,28,8,1
 Wednesday,Lunch,eating_drinking,28,9,1
-Wednesday,Lunch,eating_drinking,29,9,1
+Wednesday,Lunch,eating_drinking,28,19,1
+Wednesday,Lunch,eating_drinking,29,6,1
+Wednesday,Lunch,eating_drinking,29,7,1
+Wednesday,Lunch,eating_drinking,29,9,2
+Wednesday,Lunch,reading_relaxing,14,13,1
 Wednesday,Lunch,scrolling_phone,1,9,1
 Wednesday,Lunch,scrolling_phone,1,10,1
 Wednesday,Lunch,scrolling_phone,1,11,1
 Wednesday,Lunch,scrolling_phone,8,9,1
+Wednesday,Lunch,scrolling_phone,28,7,1
+Wednesday,Lunch,socializing,3,14,1
+Wednesday,Lunch,socializing,7,7,1
+Wednesday,Lunch,socializing,7,11,1
+Wednesday,Lunch,socializing,10,19,1
 Wednesday,Lunch,socializing,14,5,1
-Wednesday,Lunch,socializing,14,6,1
-Wednesday,Lunch,socializing,14,7,1
+Wednesday,Lunch,socializing,14,6,3
+Wednesday,Lunch,socializing,14,7,2
 Wednesday,Lunch,socializing,14,8,1
+Wednesday,Lunch,socializing,14,18,1
 Wednesday,Lunch,socializing,15,5,1
 Wednesday,Lunch,socializing,15,6,1
 Wednesday,Lunch,socializing,15,7,1
+Wednesday,Lunch,socializing,18,7,1
+Wednesday,Lunch,socializing,18,8,1
+Wednesday,Lunch,socializing,19,7,1
+Wednesday,Lunch,socializing,19,13,1
+Wednesday,Lunch,socializing,19,14,1
 Wednesday,Lunch,socializing,20,9,1
+Wednesday,Lunch,socializing,20,13,1
+Wednesday,Lunch,socializing,20,14,1
+Wednesday,Lunch,socializing,21,13,1
+Wednesday,Lunch,socializing,21,14,1
+Wednesday,Lunch,socializing,21,15,1
+Wednesday,Lunch,socializing,22,6,1
+Wednesday,Lunch,socializing,23,16,1
+Wednesday,Lunch,socializing,25,7,1
+Wednesday,Lunch,socializing,25,19,1
 Wednesday,Lunch,socializing,27,4,1
 Wednesday,Lunch,socializing,27,5,1
 Wednesday,Lunch,socializing,27,6,1
@@ -870,27 +2411,87 @@ Wednesday,Lunch,studying_working,1,9,1
 Wednesday,Lunch,studying_working,1,10,1
 Wednesday,Lunch,studying_working,1,11,1
 Wednesday,Lunch,studying_working,1,12,1
+Wednesday,Lunch,studying_working,1,17,1
+Wednesday,Lunch,studying_working,1,19,1
+Wednesday,Lunch,studying_working,1,20,1
+Wednesday,Lunch,studying_working,7,8,1
+Wednesday,Lunch,studying_working,8,12,1
 Wednesday,Lunch,studying_working,14,5,1
-Wednesday,Lunch,studying_working,14,6,1
-Wednesday,Lunch,studying_working,14,7,1
+Wednesday,Lunch,studying_working,14,6,2
+Wednesday,Lunch,studying_working,14,7,2
+Wednesday,Lunch,studying_working,14,8,1
 Wednesday,Lunch,studying_working,15,5,1
 Wednesday,Lunch,studying_working,15,6,1
-Wednesday,Lunch,studying_working,15,7,1
+Wednesday,Lunch,studying_working,15,7,2
+Wednesday,Lunch,studying_working,15,8,1
 Wednesday,Lunch,studying_working,16,1,1
 Wednesday,Lunch,studying_working,16,5,1
 Wednesday,Lunch,studying_working,16,6,1
-Wednesday,Lunch,studying_working,17,5,1
+Wednesday,Lunch,studying_working,17,5,2
 Wednesday,Lunch,studying_working,17,6,1
 Wednesday,Lunch,studying_working,18,6,1
-Wednesday,Lunch,studying_working,18,7,1
+Wednesday,Lunch,studying_working,18,7,2
 Wednesday,Lunch,studying_working,19,6,1
 Wednesday,Lunch,studying_working,19,7,1
+Wednesday,Lunch,studying_working,19,21,1
+Wednesday,Lunch,studying_working,20,8,1
+Wednesday,Lunch,studying_working,20,12,1
 Wednesday,Lunch,studying_working,20,16,1
+Wednesday,Lunch,studying_working,20,17,1
 Wednesday,Lunch,studying_working,21,20,1
+Wednesday,Lunch,studying_working,22,10,1
 Wednesday,Lunch,studying_working,22,20,1
 Wednesday,Lunch,studying_working,24,12,1
 Wednesday,Lunch,studying_working,24,16,1
 Wednesday,Lunch,studying_working,24,17,1
 Wednesday,Lunch,studying_working,24,19,1
 Wednesday,Lunch,studying_working,26,6,1
+Wednesday,Lunch,taking_break,14,7,1
+Wednesday,Lunch,taking_break,14,24,1
+Wednesday,Lunch,taking_break,16,3,1
+Wednesday,Lunch,taking_break,16,5,1
+Wednesday,Lunch,taking_break,16,6,1
 Wednesday,Lunch,taking_break,18,1,1
+Wednesday,Lunch,taking_break,18,5,1
+Wednesday,Lunch,taking_break,19,9,1
+Wednesday,Lunch,taking_break,20,6,2
+Wednesday,Morning,eating_drinking,14,6,1
+Wednesday,Morning,eating_drinking,15,2,1
+Wednesday,Morning,eating_drinking,15,4,1
+Wednesday,Morning,eating_drinking,16,2,1
+Wednesday,Morning,eating_drinking,16,3,1
+Wednesday,Morning,eating_drinking,17,2,1
+Wednesday,Morning,eating_drinking,17,8,1
+Wednesday,Morning,eating_drinking,18,2,1
+Wednesday,Morning,eating_drinking,18,3,1
+Wednesday,Morning,eating_drinking,19,2,1
+Wednesday,Morning,eating_drinking,19,3,1
+Wednesday,Morning,eating_drinking,19,4,1
+Wednesday,Morning,eating_drinking,20,3,1
+Wednesday,Morning,eating_drinking,20,5,1
+Wednesday,Morning,eating_drinking,22,3,1
+Wednesday,Morning,eating_drinking,23,3,1
+Wednesday,Morning,eating_drinking,23,4,1
+Wednesday,Morning,eating_drinking,23,5,1
+Wednesday,Morning,eating_drinking,25,2,1
+Wednesday,Morning,eating_drinking,25,3,1
+Wednesday,Morning,socializing,14,2,1
+Wednesday,Morning,socializing,14,3,1
+Wednesday,Morning,socializing,14,5,1
+Wednesday,Morning,socializing,15,2,1
+Wednesday,Morning,socializing,16,2,1
+Wednesday,Morning,socializing,17,2,1
+Wednesday,Morning,socializing,27,5,1
+Wednesday,Morning,socializing,27,6,1
+Wednesday,Morning,socializing,27,7,1
+Wednesday,Morning,socializing,28,6,1
+Wednesday,Morning,studying_working,14,6,1
+Wednesday,Morning,studying_working,22,2,1
+Wednesday,Morning,studying_working,23,2,1
+Wednesday,Morning,studying_working,24,7,1
+Wednesday,Morning,studying_working,26,21,1
+Wednesday,Morning,taking_break,18,3,1
+Wednesday,Morning,taking_break,27,5,1
+Wednesday,Morning,taking_break,27,6,1
+Wednesday,Morning,taking_break,27,7,1
+Wednesday,Morning,taking_break,28,6,1

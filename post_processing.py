@@ -44,6 +44,17 @@ def number(value, integer=False):
         return None
 
 
+def parse_start_time(value):
+    """Read local Qualtrics timestamps from either export date format."""
+    for format in ("%Y-%m-%d %H:%M:%S", "%Y-%m-%d %H:%M",
+                   "%m/%d/%Y %H:%M:%S", "%m/%d/%Y %H:%M"):
+        try:
+            return dt.datetime.strptime(value.strip(), format)
+        except ValueError:
+            pass
+    raise ValueError("Unsupported StartDate; expected YYYY-MM-DD or M/D/YYYY with a local time.")
+
+
 def write_table(directory, name, rows, fields):
     with (directory / name).open("w", encoding="utf-8", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=fields)
@@ -51,7 +62,8 @@ def write_table(directory, name, rows, fields):
         writer.writerows(rows)
 
 
-def process(source, destination):
+def load_retained_records(source):
+    """Read an export and apply the shared consent, staff, preview, and repeat rules."""
     with source.open(encoding="utf-8-sig", newline="") as f:
         rows = list(csv.reader(f))
     if len(rows) < 3 or "ImportId" not in "".join(rows[2]):
@@ -70,7 +82,7 @@ def process(source, destination):
         elif d["Consent Form"].strip() != "I consent to participate in this study.":
             excluded["no_consent"] += 1
         else:
-            d["_time"] = dt.datetime.strptime(d["StartDate"], "%m/%d/%Y %H:%M")
+            d["_time"] = parse_start_time(d["StartDate"])
             d["_person"] = identity(d["Email"]) or identity(d["participantemail"])
             eligible.append(d)
     # Deterministic rule: retain earliest submission per identified participant/local day.
@@ -84,6 +96,11 @@ def process(source, destination):
         if d["_person"]:
             seen.add(key)
         kept.append(d)
+    return records, kept, excluded
+
+
+def process(source, destination):
+    records, kept, excluded = load_retained_records(source)
     # Fresh random IDs on each run; no identity mapping is exported.
     people = sorted({d["_person"] for d in kept if d["_person"]})
     shuffled = list(range(1, len(people) + 1))
@@ -174,7 +191,7 @@ def process(source, destination):
     timed_frequency = collections.Counter((by_visit[c["visit_id"]]["weekday"], by_visit[c["visit_id"]]["time_period"], c["activity"], c["column"], c["row"]) for c in cells)
     timed_heatmap = [dict(weekday=day, time_period=period, activity=a, column=x, row=y, visits_selecting_cell=n) for (day, period, a, x, y), n in sorted(timed_frequency.items())]
     write_table(destination, "map_cell_frequency_by_weekday_period.csv", timed_heatmap, ["weekday", "time_period", "activity", "column", "row", "visits_selecting_cell"])
-    audit = dict(input_records=len(records), excluded=dict(excluded), retained_visits=len(visits),
+    audit = dict(source_file=source.name, input_records=len(records), excluded=dict(excluded), retained_visits=len(visits),
                  retained_identified_participants=len(people), quality_flags=len(issues),
                  grid=dict(columns=30, rows=24, image_width=1911, image_height=1467),
                  time_basis="Survey start in America/New_York; time_period from voucher fingerprintPeriod")

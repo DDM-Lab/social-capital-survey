@@ -1,13 +1,14 @@
 {
-  "input_records": 173,
+  "source_file": "2026-Grace-Hunt Library Survey_November 5, 2026_10.09.csv",
+  "input_records": 397,
   "excluded": {
-    "staff": 44,
-    "no_consent": 9,
+    "staff": 50,
+    "no_consent": 13,
     "same_person_same_day_later_submission": 1
   },
-  "retained_visits": 119,
-  "retained_identified_participants": 104,
-  "quality_flags": 9,
+  "retained_visits": 333,
+  "retained_identified_participants": 238,
+  "quality_flags": 26,
   "grid": {
     "columns": 30,
     "rows": 24,

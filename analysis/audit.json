@@ -1,0 +1,26 @@
+{
+  "retained_visits": 333,
+  "periods": [
+    "Morning",
+    "Lunch",
+    "Dinner",
+    "Late Night",
+    "Off Hours",
+    "Unknown"
+  ],
+  "retained_identified_participants": 238,
+  "missing_identity_visits": 7,
+  "missing_activity_answers": 7,
+  "legacy_planned_meeting_visits": 4,
+  "unknown_activity_visits": 0,
+  "duration_details_without_selection": 0,
+  "source_file": "2026-Grace-Hunt Library Survey_November 5, 2026_10.09.csv",
+  "input_records": 397,
+  "excluded": {
+    "staff": 50,
+    "no_consent": 13,
+    "same_person_same_day_later_submission": 1
+  },
+  "activity_percentage_basis": "Selections across the nine listed activities within group",
+  "duration_error_bars": "One sample standard deviation; not a confidence interval"
+}

@@ -8,11 +8,13 @@ retention and numeric validation rules. Does not modify cleaned/ or existing map
 import argparse
 import collections
 import csv
+import datetime as dt
 import json
 from pathlib import Path
 import statistics
 
-from post_processing import ACTIVITIES, SCALE, SENTIMENTS, load_retained_records, number
+from post_processing import (ACTIVITIES, SCALE, SENTIMENTS, STAFF, identity,
+                             load_retained_records, number, parse_start_time)
 
 ROOT = Path(__file__).resolve().parent
 DEFAULT_INPUT = ROOT / "2026-Grace-Hunt Library Survey_November 5, 2026_10.09.csv"
@@ -340,12 +342,182 @@ def markdown_table(headers, rows):
                      ["| " + " | ".join(cell(v) for v in row) + " |" for row in rows])
 
 
+def summarize_participation(records):
+    """Count completed surveys before same-day deduplication; export aggregates only."""
+    excluded = collections.Counter()
+    completed = []
+    for raw in records:
+        if any(identity(raw.get(k, "")) in STAFF for k in ("Email", "participantemail")):
+            excluded["staff"] += 1
+        elif raw.get("Status") == "Survey Preview" or raw.get("DistributionChannel") == "preview":
+            excluded["preview"] += 1
+        elif raw.get("Consent Form", "").strip() != "I consent to participate in this study.":
+            excluded["no_consent"] += 1
+        elif raw.get("Finished", "").strip().lower() not in {"true", "1"}:
+            excluded["not_finished"] += 1
+        else:
+            completed.append(raw)
+    people = collections.defaultdict(list)
+    times = []
+    for raw in completed:
+        time = parse_start_time(raw["StartDate"])
+        times.append(time)
+        person = identity(raw.get("Email", "")) or identity(raw.get("participantemail", ""))
+        if person:
+            people[person].append(time)
+    same_day, same_week, cross_day_week, rolling, cross_day_rolling = (set() for _ in range(5))
+    duplicate_day_submissions = 0
+    duplicate_day_groups = 0
+    for person, entries in people.items():
+        dates = collections.Counter(t.date() for t in entries)
+        weeks = collections.Counter(t.isocalendar()[:2] for t in entries)
+        week_dates = collections.defaultdict(set)
+        for time in entries:
+            week_dates[time.isocalendar()[:2]].add(time.date())
+        if any(count > 1 for count in dates.values()):
+            same_day.add(person)
+        duplicate_day_submissions += sum(count - 1 for count in dates.values())
+        duplicate_day_groups += sum(count > 1 for count in dates.values())
+        if any(count > 1 for count in weeks.values()):
+            same_week.add(person)
+        if any(len(days) > 1 for days in week_dates.values()):
+            cross_day_week.add(person)
+        ordered = sorted(entries)
+        for first, second in zip(ordered, ordered[1:]):
+            if second.date() - first.date() < dt.timedelta(days=7):
+                rolling.add(person)
+                if first.date() != second.date():
+                    cross_day_rolling.add(person)
+    repeated = {person for person, entries in people.items() if len(entries) > 1}
+    n = len(completed)
+
+    def timing_rows(counter, categories):
+        return [dict(category=category, count=counter[category], percent_completions=percent(counter[category], n))
+                for category in categories]
+
+    periods = collections.Counter(r.get("fingerprintPeriod", "").strip() or "Unknown" for r in completed)
+    period_order = [p for p in PERIOD_ORDER if p in periods] + sorted(periods.keys() - set(PERIOD_ORDER))
+    hour_label = lambda hour: f"{hour:02d}:00-{hour + 1:02d}:00"
+    timing = {
+        "weekday": timing_rows(collections.Counter(DAYS[t.weekday()] for t in times), DAYS),
+        "voucher_period": timing_rows(periods, period_order),
+        "start_hour": timing_rows(collections.Counter(hour_label(t.hour) for t in times), [hour_label(h) for h in range(24)]),
+        "weekday_voucher_period": timing_rows(
+            collections.Counter(f"{DAYS[t.weekday()]} / {r.get('fingerprintPeriod', '').strip() or 'Unknown'}" for t, r in zip(times, completed)),
+            [f"{day} / {period}" for day in DAYS for period in period_order]),
+        "weekday_start_hour": timing_rows(collections.Counter(f"{DAYS[t.weekday()]} / {hour_label(t.hour)}" for t in times),
+                                           [f"{day} / {hour_label(h)}" for day in DAYS for h in range(24)]),
+    }
+    peaks = {}
+    for dimension, rows in timing.items():
+        maximum = max((r["count"] for r in rows), default=0)
+        peaks[dimension] = [r for r in rows if r["count"] == maximum] if maximum else []
+    distribution = collections.Counter(len(entries) for entries in people.values())
+    return dict(input_records=len(records), excluded=dict(excluded), completed_submissions=n,
+                unique_participant_ids=len(people), identified_completed_submissions=sum(map(len, people.values())),
+                missing_identity_submissions=n - sum(map(len, people.values())),
+                repeat_participants=len(repeated), extra_identified_submissions=sum(map(len, people.values())) - len(people),
+                same_day_participants=len(same_day), same_day_repeat_groups=duplicate_day_groups,
+                extra_same_day_submissions=duplicate_day_submissions,
+                same_calendar_week_participants=len(same_week), different_day_same_week_participants=len(cross_day_week),
+                same_day_and_different_day_same_week=len(same_day & cross_day_week),
+                same_day_without_different_day_same_week=len(same_day - cross_day_week),
+                different_day_same_week_without_same_day=len(cross_day_week - same_day),
+                repeats_without_same_day_or_different_day_same_week=len(repeated - same_day - cross_day_week),
+                rolling_seven_day_participants=len(rolling), different_day_rolling_seven_day_participants=len(cross_day_rolling),
+                completion_frequency=[dict(completions=k, participants=v) for k, v in sorted(distribution.items())],
+                timing_peaks=peaks, weekday_counts=timing["weekday"], voucher_period_counts=timing["voucher_period"])
+
+
+def write_participation_report(source, stats, destination):
+    """Write a stand-alone Markdown answer to the participation questions."""
+    n, people = stats["completed_submissions"], stats["unique_participant_ids"]
+
+    def display_share(count, denominator):
+        return f"{count} ({100 * count / denominator:.1f}%)" if denominator else f"{count} (N/A)"
+
+    peak_names = {"weekday": "Most frequent weekday", "voucher_period": "Most frequent voucher period",
+                  "start_hour": "Most frequent start-hour interval", "weekday_voucher_period": "Most frequent weekday + voucher period",
+                  "weekday_start_hour": "Most frequent weekday + start hour"}
+    peak_rows = []
+    for dimension, label in peak_names.items():
+        rows = stats["timing_peaks"][dimension]
+        peak_rows.append([label, "; ".join(r["category"] for r in rows) or "No completed surveys",
+                          display_share(rows[0]["count"], n) if rows else "N/A"])
+    repeated = stats["repeat_participants"]
+    metrics = [
+        ["Completed non-staff, consenting submissions (before same-day deduplication)", n],
+        ["Completed submissions with an identifiable participant ID", stats["identified_completed_submissions"]],
+        ["Unique normalized non-staff participant IDs", people],
+        ["Completed submissions without an ID (cannot check repeat participation)", stats["missing_identity_submissions"]],
+        ["IDs with exactly one completed submission", people - repeated],
+        ["IDs with two or more completed submissions", display_share(repeated, people)],
+        ["Additional identified submissions beyond each ID's first", stats["extra_identified_submissions"]],
+    ]
+    repeat_rows = [
+        ["Two or more submissions on the same local date", stats["same_day_participants"]],
+        ["Two or more submissions in the same Monday-Sunday calendar week (includes same-day repeats)", stats["same_calendar_week_participants"]],
+        ["Submissions on two or more different dates in the same Monday-Sunday week", stats["different_day_same_week_participants"]],
+        ["Two or more submissions in a rolling seven-calendar-day window (includes same-day repeats)", stats["rolling_seven_day_participants"]],
+        ["Submissions on different dates in a rolling seven-calendar-day window", stats["different_day_rolling_seven_day_participants"]],
+    ]
+    exclusive_rows = [
+        ["Different-day repeats within a calendar week, without any same-day repeat", stats["different_day_same_week_without_same_day"]],
+        ["Same-day repeats, without different-day repeats within a calendar week", stats["same_day_without_different_day_same_week"]],
+        ["Both same-day repeats and different-day repeats within a calendar week", stats["same_day_and_different_day_same_week"]],
+        ["Repeat participants with neither of those patterns (different calendar weeks only)", stats["repeats_without_same_day_or_different_day_same_week"]],
+    ]
+    lines = ["# General survey participation statistics", "", f"Source: `{source.name}`.", "",
+             "## Who is counted", "",
+             "A completed survey has `Finished=True` (or `1`). Exclude the staff IDs in `post_processing.STAFF` "
+             "using both identity fields, exclude previews, and require affirmative study consent. "
+             "Use the raw export before removing later same-day submissions, so those repeats remain observable. "
+             "Normalize IDs by trimming whitespace, lowercasing, and removing the email domain; prefer Email and fall back to participantemail. "
+             "Counts describe IDs, with no identifying values exported.", "",
+             f"Input records: **{stats['input_records']}**. Mutually exclusive exclusions, checked in staff/preview/consent/completion order: "
+             f"staff {stats['excluded'].get('staff', 0)}, previews {stats['excluded'].get('preview', 0)}, "
+             f"no consent {stats['excluded'].get('no_consent', 0)}, not finished {stats['excluded'].get('not_finished', 0)}.", "",
+             "## Unique participants and completed surveys", "", markdown_table(["Measure", "Count"], metrics), "",
+             "## Most frequent survey day and time", "",
+             "Timing uses **survey start in Eastern local time**, matching the existing analysis. "
+             "An hour interval includes its starting hour and excludes the next hour. Voucher periods are the recorded categories, "
+             "not inferred clock intervals. Percentages use all qualifying completed submissions, including repeats and submissions without IDs. "
+             "All ties are shown. These counts reflect collected responses rather than response rates adjusted for tablet availability or sampling exposure.", "",
+             markdown_table(["Measure", "Peak category (all ties)", "Submissions (% of completed)"], peak_rows), "",
+             "### Weekday distribution", "",
+             markdown_table(["Weekday", "Completed submissions"], [[r["category"], display_share(r["count"], n)] for r in stats["weekday_counts"]]), "",
+             "### Voucher-period distribution", "",
+             markdown_table(["Voucher period", "Completed submissions"], [[r["category"], display_share(r["count"], n)] for r in stats["voucher_period_counts"]]), "",
+             "## Repeat participation", "",
+             f"**{repeated} of {people} identifiable participants** completed more than one survey. "
+             "The following counts are numbers of unique IDs meeting each condition at least once across the entire export; "
+             "the rows overlap and must not be added together. Missing-ID submissions are excluded from repeat counts.", "",
+             markdown_table(["Repeat pattern", "Unique IDs"], repeat_rows), "",
+             "A calendar week runs Monday through Sunday, using the ISO week-year to handle year boundaries. "
+             "A rolling seven-calendar-day window spans local dates separated by 0-6 days, so it can cross a Sunday/Monday boundary. "
+             "All repeat classifications use survey start dates. Same-week counts include same-day repeats; the different-day rows distinguish return visits.", "",
+             "### Non-overlapping breakdown of repeat participants", "",
+             markdown_table(["Pattern", "Unique IDs"], exclusive_rows), "",
+             f"These four categories sum to {repeated}. There are {stats['same_day_repeat_groups']} participant/date groups with same-day repeats, "
+             f"containing {stats['extra_same_day_submissions']} additional same-day submissions beyond the first in each group.", "",
+             "### Completed submissions per identifiable participant", "",
+             markdown_table(["Submissions per ID", "Unique IDs"], [[r["completions"], r["participants"]] for r in stats["completion_frequency"]]), "",
+             "## Relation to the question-level analysis", "",
+             "The question-level analysis keeps the earliest identified submission per day and does not separately filter on Finished. "
+             "This participation report requires completion and includes later same-day submissions. "
+             "These definitions can produce different submission totals; unique-ID counts cannot account for unidentified submissions.", ""]
+    destination.mkdir(parents=True, exist_ok=True)
+    (destination / "general_statistics.md").write_text("\n".join(lines), encoding="utf-8")
+
+
 def write_report(source, tables, metadata, artifacts, destination):
     n = metadata["retained_visits"]
     selection_total = tables["activities_overall"][0]["total_activity_selections"]
     lines = ["# Hunt Library survey analysis", "", f"Source: `{source.name}`.", "",
              f"Retained **{n} visits**, with **{metadata['retained_identified_participants']} identified participants** "
              f"and {metadata['missing_identity_visits']} visits without participant identity.", "",
+             "See [general participation statistics](general_statistics.md) for completed-survey ID counts, "
+             "the most frequent day/time, and repeat participation before same-day deduplication.", "",
              "## Reading the results", "",
              "The shared post-processing rules exclude staff, previews, and nonconsenting records, then keep the earliest identified participant submission per local day. "
              "Repeated visits on different days count separately. These are descriptive results without participant weighting or sampling-exposure corrections.", "",
@@ -416,12 +588,16 @@ def main():
     metadata.update(source_file=source.name, input_records=len(raw), excluded=dict(excluded),
                     activity_percentage_basis="Selections across the nine listed activities within group",
                     duration_error_bars="One sample standard deviation; not a confidence interval")
+    participation = summarize_participation(raw)
+    metadata["participation_statistics"] = participation
     save_tables(tables, destination / "tables")
     artifacts = create_plots(tables, metadata, destination / "plots", args.dpi)
     write_report(source, tables, metadata, artifacts, destination)
+    write_participation_report(source, participation, destination)
     (destination / "audit.json").write_text(json.dumps(metadata, indent=2), encoding="utf-8")
     print(f"Retained {len(retained)} of {len(raw)} records; generated {len(artifacts)} plots and {len(tables)} tables.")
     print(f"Report: {destination / 'report.md'}")
+    print(f"Participation statistics: {destination / 'general_statistics.md'}")
 
 
 if __name__ == "__main__":

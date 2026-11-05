@@ -6,7 +6,8 @@ from pathlib import Path
 import tempfile
 import unittest
 
-from general_analysis import duration_statistics, summarize
+from general_analysis import (duration_statistics, summarize, summarize_participation,
+                              write_participation_report)
 from post_processing import load_retained_records
 
 
@@ -114,6 +115,92 @@ class AnalysisTests(unittest.TestCase):
         self.assertEqual(len(raw), 8)
         self.assertEqual({r["ResponseId"] for r in kept}, {"earlier", "next_day", "anonymous1", "anonymous2"})
         self.assertEqual(dict(excluded), {"staff": 1, "preview": 1, "no_consent": 1, "same_person_same_day_later_submission": 1})
+
+
+def completion(person, start, **fields):
+    record = dict(Email=person, participantemail="", StartDate=start, Finished="True",
+                  Status="IP Address", DistributionChannel="anonymous", fingerprintPeriod="Lunch",
+                  **{"Consent Form": "I consent to participate in this study."})
+    record.update(fields)
+    return record
+
+
+class ParticipationTests(unittest.TestCase):
+    def test_completion_filter_identity_normalization_and_raw_same_day_repeats(self):
+        rows = [completion(" Person@example.org ", "2026-11-02 12:00:00"),
+                completion("", "2026-11-02 12:01:00", participantemail="PERSON"),
+                completion("", "2026-11-02 12:02:00"),
+                completion("incomplete", "2026-11-02 12:00:00", Finished="False"),
+                completion("GROESSLI@example.org", "2026-11-02 12:00:00", Status="Survey Preview"),
+                completion("", "2026-11-02 12:00:00", participantemail="SHENGQ", Finished="False"),
+                completion("preview", "2026-11-02 12:00:00", DistributionChannel="preview"),
+                completion("nonconsenting", "2026-11-02 12:00:00", **{"Consent Form": "No"})]
+        stats = summarize_participation(rows)
+        self.assertEqual(stats["completed_submissions"], 3)
+        self.assertEqual(stats["unique_participant_ids"], 1)
+        self.assertEqual(stats["identified_completed_submissions"], 2)
+        self.assertEqual(stats["missing_identity_submissions"], 1)
+        self.assertEqual(stats["same_day_participants"], 1)
+        self.assertEqual(stats["extra_same_day_submissions"], 1)
+        self.assertEqual(stats["excluded"], {"staff": 2, "preview": 1, "no_consent": 1, "not_finished": 1})
+
+    def test_calendar_week_vs_rolling_window_and_exact_seven_day_boundary(self):
+        rows = [completion("boundary", "2026-11-01 23:00:00"),
+                completion("boundary", "2026-11-02 01:00:00"),
+                completion("seven_days", "2026-11-02 10:00:00"),
+                completion("seven_days", "2026-11-09 09:00:00"),
+                completion("year_boundary", "2026-12-31 10:00:00"),
+                completion("year_boundary", "2027-01-01 10:00:00")]
+        stats = summarize_participation(rows)
+        self.assertEqual(stats["repeat_participants"], 3)
+        self.assertEqual(stats["same_calendar_week_participants"], 1)
+        self.assertEqual(stats["different_day_same_week_participants"], 1)
+        self.assertEqual(stats["rolling_seven_day_participants"], 2)
+        self.assertEqual(stats["different_day_rolling_seven_day_participants"], 2)
+        self.assertEqual(stats["same_day_participants"], 0)
+
+    def test_repeat_breakdown_is_exhaustive_and_nonoverlapping(self):
+        rows = [completion("both", "2026-11-02 10:00:00"),
+                completion("both", "2026-11-02 11:00:00"),
+                completion("both", "2026-11-03 10:00:00"),
+                completion("day_only", "2026-11-02 10:00:00"),
+                completion("day_only", "2026-11-02 11:00:00"),
+                completion("week_only", "2026-11-02 10:00:00"),
+                completion("week_only", "2026-11-03 11:00:00"),
+                completion("neither", "2026-11-02 10:00:00"),
+                completion("neither", "2026-11-16 11:00:00")]
+        stats = summarize_participation(rows)
+        self.assertEqual(stats["repeat_participants"], 4)
+        for field in ["same_day_and_different_day_same_week", "same_day_without_different_day_same_week",
+                      "different_day_same_week_without_same_day", "repeats_without_same_day_or_different_day_same_week"]:
+            self.assertEqual(stats[field], 1, field)
+        self.assertEqual(stats["same_day_participants"], 2)
+        self.assertEqual(stats["same_calendar_week_participants"], 3)
+        self.assertEqual(stats["different_day_same_week_participants"], 2)
+
+    def test_timing_ties_include_anonymous_completions_and_unknown_period(self):
+        rows = [completion("a", "2026-11-02 12:00:00"),
+                completion("", "2026-11-03 12:00:00", fingerprintPeriod="")]
+        stats = summarize_participation(rows)
+        self.assertEqual(len(stats["timing_peaks"]["weekday"]), 2)
+        self.assertEqual(stats["timing_peaks"]["start_hour"][0]["count"], 2)
+        self.assertEqual(stats["timing_peaks"]["start_hour"][0]["percent_completions"], 100)
+        self.assertEqual(len(stats["timing_peaks"]["voucher_period"]), 2)
+
+    def test_empty_statistics_and_report_have_no_identifier_values(self):
+        empty = summarize_participation([])
+        self.assertEqual(empty["unique_participant_ids"], 0)
+        self.assertEqual(empty["timing_peaks"]["weekday"], [])
+        stats = summarize_participation([completion("sensitive-person@example.org", "2026-11-02 12:00:00")])
+        with tempfile.TemporaryDirectory() as tmp:
+            destination = Path(tmp)
+            write_participation_report(Path("survey.csv"), stats, destination)
+            report = (destination / "general_statistics.md").read_text(encoding="utf-8")
+            write_participation_report(Path("empty.csv"), empty, destination)
+            self.assertIn("No completed surveys", (destination / "general_statistics.md").read_text(encoding="utf-8"))
+        self.assertNotIn("sensitive-person", report)
+        self.assertNotIn("sensitive-person", json.dumps(stats))
+        self.assertIn("Unique normalized non-staff participant IDs", report)
 
 
 if __name__ == "__main__":

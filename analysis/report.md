@@ -4,6 +4,8 @@ Source: `2026-Grace-Hunt Library Survey_November 5, 2026_10.09.csv`.
 
 Retained **333 visits**, with **238 identified participants** and 7 visits without participant identity.
 
+See [general participation statistics](general_statistics.md) for completed-survey ID counts, the most frequent day/time, and repeat participation before same-day deduplication.
+
 ## Reading the results
 
 The shared post-processing rules exclude staff, previews, and nonconsenting records, then keep the earliest identified participant submission per local day. Repeated visits on different days count separately. These are descriptive results without participant weighting or sampling-exposure corrections.

@@ -5,6 +5,14 @@
 Run `python general_analysis.py` to analyze the cumulative November export and
 write `analysis/report.md`, 11 PNG figures under `analysis/plots/`, eight aggregate
 CSV tables under `analysis/tables/`, and `analysis/audit.json`.
+It also writes `analysis/general_statistics.md`: unique non-staff IDs with
+completed, consenting surveys; the most frequent weekday, start hour, voucher
+period, and combined day/time; and repeat participation before same-day
+deduplication. Calendar weeks run Monday-Sunday; rolling seven-calendar-day
+windows are reported separately. Same-day and different-day weekly repeats are
+distinguished, with an additional non-overlapping breakdown of repeat IDs.
+Completion requires `Finished=True` (or `1`). Unidentified submissions contribute
+to completion/timing counts but cannot contribute to unique-ID or repeat counts.
 Requires matplotlib and NumPy (`python -m pip install matplotlib numpy`).
 It reuses retention and validation rules from the adjacent `post_processing.py`;
 existing cleaned tables and spatial activity maps are not regenerated.

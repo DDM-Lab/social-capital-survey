@@ -498,8 +498,8 @@ def write_participation_report(source, stats, destination):
              "All repeat classifications use survey start dates. Same-week counts include same-day repeats; the different-day rows distinguish return visits.", "",
              "### Non-overlapping breakdown of repeat participants", "",
              markdown_table(["Pattern", "Unique IDs"], exclusive_rows), "",
-             f"These four categories sum to {repeated}. There are {stats['same_day_repeat_groups']} participant/date groups with same-day repeats, "
-             f"containing {stats['extra_same_day_submissions']} additional same-day submissions beyond the first in each group.", "",
+             f"These four categories sum to {repeated}. Participant/date groups with same-day repeats: **{stats['same_day_repeat_groups']}**. "
+             f"Additional same-day submissions beyond each group's first: **{stats['extra_same_day_submissions']}**.", "",
              "### Completed submissions per identifiable participant", "",
              markdown_table(["Submissions per ID", "Unique IDs"], [[r["completions"], r["participants"]] for r in stats["completion_frequency"]]), "",
              "## Relation to the question-level analysis", "",

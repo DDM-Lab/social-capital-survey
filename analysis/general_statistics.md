@@ -78,7 +78,7 @@ A calendar week runs Monday through Sunday, using the ISO week-year to handle ye
 | Both same-day repeats and different-day repeats within a calendar week | 0 |
 | Repeat participants with neither of those patterns (different calendar weeks only) | 23 |
 
-These four categories sum to 43. There are 1 participant/date groups with same-day repeats, containing 1 additional same-day submissions beyond the first in each group.
+These four categories sum to 43. Participant/date groups with same-day repeats: **1**. Additional same-day submissions beyond each group's first: **1**.
 
 ### Completed submissions per identifiable participant
 

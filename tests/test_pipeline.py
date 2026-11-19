@@ -32,7 +32,8 @@ class PipelineTests(unittest.TestCase):
                 "Activity duration#1_1_1": "-1", "Activity duration#2_1_1": "0",
                 "Group Num_1_1": "1.5", "Group Num_1_4": "Not Sure",
                 "Tablet Ident.": "#1: Tablet Near the Magazine Stand", "__js_MapEatingDrinking": "1,1;1,1"})
-            second = complete_record(StartDate="2026-11-02 13:00:00", ResponseId="response-b")
+            second = complete_record(StartDate="2026-11-02 13:00:00", ResponseId="response-b",
+                                     **{"Group Num_1_4": "N/A"})
             third = complete_record(StartDate="2026-11-09 12:00:00", ResponseId="response-c")
             unfinished = complete_record(Finished="False", ResponseId="unfinished")
             staff = complete_record(Email="groessli", participantemail="", ResponseId="staff")
@@ -47,6 +48,8 @@ class PipelineTests(unittest.TestCase):
             cleaned, audit = load_cleaned(root / "cleaned")
             tables, metadata = summarize(cleaned)
             self.assertEqual(tables, expected_tables)
+            self.assertEqual(next(r["count"] for r in tables["new_ideas_resources"]
+                                  if r["relationship"] == "acquaintance_classmate" and r["answer"] == "n/a"), 1)
             self.assertEqual(metadata, expected_meta)
             self.assertEqual(len(cleaned), 4)  # All repeats, including unfinished, remain.
             self.assertEqual(len((root / "cleaned" / "map_cells.csv").read_text().splitlines()), 2)

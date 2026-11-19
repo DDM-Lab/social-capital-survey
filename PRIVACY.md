@@ -4,7 +4,7 @@ Run the three-stage pipeline in [CLEANING.md](CLEANING.md):
 **protect IDs -> post-process -> analyze**.
 
 ```powershell
-python protect_ids.py --input "data/2026-Grace-Hunt Library Survey_November 5, 2026_10.09.csv" --apply
+python protect_ids.py --input "data/2026-Grace-Hunt Library Survey_November 19, 2026_10.15.csv" --apply
 ```
 
 - This **modifies the selected source CSV in place**. Omit `--apply` to preview.
@@ -29,7 +29,7 @@ python protect_ids.py --input "data/2026-Grace-Hunt Library Survey_November 5, 2
 Optional output check after analysis:
 
 ```powershell
-python audit_privacy.py --input "data/2026-Grace-Hunt Library Survey_November 5, 2026_10.09.csv"
+python audit_privacy.py --input "data/2026-Grace-Hunt Library Survey_November 19, 2026_10.15.csv"
 ```
 
 The audit checks `cleaned/` and `results/` for identifying columns, email patterns,

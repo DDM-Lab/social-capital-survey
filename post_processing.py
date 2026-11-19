@@ -173,7 +173,7 @@ def process(source, destination):
                 if raw and encounter[name] is None:
                     flag(vid, relationship + "." + name, "invalid_count")
             raw = d[f"Group Num_{group}_4"].strip().lower()
-            encounter["new_ideas_resources"] = {"yes": "yes", "no": "no", "not sure": "not_sure"}.get(raw)
+            encounter["new_ideas_resources"] = {"yes": "yes", "no": "no", "not sure": "not_sure", "n/a": "n/a"}.get(raw)
             if raw and encounter["new_ideas_resources"] is None:
                 flag(vid, relationship + ".new_ideas_resources", "ambiguous_category")
             encounters.append(encounter)

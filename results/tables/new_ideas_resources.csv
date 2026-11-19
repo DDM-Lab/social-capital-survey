@@ -1,16 +1,19 @@
 relationship,answer,count,total_visits,percent_visits
-acquaintance_classmate,yes,57,334,17.065868263473053
-acquaintance_classmate,no,206,334,61.67664670658683
-acquaintance_classmate,not sure,64,334,19.161676646706585
-acquaintance_classmate,missing,7,334,2.095808383233533
-acquaintance_classmate,invalid,0,334,0.0
-nonclose_friend,yes,33,334,9.880239520958083
-nonclose_friend,no,231,334,69.16167664670658
-nonclose_friend,not sure,63,334,18.862275449101798
-nonclose_friend,missing,7,334,2.095808383233533
-nonclose_friend,invalid,0,334,0.0
-close_friend,yes,80,334,23.952095808383234
-close_friend,no,192,334,57.48502994011976
-close_friend,not sure,55,334,16.46706586826347
-close_friend,missing,7,334,2.095808383233533
-close_friend,invalid,0,334,0.0
+acquaintance_classmate,yes,65,612,10.620915032679738
+acquaintance_classmate,no,242,612,39.54248366013072
+acquaintance_classmate,not sure,74,612,12.091503267973856
+acquaintance_classmate,n/a,218,612,35.62091503267974
+acquaintance_classmate,missing,13,612,2.1241830065359477
+acquaintance_classmate,invalid,0,612,0.0
+nonclose_friend,yes,43,612,7.026143790849673
+nonclose_friend,no,269,612,43.95424836601307
+nonclose_friend,not sure,71,612,11.601307189542483
+nonclose_friend,n/a,216,612,35.294117647058826
+nonclose_friend,missing,13,612,2.1241830065359477
+nonclose_friend,invalid,0,612,0.0
+close_friend,yes,104,612,16.99346405228758
+close_friend,no,232,612,37.908496732026144
+close_friend,not sure,58,612,9.477124183006536
+close_friend,n/a,205,612,33.49673202614379
+close_friend,missing,13,612,2.1241830065359477
+close_friend,invalid,0,612,0.0

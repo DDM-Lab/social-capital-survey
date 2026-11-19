@@ -129,7 +129,7 @@ def summarize(records):
                                missing_n=answers.count(""),
                                invalid_n=sum(bool(a) and number(a, integer=True) is None for a in answers)))
         answers = [r.get(f"Group Num_{group}_4", "").strip().lower() for r in records]
-        categories = ["yes", "no", "not sure"]
+        categories = ["yes", "no", "not sure", "n/a"]
         frequencies = collections.Counter(answers)
         for category in categories + ["missing", "invalid"]:
             count = (frequencies[""] if category == "missing" else
@@ -318,10 +318,10 @@ def create_plots(tables, metadata, destination, dpi):
          "Totals count reported people across visits, not distinct individuals. Zeros included; missing/invalid counts excluded. Valid n in CSV.")
 
     fig, ax = plt.subplots(figsize=(12, 6))
-    answers = ["yes", "no", "not sure", "missing", "invalid"]
+    answers = ["yes", "no", "not sure", "n/a", "missing", "invalid"]
     lookup = {(r["relationship"], r["answer"]): r["count"] for r in tables["new_ideas_resources"]}
     bottom = np.zeros(3)
-    for answer, color in zip(answers, ["#228833", "#cc6677", "#eecc66", "#bbbbbb", "#555555"]):
+    for answer, color in zip(answers, ["#228833", "#cc6677", "#eecc66", "#88ccee", "#bbbbbb", "#555555"]):
         values = np.array([lookup[r, answer] for r in RELATIONSHIPS])
         bars = ax.bar(x, values, bottom=bottom, color=color, label=answer.capitalize())
         ax.bar_label(bars, labels=[str(v) if v else "" for v in values], label_type="center")

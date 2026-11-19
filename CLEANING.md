@@ -1,13 +1,13 @@
 # Cleaning and analysis
 
-The pipeline has three explicit steps. Use the cumulative November 5 export on
-its own; do not combine it with overlapping October or November 19 exports.
+The pipeline has three explicit steps. Use the cumulative November 19 export on
+its own; do not combine it with overlapping October or November 5 exports.
 Install plotting dependencies in your active environment with
 `python -m pip install -r requirements.txt`.
 
 ```powershell
-python protect_ids.py --input "data/2026-Grace-Hunt Library Survey_November 5, 2026_10.09.csv" --apply
-python post_processing.py "data/2026-Grace-Hunt Library Survey_November 5, 2026_10.09.csv"
+python protect_ids.py --input "data/2026-Grace-Hunt Library Survey_November 19, 2026_10.15.csv" --apply
+python post_processing.py "data/2026-Grace-Hunt Library Survey_November 19, 2026_10.15.csv"
 python analysis.py
 ```
 
@@ -52,6 +52,7 @@ tracked separately (choice `5` is an inferred mapping). Duration means use selec
 activities only; error bars are one sample SD. Missingness and sample sizes are
 exported. Encounter totals count reported people, not distinct people. Maps count
 cell selections, not occupancy or dwell time. Blank maps are not zero occupancy.
+Explicit N/A new-ideas answers are retained as their own category.
 Participation counts require `Finished=True` or `1`; other analyses do not.
 Repeated submissions remain separate and do not establish distinct physical visits.
 

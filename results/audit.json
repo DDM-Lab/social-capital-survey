@@ -1,5 +1,5 @@
 {
-  "retained_visits": 334,
+  "retained_visits": 612,
   "periods": [
     "Morning",
     "Lunch",
@@ -8,53 +8,53 @@
     "Off Hours",
     "Unknown"
   ],
-  "retained_identified_participants": 238,
-  "missing_identity_visits": 7,
-  "missing_activity_answers": 7,
+  "retained_identified_participants": 372,
+  "missing_identity_visits": 13,
+  "missing_activity_answers": 13,
   "legacy_planned_meeting_visits": 4,
   "unknown_activity_visits": 0,
   "duration_details_without_selection": 0,
-  "source_file": "2026-Grace-Hunt Library Survey_November 5, 2026_10.09.csv",
-  "input_records": 397,
+  "source_file": "2026-Grace-Hunt Library Survey_November 19, 2026_10.15.csv",
+  "input_records": 692,
   "excluded": {
-    "staff": 50,
+    "staff": 67,
     "no_consent": 13
   },
   "participation_statistics": {
-    "input_records": 397,
+    "input_records": 692,
     "excluded": {
-      "staff": 50,
+      "staff": 67,
       "no_consent": 13
     },
-    "completed_submissions": 334,
-    "unique_participant_ids": 238,
-    "identified_completed_submissions": 327,
-    "missing_identity_submissions": 7,
-    "repeat_participants": 43,
-    "extra_identified_submissions": 89,
-    "same_day_participants": 1,
-    "same_day_repeat_groups": 1,
-    "extra_same_day_submissions": 1,
-    "same_calendar_week_participants": 20,
-    "different_day_same_week_participants": 19,
-    "same_day_and_different_day_same_week": 0,
-    "same_day_without_different_day_same_week": 1,
-    "different_day_same_week_without_same_day": 19,
-    "repeats_without_same_day_or_different_day_same_week": 23,
-    "rolling_seven_day_participants": 30,
-    "different_day_rolling_seven_day_participants": 29,
+    "completed_submissions": 612,
+    "unique_participant_ids": 372,
+    "identified_completed_submissions": 599,
+    "missing_identity_submissions": 13,
+    "repeat_participants": 86,
+    "extra_identified_submissions": 227,
+    "same_day_participants": 5,
+    "same_day_repeat_groups": 5,
+    "extra_same_day_submissions": 5,
+    "same_calendar_week_participants": 48,
+    "different_day_same_week_participants": 45,
+    "same_day_and_different_day_same_week": 2,
+    "same_day_without_different_day_same_week": 3,
+    "different_day_same_week_without_same_day": 43,
+    "repeats_without_same_day_or_different_day_same_week": 38,
+    "rolling_seven_day_participants": 59,
+    "different_day_rolling_seven_day_participants": 56,
     "completion_frequency": [
       {
         "completions": 1,
-        "participants": 195
+        "participants": 286
       },
       {
         "completions": 2,
-        "participants": 24
+        "participants": 43
       },
       {
         "completions": 3,
-        "participants": 9
+        "participants": 18
       },
       {
         "completions": 4,
@@ -62,7 +62,7 @@
       },
       {
         "completions": 5,
-        "participants": 2
+        "participants": 8
       },
       {
         "completions": 6,
@@ -70,10 +70,26 @@
       },
       {
         "completions": 7,
-        "participants": 1
+        "participants": 4
       },
       {
         "completions": 8,
+        "participants": 2
+      },
+      {
+        "completions": 9,
+        "participants": 1
+      },
+      {
+        "completions": 11,
+        "participants": 1
+      },
+      {
+        "completions": 12,
+        "participants": 2
+      },
+      {
+        "completions": 13,
         "participants": 1
       }
     ],
@@ -81,106 +97,111 @@
       "weekday": [
         {
           "category": "Tuesday",
-          "count": 78,
-          "percent_completions": 23.353293413173652
+          "count": 125,
+          "percent_completions": 20.424836601307188
         }
       ],
       "voucher_period": [
         {
           "category": "Lunch",
-          "count": 144,
-          "percent_completions": 43.11377245508982
+          "count": 276,
+          "percent_completions": 45.09803921568628
         }
       ],
       "start_hour": [
         {
           "category": "12:00-13:00",
-          "count": 45,
-          "percent_completions": 13.47305389221557
+          "count": 82,
+          "percent_completions": 13.398692810457517
         }
       ],
       "weekday_voucher_period": [
         {
           "category": "Tuesday / Lunch",
-          "count": 38,
-          "percent_completions": 11.377245508982035
+          "count": 56,
+          "percent_completions": 9.15032679738562
         }
       ],
       "weekday_start_hour": [
         {
           "category": "Tuesday / 14:00-15:00",
-          "count": 11,
-          "percent_completions": 3.2934131736526946
+          "count": 17,
+          "percent_completions": 2.7777777777777777
+        },
+        {
+          "category": "Thursday / 17:00-18:00",
+          "count": 17,
+          "percent_completions": 2.7777777777777777
         }
       ]
     },
     "weekday_counts": [
       {
         "category": "Monday",
-        "count": 50,
-        "percent_completions": 14.970059880239521
+        "count": 99,
+        "percent_completions": 16.176470588235293
       },
       {
         "category": "Tuesday",
-        "count": 78,
-        "percent_completions": 23.353293413173652
+        "count": 125,
+        "percent_completions": 20.424836601307188
       },
       {
         "category": "Wednesday",
-        "count": 62,
-        "percent_completions": 18.562874251497007
+        "count": 116,
+        "percent_completions": 18.954248366013072
       },
       {
         "category": "Thursday",
-        "count": 65,
-        "percent_completions": 19.461077844311376
+        "count": 121,
+        "percent_completions": 19.77124183006536
       },
       {
         "category": "Friday",
-        "count": 47,
-        "percent_completions": 14.071856287425149
+        "count": 87,
+        "percent_completions": 14.215686274509803
       },
       {
         "category": "Saturday",
-        "count": 16,
-        "percent_completions": 4.790419161676646
+        "count": 32,
+        "percent_completions": 5.228758169934641
       },
       {
         "category": "Sunday",
-        "count": 16,
-        "percent_completions": 4.790419161676646
+        "count": 32,
+        "percent_completions": 5.228758169934641
       }
     ],
     "voucher_period_counts": [
       {
         "category": "Morning",
-        "count": 41,
-        "percent_completions": 12.275449101796408
+        "count": 81,
+        "percent_completions": 13.235294117647058
       },
       {
         "category": "Lunch",
-        "count": 144,
-        "percent_completions": 43.11377245508982
+        "count": 276,
+        "percent_completions": 45.09803921568628
       },
       {
         "category": "Dinner",
-        "count": 117,
-        "percent_completions": 35.02994011976048
+        "count": 205,
+        "percent_completions": 33.49673202614379
       },
       {
         "category": "Late Night",
-        "count": 24,
-        "percent_completions": 7.18562874251497
+        "count": 36,
+        "percent_completions": 5.882352941176471
       },
       {
         "category": "Off Hours",
         "count": 1,
-        "percent_completions": 0.2994011976047904
+        "percent_completions": 0.16339869281045752
       },
       {
         "category": "Unknown",
-        "count": 7,
-        "percent_completions": 2.095808383233533
+        "count": 13,
+        "percent_completions": 2.1241830065359477
       }
     ]
   },

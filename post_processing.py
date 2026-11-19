@@ -91,14 +91,10 @@ def load_retained_records(source):
 
 
 def process(source, destination):
+    source, destination = Path(source).resolve(), Path(destination).resolve()
+    if source.is_relative_to(destination):
+        raise ValueError("Source CSV must be outside the cleaned output folder.")
     records, kept, excluded = load_retained_records(source)
-    # Compute all report statistics once from the original and eligible records.
-    from general_analysis import summarize, summarize_participation
-    tables, metadata = summarize(kept)
-    metadata.update(source_file=source.name, input_records=len(records), excluded=dict(excluded),
-                    activity_percentage_basis="Selections across the nine listed activities within group",
-                    duration_error_bars="One sample standard deviation; not a confidence interval",
-                    participation_statistics=summarize_participation(records))
     # Fresh random IDs on each run; no identity mapping is exported.
     people = sorted({d["_person"] for d in kept if d["_person"]})
     shuffled = list(range(1, len(people) + 1))
@@ -109,13 +105,23 @@ def process(source, destination):
     def flag(visit, field, issue):
         issues.append(dict(visit_id=visit, field=field, issue=issue))
 
+    # An undisclosed Monday origin preserves day/week gaps without exporting dates.
+    first_day = min((d["_time"].date() for d in kept), default=dt.date(2000, 1, 3))
+    monday_origin = first_day - dt.timedelta(days=first_day.weekday())
     for index, d in enumerate(kept, 1):
         vid = f"v{index:04d}"
         t = d["_time"]
         visit = dict(visit_id=vid, participant_id=person_ids.get(d["_person"], ""),
                      weekday=t.strftime("%A"), weekday_number=t.weekday(), hour=t.hour,
                      time_period=d["fingerprintPeriod"].strip() or "Unknown",
-                     survey_duration_seconds=number(d["Duration (in seconds)"], True))
+                     survey_duration_seconds=number(d["Duration (in seconds)"], True),
+                     day_index=(t.date() - monday_origin).days,
+                     finished=int(d.get("Finished", "").strip().lower() in {"true", "1"}),
+                     tablet={"#1: Tablet Near the Magazine Stand": "tablet_1",
+                             "#2: Tablet Near De Fer's waiting area": "tablet_2"}.get(
+                                 d.get("Tablet Ident.", "").strip(),
+                                 "other" if d.get("Tablet Ident.", "").strip() else "missing"),
+                     activity_answered=int(bool(d.get("Activity selection", "").strip())))
         if not d["_person"]:
             flag(vid, "participant_id", "missing_identity_cannot_check_repeat_visits")
         for i, name in enumerate(SENTIMENTS, 1):
@@ -173,29 +179,15 @@ def process(source, destination):
             encounters.append(encounter)
 
     destination.mkdir(parents=True, exist_ok=True)
-    (destination / "analysis_summary.json").write_text(
-        json.dumps(dict(schema_version=2, tables=tables, metadata=metadata), indent=2),
-        encoding="utf-8")
-    write_table(destination, "visits.csv", visits, ["visit_id", "participant_id", "weekday", "weekday_number", "hour", "time_period", "survey_duration_seconds"] + SENTIMENTS)
+    write_table(destination, "visits.csv", visits, ["visit_id", "participant_id", "weekday", "weekday_number", "hour", "time_period", "survey_duration_seconds", "day_index", "finished", "tablet", "activity_answered"] + SENTIMENTS)
     write_table(destination, "activities.csv", activities, ["visit_id", "activity", "selected", "planned_minutes", "actual_minutes"])
     write_table(destination, "map_cells.csv", cells, ["visit_id", "activity", "column", "row", "x_center_px", "y_center_px"])
     write_table(destination, "encounters.csv", encounters, ["visit_id", "relationship", "entered_with", "met", "ran_into", "new_ideas_resources"])
     write_table(destination, "quality_flags.csv", issues, ["visit_id", "field", "issue"])
-    by_visit = {v["visit_id"]: v for v in visits}
-    denominators = collections.Counter((v["weekday"], v["time_period"]) for v in visits)
-    counts = collections.Counter((by_visit[a["visit_id"]]["weekday"], by_visit[a["visit_id"]]["time_period"], a["activity"]) for a in activities if a["selected"])
-    summary = [dict(weekday=day, time_period=period, activity=a[0], visits_reporting=counts[day, period, a[0]], total_visits=n, share_visits=counts[day, period, a[0]] / n) for (day, period), n in sorted(denominators.items()) for a in ACTIVITIES]
-    write_table(destination, "activity_by_weekday_period.csv", summary, ["weekday", "time_period", "activity", "visits_reporting", "total_visits", "share_visits"])
-    frequency = collections.Counter((c["activity"], c["column"], c["row"]) for c in cells)
-    heatmap = [dict(activity=a, column=x, row=y, visits_selecting_cell=n) for (a, x, y), n in sorted(frequency.items())]
-    write_table(destination, "map_cell_frequency.csv", heatmap, ["activity", "column", "row", "visits_selecting_cell"])
-    timed_frequency = collections.Counter((by_visit[c["visit_id"]]["weekday"], by_visit[c["visit_id"]]["time_period"], c["activity"], c["column"], c["row"]) for c in cells)
-    timed_heatmap = [dict(weekday=day, time_period=period, activity=a, column=x, row=y, visits_selecting_cell=n) for (day, period, a, x, y), n in sorted(timed_frequency.items())]
-    write_table(destination, "map_cell_frequency_by_weekday_period.csv", timed_heatmap, ["weekday", "time_period", "activity", "column", "row", "visits_selecting_cell"])
-    audit = dict(source_file=source.name, input_records=len(records), excluded=dict(excluded), retained_visits=len(visits),
+    audit = dict(schema_version=3, source_file=source.name, input_records=len(records), excluded=dict(excluded), retained_visits=len(visits),
                  retained_identified_participants=len(people), quality_flags=len(issues),
                  grid=dict(columns=30, rows=24, image_width=1911, image_height=1467),
-                 time_basis="Survey start in America/New_York; time_period from voucher fingerprintPeriod")
+                 time_basis="Survey start in America/New_York; day_index from an undisclosed Monday; time_period from voucher fingerprintPeriod")
     (destination / "audit.json").write_text(json.dumps(audit, indent=2), encoding="utf-8")
     print(json.dumps(audit, indent=2))
 

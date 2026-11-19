@@ -91,11 +91,11 @@ def replace_export(path, original, rows):
             temporary.unlink(missing_ok=True)
 
 
-def protect_directory(data_dir, key_path, apply=False):
+def protect_directory(data_dir, key_path, apply=False, source_file=None):
     data_dir = data_dir.resolve()
     if not data_dir.is_dir():
         raise ValueError("Data directory does not exist.")
-    paths = sorted(data_dir.rglob("*.csv"))
+    paths = [Path(source_file).absolute()] if source_file else sorted(data_dir.rglob("*.csv"))
     if not paths:
         raise ValueError("No CSV files found in the data directory.")
     exports = []
@@ -153,13 +153,15 @@ def protect_directory(data_dir, key_path, apply=False):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--data-dir", type=Path, default=DEFAULT_DATA)
+    parser.add_argument("--input", type=Path, help="Protect only this CSV, using its folder key")
     parser.add_argument("--key-file", type=Path,
                         help="Existing study key; default: data directory/.participant-id.key")
     parser.add_argument("--apply", action="store_true", help="Replace CSVs in place; otherwise preview counts only")
     args = parser.parse_args()
-    key_path = args.key_file or args.data_dir / KEY_NAME
+    data_dir = args.input.absolute().parent if args.input else args.data_dir
+    key_path = args.key_file or data_dir / KEY_NAME
     try:
-        summaries = protect_directory(args.data_dir, key_path, apply=args.apply)
+        summaries = protect_directory(data_dir, key_path, apply=args.apply, source_file=args.input)
     except (OSError, UnicodeError, ValueError, csv.Error) as error:
         parser.exit(1, f"Protection failed: {error}\n")
     print("Applied protection." if args.apply else "Preview only: no files or keys changed.")

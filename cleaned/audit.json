@@ -1,12 +1,12 @@
 {
+  "schema_version": 3,
   "source_file": "2026-Grace-Hunt Library Survey_November 5, 2026_10.09.csv",
   "input_records": 397,
   "excluded": {
     "staff": 50,
-    "no_consent": 13,
-    "same_person_same_day_later_submission": 1
+    "no_consent": 13
   },
-  "retained_visits": 333,
+  "retained_visits": 334,
   "retained_identified_participants": 238,
   "quality_flags": 26,
   "grid": {
@@ -15,5 +15,5 @@
     "image_width": 1911,
     "image_height": 1467
   },
-  "time_basis": "Survey start in America/New_York; time_period from voucher fingerprintPeriod"
+  "time_basis": "Survey start in America/New_York; day_index from an undisclosed Monday; time_period from voucher fingerprintPeriod"
 }

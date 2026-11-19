@@ -1,0 +1,10 @@
+relationship,encounter_type,total_people,valid_n,missing_n,invalid_n
+acquaintance_classmate,entered_with,133,327,7,0
+acquaintance_classmate,met,130,327,7,0
+acquaintance_classmate,ran_into,192,327,7,0
+nonclose_friend,entered_with,49,327,7,0
+nonclose_friend,met,115,327,7,0
+nonclose_friend,ran_into,90,327,7,0
+close_friend,entered_with,112,327,7,0
+close_friend,met,67,327,7,0
+close_friend,ran_into,87,327,7,0

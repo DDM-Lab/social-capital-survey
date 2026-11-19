@@ -1,62 +1,38 @@
-# Privacy workflow
+# Privacy
 
-Keep a restricted backup of your original Qualtrics exports. Set `INPUT_FOLDER`
-near the top of `privacy_main.py` (default: this repository's `data/`), then run:
-
-```powershell
-python privacy_main.py
-```
-
-Or override the folder without editing the script:
+Run the three-stage pipeline in [CLEANING.md](CLEANING.md):
+**protect IDs -> post-process -> analyze**.
 
 ```powershell
-python privacy_main.py --data-dir "C:\path\to\exports"
+python protect_ids.py --input "data/2026-Grace-Hunt Library Survey_November 5, 2026_10.09.csv" --apply
 ```
 
-The runner finds CSVs recursively, validates them, generates cleaned tables,
-audits generated artifacts while raw IDs are available, replaces source email
-IDs, and audits again. Every CSV must be a three-header-row Qualtrics export.
-Audit findings stop the procedure; review the report before sharing.
+- This **modifies the selected source CSV in place**. Omit `--apply` to preview.
+  To process every CSV recursively in a folder, use `--data-dir "PATH"` instead
+  of `--input`. Exports must have the three Qualtrics header rows.
+- Only non-staff `Email`, `participantemail`, and `RecipientEmail` cells change.
+  HMAC-SHA-256 creates stable pseudonyms using `<source-folder>/.participant-id.key`.
+  Securely back up the original exports and key. Reuse the key for future exports;
+  keep it separate from shared data. No decrypt command or identity crosswalk exists.
+- Normalization ignores case, surrounding whitespace, and email domains. Staff IDs
+  and other source fields remain readable. Source exports still contain sensitive
+  information and must remain private.
+- Post-processing removes identifying fields and free text from cleaned outputs.
+  Random participant keys change each run. Relative days, weekday/hour, tablet
+  categories, and attribute combinations can still identify people; this does not
+  guarantee anonymity. Keep cleaned data restricted.
+- `data/` and its key are Git-ignored, which does not encrypt or untrack files.
+  Custom paths need their own controls/exclusions. On Windows, key permissions
+  inherit the folder's access controls. Batch replacement is not transactional;
+  recover partial runs with the same key.
 
-- **Source CSVs are modified in place.** Non-staff `Email`, `participantemail`,
-  and `RecipientEmail` cells become stable HMAC-SHA-256 pseudonyms. Staff IDs,
-  blanks, and other fields remain unchanged.
-- **Separate cleaned files** go to `cleaned/<relative-export-filename.csv>/`.
-  Re-running replaces these tables. Original identifiers, IP/geolocation, voucher
-  details, exact dates, and free text are excluded. Random participant keys change
-  each run and are independent across exports; do not join exports on these keys.
-- **Securely back up `<input-folder>/.participant-id.key`.** Reuse it for future
-  exports and keep it separate from shared data. There is no decrypt command or
-  identity crosswalk. ID normalization ignores case, whitespace, and email domains.
-
-This is pseudonymization, not guaranteed anonymity. Source exports still contain
-sensitive fields; keep them private. Combinations of cleaned attributes may also
-identify people. Audits inspect text, CSV columns, and PNG metadata, but do not
-check rendered image text, backups, Git history, or identification by inference.
-Already-protected exports cannot be compared against their original bare IDs.
-
-`data/` and its key are Git-ignored; that does not encrypt files or remove tracked
-data. Custom input folders need their own access controls and Git exclusions.
-Windows key permissions inherit the folder's access controls. Failures can leave
-partial outputs or some sources protected; correct the issue and rerun with the
-same key.
-
-For preview only: `python protect_ids.py` (no files or keys changed).
-See [CLEANING.md](CLEANING.md) for cleaning rules and table definitions.
-
-## Analysis after cleaning
-
-The pipeline is **source exports -> cleaning and aggregation -> reports and maps**.
-Cleaning also saves `analysis_summary.json`, containing aggregate statistics only,
-including participation counts for all eligible repeat submissions. No daily
-deduplication is applied.
+Optional output check after analysis:
 
 ```powershell
-python general_analysis.py "cleaned/your-export.csv"
-python plot_activity_map.py --cells "cleaned/your-export.csv/map_cells.csv" --visits "cleaned/your-export.csv/visits.csv"
+python audit_privacy.py --input "data/2026-Grace-Hunt Library Survey_November 5, 2026_10.09.csv"
 ```
 
-General analysis reads saved aggregates; maps read cleaned tables. Neither repeats
-source cleaning. Use the cumulative November export alone for the main analysis.
-Regenerate cleaned outputs after this update to retain same-day repeats and create
-the current saved summary; older summaries are rejected by the analysis command.
+The audit checks `cleaned/` and `results/` for identifying columns, email patterns,
+known raw IDs, and PNG text metadata. With already-protected references, original
+bare IDs cannot be checked. It does not inspect rendered image text, backups, Git
+history, or identity inference. Audit findings require review before sharing.

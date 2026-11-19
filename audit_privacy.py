@@ -57,9 +57,9 @@ def png_text(blob):
     return "\n".join(texts)
 
 
-def reference_ids(data_dir):
+def reference_ids(data_dir, reference_file=None):
     identifiers = set()
-    for path in data_dir.rglob("*.csv"):
+    for path in ([reference_file] if reference_file else data_dir.rglob("*.csv")):
         _, rows, columns = read_export(path)
         for row in rows[3:]:
             for column in columns:
@@ -72,13 +72,13 @@ def reference_ids(data_dir):
     return identifiers
 
 
-def audit(root=ROOT, data_dir=DEFAULT_DATA):
+def audit(root=ROOT, data_dir=DEFAULT_DATA, reference_file=None):
     if not data_dir.is_dir() or not any(data_dir.rglob("*.csv")):
         raise ValueError("Reference exports are missing; specify --data-dir containing the study exports.")
-    identifiers = reference_ids(data_dir)
+    identifiers = reference_ids(data_dir, reference_file)
     known = (re.compile(r"(?<![\w])(?:" + "|".join(re.escape(v) for v in sorted(identifiers)) + r")(?![\w])", re.I)
              if identifiers else None)
-    paths = {path for folder in ("cleaned", "analysis", "plots")
+    paths = {path for folder in ("cleaned", "results")
              for path in (root / folder).rglob("*") if path.is_file()}
     if (root / "activity_heatmap.html").is_file():
         paths.add(root / "activity_heatmap.html")
@@ -127,10 +127,11 @@ def audit(root=ROOT, data_dir=DEFAULT_DATA):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--data-dir", type=Path, default=DEFAULT_DATA)
+    parser.add_argument("--input", type=Path, help="Use only this CSV as the reference export")
     args = parser.parse_args()
     try:
-        result = audit(data_dir=args.data_dir)
-    except (OSError, UnicodeError, ValueError, csv.Error):
+        result = audit(data_dir=args.input.parent if args.input else args.data_dir, reference_file=args.input)
+    except (OSError, UnicodeError, ValueError, csv.Error) as error:
         parser.exit(1, f"Audit failed: {type(error).__name__}; check reference exports and paths.\n")
     print(json.dumps(result, indent=2))
     raise SystemExit(bool(result["issues"]))

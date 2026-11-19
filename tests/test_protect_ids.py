@@ -6,7 +6,7 @@ import tempfile
 import unittest
 
 from audit_privacy import audit
-from general_analysis import summarize_participation
+from analysis import summarize_participation
 from post_processing import load_retained_records
 from protect_ids import KEY_NAME, is_pseudonym, protect_directory, pseudonymize
 

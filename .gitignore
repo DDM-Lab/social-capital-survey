@@ -1,2 +1,7 @@
-/2026-Grace-Hunt Library Survey_October 21, 2026_16.38.csv
-/2026-Grace-Hunt Library Survey_November 5, 2026_10.09.csv
+/data/
+
+# Keep older exports outside data/ private as well.
+2026-Grace-Hunt Library Survey_*.csv
+
+__pycache__/
+*.py[cod]

@@ -113,8 +113,11 @@ class AnalysisTests(unittest.TestCase):
                 writer.writerows(rows)
             raw, kept, excluded = load_retained_records(source)
         self.assertEqual(len(raw), 8)
-        self.assertEqual({r["ResponseId"] for r in kept}, {"earlier", "next_day", "anonymous1", "anonymous2"})
-        self.assertEqual(dict(excluded), {"staff": 1, "preview": 1, "no_consent": 1, "same_person_same_day_later_submission": 1})
+        self.assertEqual(len(kept), 5)
+        self.assertEqual([r["ResponseId"] for r in kept if r["Email"] == "person"],
+                         ["earlier", "later", "next_day"])
+        self.assertEqual({r["ResponseId"] for r in kept}, {"earlier", "later", "next_day", "anonymous1", "anonymous2"})
+        self.assertEqual(dict(excluded), {"staff": 1, "preview": 1, "no_consent": 1})
 
 
 def completion(person, start, **fields):

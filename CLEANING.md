@@ -2,22 +2,28 @@
 
 ## General survey analysis
 
-Run `python general_analysis.py` to analyze the cumulative November export and
+Keep source exports in the ignored `data/` directory. See [PRIVACY.md](PRIVACY.md)
+for the non-team ID protection script, private key, and output privacy audit.
+
+Run `python privacy_main.py` first to clean each export and save its aggregates.
+Then run `python general_analysis.py` to report on the cleaned cumulative November export and
 write `analysis/report.md`, 11 PNG figures under `analysis/plots/`, eight aggregate
 CSV tables under `analysis/tables/`, and `analysis/audit.json`.
 It also writes `analysis/general_statistics.md`: unique non-staff IDs with
 completed, consenting surveys; the most frequent weekday, start hour, voucher
-period, and combined day/time; and repeat participation before same-day
-deduplication. Calendar weeks run Monday-Sunday; rolling seven-calendar-day
+period, and combined day/time; and repeat participation including same-day
+repeat submissions. Calendar weeks run Monday-Sunday; rolling seven-calendar-day
 windows are reported separately. Same-day and different-day weekly repeats are
 distinguished, with an additional non-overlapping breakdown of repeat IDs.
 Completion requires `Finished=True` (or `1`). Unidentified submissions contribute
 to completion/timing counts but cannot contribute to unique-ID or repeat counts.
 Requires matplotlib and NumPy (`python -m pip install matplotlib numpy`).
-It reuses retention and validation rules from the adjacent `post_processing.py`;
-existing cleaned tables and spatial activity maps are not regenerated.
+It reads `analysis_summary.json` from the cleaned export folder; it does not
+reopen source exports, repeat cleaning, or regenerate spatial maps. Participation
+statistics are computed during cleaning including all repeat submissions and saved only
+as aggregates, preserving repeat counts without identities or exact dates.
 An alternative export/output folder can be specified with
-`python general_analysis.py "survey.csv" --output-dir analysis_other --dpi 180`.
+`python general_analysis.py "cleaned/export.csv" --output-dir analysis_other --dpi 180`.
 
 The figures cover tablet counts (including missing answers), separate activity
 frequency and overall percentage charts, activity percentages by weekday and
@@ -41,9 +47,12 @@ and missingness are exported for interpretation. Modal sentiment ties are preser
 Run `python plot_activity_map.py`, then open `activity_heatmap.html` in a browser.
 The standalone file embeds the original PNG and cleaned selections; it needs no plotting packages, server, or network. Toggle activities, filter weekday/time period, switch between colored point clusters and grid heatmaps, hover for counts, and export the current overlay as SVG. Each activity's peak cell is labeled. Isolate activities to inspect overlaps. Point area scales with visit count; heatmap opacity increases with visit count. Both modes use a common maximum for the current filter. These are discrete cell selection frequencies, not smoothed density estimates or dwell times.
 
+For runner outputs, replace `cleaned/` in plotting paths with the chosen
+`cleaned/<export-filename.csv>/` folder.
+
 Optional paths: `python plot_activity_map.py --cells cleaned/map_cells.csv --visits cleaned/visits.csv --map survey_cad_full_labelled_3.png --output activity_heatmap.html`.
 
-Run `python post_processing.py "2026-Grace-Hunt Library Survey_November 5, 2026_10.09.csv" --output-dir cleaned`.
+Run `python post_processing.py "data/2026-Grace-Hunt Library Survey_November 5, 2026_10.09.csv" --output-dir cleaned`.
 Requires only Python's standard library. The source CSV is never modified.
 The November export is cumulative; process it on its own rather than combining it with October.
 After processing, rerun `python plot_activity_map.py` and
@@ -56,11 +65,17 @@ to the plotting scripts.
 
 ## Cleaning rules
 
-Exclude the four staff IDs (case insensitive, accepting bare IDs or email addresses), previews, and records without affirmative consent. Exclusion categories are mutually exclusive, with staff checked first. Keep the earliest survey start per identified participant per local calendar day; review this policy if the first submission was a test or correction. Different-day visits remain eligible.
+Exclude the four staff IDs (case insensitive, accepting bare IDs or email addresses), previews, and records without affirmative consent. Exclusion categories are mutually exclusive, with staff checked first. Retain every remaining submission, including multiple submissions by the same person on the same day. No submission deduplication is applied. Repeat counts describe submissions and do not establish distinct physical visits.
+
+`protect_ids.py` preserves those staff ID cells and replaces non-team IDs with
+stable keyed pseudonyms. Both unprotected and protected source exports work with
+the existing filters. Use the same private key for all exports so repeated-person
+matching stays consistent. Never combine protected and unprotected exports for
+cross-export matching; protect every export first.
 
 Remove original identifiers, response IDs, voucher codes, IP/geolocation, tablet location, exact dates/timestamps, and all free text from exported tables. Free text can contain names or identifying details and needs separate manual redaction before qualitative analysis. Anonymous participant keys preserve repeated-visit linkage, are randomly reassigned each run, and have no exported identity crosswalk. This reduces identification risk but does not guarantee anonymity against outside information. Treat the output as research data with appropriate access controls.
 
-Use survey start time for weekday/hour (Eastern time). Both the October `M/D/YYYY HH:MM` and November `YYYY-MM-DD HH:MM:SS` export formats are accepted, with optional seconds in either format. Seconds, when present, are retained internally when choosing the earliest same-day submission. The time period is the original voucher period; its clock boundaries are not inferred, and it can differ from the start hour near a boundary. Do not infer visit duration from survey completion time.
+Use survey start time for weekday/hour (Eastern time). Both the October `M/D/YYYY HH:MM` and November `YYYY-MM-DD HH:MM:SS` export formats are accepted, with optional seconds in either format. Seconds, when present, are retained internally for chronological ordering; no submissions are removed based on time. The time period is the original voucher period; its clock boundaries are not inferred, and it can differ from the start hour near a boundary. Do not infer visit duration from survey completion time.
 
 Map activity choice `5` to `planned_meeting`, based on its exact correspondence with the seven planned-meeting map/reason records. This is a documented inference pending survey-definition confirmation. No planned-meeting duration is available. Absence after October 8 may reflect a survey revision; absence should not automatically be interpreted as behavioral change.
 
@@ -82,6 +97,7 @@ Join tables using `visit_id`; use `participant_id` for repeated-person analysis.
 | activity_by_weekday_period.csv | Observed weekday/period/activity | Visit counts and proportion reporting each activity, including zero counts |
 | map_cell_frequency.csv | Activity/observed cell | Number of retained visits selecting each cell |
 | map_cell_frequency_by_weekday_period.csv | Weekday/period/activity/observed cell | Cell frequencies split by weekday and voucher period |
+| analysis_summary.json | Processing run | Saved aggregate tables, report metadata, and participation statistics including repeats |
 | audit.json | Processing run | Source filename, exclusions, retained counts, quality flags, grid/time conventions |
 
 Activity percentages use all retained visits in each weekday/period as denominator and can sum above 100% because activities are multiple choice. A missing activity answer is not distinguishable from no selection in this summary; inspect missingness before interpreting other exports. To summarize locations by weekday/period, join map_cells.csv to visits.csv and count distinct visit_id within activity/cell/weekday/period. Planned/actual minutes are activity totals and cannot be assigned to individual cells. Heatmap frequencies measure selections, not occupancy or dwell time. Repeated visitors contribute multiple days; use participant clustering or participant weighting when appropriate. The tables do not correct for changing survey versions, sampling exposure, or unequal collection times.

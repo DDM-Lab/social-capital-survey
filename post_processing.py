@@ -63,7 +63,7 @@ def write_table(directory, name, rows, fields):
 
 
 def load_retained_records(source):
-    """Read an export and apply the shared consent, staff, preview, and repeat rules."""
+    """Read an export and apply consent, staff, and preview exclusions; preserve repeat submissions."""
     with source.open(encoding="utf-8-sig", newline="") as f:
         rows = list(csv.reader(f))
     if len(rows) < 3 or "ImportId" not in "".join(rows[2]):
@@ -85,22 +85,20 @@ def load_retained_records(source):
             d["_time"] = parse_start_time(d["StartDate"])
             d["_person"] = identity(d["Email"]) or identity(d["participantemail"])
             eligible.append(d)
-    # Deterministic rule: retain earliest submission per identified participant/local day.
-    seen = set()
-    kept = []
-    for d in sorted(eligible, key=lambda r: (r["_time"], r["ResponseId"])):
-        key = (d["_person"], d["_time"].date())
-        if d["_person"] and key in seen:
-            excluded["same_person_same_day_later_submission"] += 1
-            continue
-        if d["_person"]:
-            seen.add(key)
-        kept.append(d)
+    # Sort for stable visit numbering; retain every eligible submission.
+    kept = sorted(eligible, key=lambda r: (r["_time"], r["ResponseId"]))
     return records, kept, excluded
 
 
 def process(source, destination):
     records, kept, excluded = load_retained_records(source)
+    # Compute all report statistics once from the original and eligible records.
+    from general_analysis import summarize, summarize_participation
+    tables, metadata = summarize(kept)
+    metadata.update(source_file=source.name, input_records=len(records), excluded=dict(excluded),
+                    activity_percentage_basis="Selections across the nine listed activities within group",
+                    duration_error_bars="One sample standard deviation; not a confidence interval",
+                    participation_statistics=summarize_participation(records))
     # Fresh random IDs on each run; no identity mapping is exported.
     people = sorted({d["_person"] for d in kept if d["_person"]})
     shuffled = list(range(1, len(people) + 1))
@@ -175,6 +173,9 @@ def process(source, destination):
             encounters.append(encounter)
 
     destination.mkdir(parents=True, exist_ok=True)
+    (destination / "analysis_summary.json").write_text(
+        json.dumps(dict(schema_version=2, tables=tables, metadata=metadata), indent=2),
+        encoding="utf-8")
     write_table(destination, "visits.csv", visits, ["visit_id", "participant_id", "weekday", "weekday_number", "hour", "time_period", "survey_duration_seconds"] + SENTIMENTS)
     write_table(destination, "activities.csv", activities, ["visit_id", "activity", "selected", "planned_minutes", "actual_minutes"])
     write_table(destination, "map_cells.csv", cells, ["visit_id", "activity", "column", "row", "x_center_px", "y_center_px"])

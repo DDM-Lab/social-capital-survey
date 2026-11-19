@@ -1,9 +1,9 @@
 ﻿"""Generate survey question plots, aggregate CSVs, and a Markdown report.
 
 Run: python general_analysis.py
-Optional: python general_analysis.py "survey.csv" --output-dir analysis --dpi 180
+Optional: python general_analysis.py "cleaned/export.csv" --output-dir analysis --dpi 180
 Requires matplotlib and NumPy, plus the adjacent post_processing.py for shared
-retention and numeric validation rules. Does not modify cleaned/ or existing maps.
+numeric validation rules. Reads saved aggregates; does not reopen source exports.
 """
 import argparse
 import collections
@@ -14,10 +14,10 @@ from pathlib import Path
 import statistics
 
 from post_processing import (ACTIVITIES, SCALE, SENTIMENTS, STAFF, identity,
-                             load_retained_records, number, parse_start_time)
+                             number, parse_start_time)
 
 ROOT = Path(__file__).resolve().parent
-DEFAULT_INPUT = ROOT / "2026-Grace-Hunt Library Survey_November 5, 2026_10.09.csv"
+DEFAULT_INPUT = ROOT / "cleaned" / "2026-Grace-Hunt Library Survey_November 5, 2026_10.09.csv"
 ACTIVITY_LABELS = {
     "eating_drinking": "Eating/drinking",
     "studying_working": "Studying/working",
@@ -343,7 +343,7 @@ def markdown_table(headers, rows):
 
 
 def summarize_participation(records):
-    """Count completed surveys before same-day deduplication; export aggregates only."""
+    """Count completed surveys including repeat submissions; export aggregates only."""
     excluded = collections.Counter()
     completed = []
     for raw in records:
@@ -446,7 +446,7 @@ def write_participation_report(source, stats, destination):
                           display_share(rows[0]["count"], n) if rows else "N/A"])
     repeated = stats["repeat_participants"]
     metrics = [
-        ["Completed non-staff, consenting submissions (before same-day deduplication)", n],
+        ["Completed non-staff, consenting submissions (including repeat submissions)", n],
         ["Completed submissions with an identifiable participant ID", stats["identified_completed_submissions"]],
         ["Unique normalized non-staff participant IDs", people],
         ["Completed submissions without an ID (cannot check repeat participation)", stats["missing_identity_submissions"]],
@@ -503,7 +503,7 @@ def write_participation_report(source, stats, destination):
              "### Completed submissions per identifiable participant", "",
              markdown_table(["Submissions per ID", "Unique IDs"], [[r["completions"], r["participants"]] for r in stats["completion_frequency"]]), "",
              "## Relation to the question-level analysis", "",
-             "The question-level analysis keeps the earliest identified submission per day and does not separately filter on Finished. "
+             "The question-level analysis preserves every eligible submission and does not separately filter on Finished. "
              "This participation report requires completion and includes later same-day submissions. "
              "These definitions can produce different submission totals; unique-ID counts cannot account for unidentified submissions.", ""]
     destination.mkdir(parents=True, exist_ok=True)
@@ -517,10 +517,10 @@ def write_report(source, tables, metadata, artifacts, destination):
              f"Retained **{n} visits**, with **{metadata['retained_identified_participants']} identified participants** "
              f"and {metadata['missing_identity_visits']} visits without participant identity.", "",
              "See [general participation statistics](general_statistics.md) for completed-survey ID counts, "
-             "the most frequent day/time, and repeat participation before same-day deduplication.", "",
+             "the most frequent day/time, and repeat participation including repeat submissions.", "",
              "## Reading the results", "",
-             "The shared post-processing rules exclude staff, previews, and nonconsenting records, then keep the earliest identified participant submission per local day. "
-             "Repeated visits on different days count separately. These are descriptive results without participant weighting or sampling-exposure corrections.", "",
+             "The shared post-processing rules exclude staff, previews, and nonconsenting records, preserving every remaining submission, including same-day repeats. "
+             "All repeat submissions count separately; repeat counts do not prove distinct visits. These are descriptive results without participant weighting or sampling-exposure corrections.", "",
              f"Exclusions: {json.dumps(metadata['excluded'], sort_keys=True)}.", "",
              "All activity percentage plots use the **share of selections across the nine listed activities**, summing to 100% within each group when selections exist. "
              "For example, a 40% Monday bar means 40% of Monday's activity selections, rather than 40% of Monday's visitors. "
@@ -567,9 +567,21 @@ def write_report(source, tables, metadata, artifacts, destination):
     (destination / "report.md").write_text("\n".join(lines), encoding="utf-8")
 
 
+def load_analysis_summary(source):
+    """Read only aggregate statistics produced by the cleaning stage."""
+    path = source / "analysis_summary.json" if source.is_dir() else source
+    if path.suffix.lower() != ".json":
+        raise ValueError("Expected a cleaned export folder or analysis_summary.json.")
+    bundle = json.loads(path.read_text(encoding="utf-8"))
+    if bundle["schema_version"] != 2:
+        raise ValueError("Unsupported analysis summary version; regenerate cleaned outputs.")
+    return bundle["tables"], bundle["metadata"]
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("input", nargs="?", type=Path, default=DEFAULT_INPUT)
+    parser.add_argument("input", nargs="?", type=Path, default=DEFAULT_INPUT,
+                        help="Cleaned export folder or analysis_summary.json")
     parser.add_argument("--output-dir", type=Path, default=ROOT / "analysis")
     parser.add_argument("--dpi", type=int, default=180)
     args = parser.parse_args()
@@ -583,19 +595,19 @@ def main():
     if source in [destination / "report.md", destination / "audit.json"] or any(
             p in source.parents for p in [destination / "tables", destination / "plots"]):
         parser.error("The source CSV must be outside the generated tables/ and plots/ directories.")
-    raw, retained, excluded = load_retained_records(source)
-    tables, metadata = summarize(retained)
-    metadata.update(source_file=source.name, input_records=len(raw), excluded=dict(excluded),
-                    activity_percentage_basis="Selections across the nine listed activities within group",
-                    duration_error_bars="One sample standard deviation; not a confidence interval")
-    participation = summarize_participation(raw)
-    metadata["participation_statistics"] = participation
+    try:
+        tables, metadata = load_analysis_summary(source)
+    except (OSError, ValueError, KeyError) as error:
+        parser.error(f"Cannot read cleaned analysis summary ({type(error).__name__}). "
+                     "Run privacy_main.py first and select its cleaned export folder.")
+    source = Path(metadata["source_file"])
+    participation = metadata["participation_statistics"]
     save_tables(tables, destination / "tables")
     artifacts = create_plots(tables, metadata, destination / "plots", args.dpi)
     write_report(source, tables, metadata, artifacts, destination)
     write_participation_report(source, participation, destination)
     (destination / "audit.json").write_text(json.dumps(metadata, indent=2), encoding="utf-8")
-    print(f"Retained {len(retained)} of {len(raw)} records; generated {len(artifacts)} plots and {len(tables)} tables.")
+    print(f"Retained {metadata['retained_visits']} of {metadata['input_records']} records; generated {len(artifacts)} plots and {len(tables)} tables.")
     print(f"Report: {destination / 'report.md'}")
     print(f"Participation statistics: {destination / 'general_statistics.md'}")
 
